@@ -1,0 +1,15 @@
+*******************************************************************
+*   System-defined Include-files.                                 *
+*******************************************************************
+  INCLUDE LZMFP_CHANGELOGTOP.                " Global Declarations
+  INCLUDE LZMFP_CHANGELOGUXX.                " Function Modules
+
+*******************************************************************
+*   User-defined Include-files (if necessary).                    *
+*******************************************************************
+* INCLUDE LZMFP_CHANGELOGF...                " Subroutines
+* INCLUDE LZMFP_CHANGELOGO...                " PBO-Modules
+* INCLUDE LZMFP_CHANGELOGI...                " PAI-Modules
+* INCLUDE LZMFP_CHANGELOGE...                " Events
+* INCLUDE LZMFP_CHANGELOGP...                " Local class implement.
+* INCLUDE LZMFP_CHANGELOGT99.                " ABAP Unit tests

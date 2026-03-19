@@ -1,0 +1,21 @@
+* regenerated at 18.10.2023 14:47:58
+*******************************************************************
+*   System-defined Include-files.                                 *
+*******************************************************************
+  INCLUDE LZFSS_MFP_ASATOP.                  " Global Declarations
+  INCLUDE LZFSS_MFP_ASAUXX.                  " Function Modules
+
+*******************************************************************
+*   User-defined Include-files (if necessary).                    *
+*******************************************************************
+* INCLUDE LZFSS_MFP_ASAF...                  " Subroutines
+* INCLUDE LZFSS_MFP_ASAO...                  " PBO-Modules
+* INCLUDE LZFSS_MFP_ASAI...                  " PAI-Modules
+* INCLUDE LZFSS_MFP_ASAE...                  " Events
+* INCLUDE LZFSS_MFP_ASAP...                  " Local class implement.
+* INCLUDE LZFSS_MFP_ASAT99.                  " ABAP Unit tests
+  INCLUDE LZFSS_MFP_ASAF00                        . " subprograms
+  INCLUDE LZFSS_MFP_ASAI00                        . " PAI modules
+  INCLUDE LSVIMFXX                                . " subprograms
+  INCLUDE LSVIMOXX                                . " PBO modules
+  INCLUDE LSVIMIXX                                . " PAI modules

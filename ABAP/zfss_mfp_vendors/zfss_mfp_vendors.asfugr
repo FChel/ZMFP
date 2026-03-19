@@ -1,0 +1,21 @@
+* regenerated at 13.03.2024 15:25:45
+*******************************************************************
+*   System-defined Include-files.                                 *
+*******************************************************************
+  INCLUDE LZFSS_MFP_VENDORSTOP.              " Global Declarations
+  INCLUDE LZFSS_MFP_VENDORSUXX.              " Function Modules
+
+*******************************************************************
+*   User-defined Include-files (if necessary).                    *
+*******************************************************************
+* INCLUDE LZFSS_MFP_VENDORSF...              " Subroutines
+* INCLUDE LZFSS_MFP_VENDORSO...              " PBO-Modules
+* INCLUDE LZFSS_MFP_VENDORSI...              " PAI-Modules
+* INCLUDE LZFSS_MFP_VENDORSE...              " Events
+* INCLUDE LZFSS_MFP_VENDORSP...              " Local class implement.
+* INCLUDE LZFSS_MFP_VENDORST99.              " ABAP Unit tests
+  INCLUDE LZFSS_MFP_VENDORSF00                    . " subprograms
+  INCLUDE LZFSS_MFP_VENDORSI00                    . " PAI modules
+  INCLUDE LSVIMFXX                                . " subprograms
+  INCLUDE LSVIMOXX                                . " PBO modules
+  INCLUDE LSVIMIXX                                . " PAI modules

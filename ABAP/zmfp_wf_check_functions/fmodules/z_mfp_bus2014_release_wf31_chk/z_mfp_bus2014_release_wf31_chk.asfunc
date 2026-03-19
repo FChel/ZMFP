@@ -1,0 +1,49 @@
+FUNCTION Z_MFP_BUS2014_RELEASE_WF31_CHK
+  IMPORTING
+    VALUE(SENDER) TYPE SIBFLPORB
+    VALUE(EVENT) TYPE SIBFEVENT
+    VALUE(RECTYPE) TYPE SWFERECTYP
+    VALUE(EVENT_CONTAINER) TYPE REF TO IF_SWF_IFS_PARAMETER_CONTAINER
+  EXCEPTIONS
+    CONDITION_EVALUATES_TO_FALSE.
+
+
+
+
+*----------------------------------------------------------------------*
+* PROGRAM ID:         Z_MFP_BUS2014_RELEASE_WF31_CHK
+* DESCRIPTION:        This function is a cut-down copy of the standard FM
+*                     "SWB_2_CHECK_FB_START_COND_EVAL".  It performs a
+*                     check to see if the contract that has been released
+*                     is a MFP application contract.  If so, WS90600031
+*                     will not commence, as the MFP app workflow will
+*                     already be sending out emails to the requester once
+*                     theior contract has been approved.
+*
+* AUTHOR:             James Southwell (070667JPS)
+* CREATE DATE:        10.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 10.06.20 070667JPS RD2K919078 WS-11-20-08-01 Created Function Module
+*-----------------------------------------------------------------------
+
+  DATA: lv_bus2014_key TYPE ebeln.
+
+* Get the contract number from the sender structure
+  lv_bus2014_key = sender-instid.
+
+* Check if the contract is an MFP application one
+  IF zcl_mfp_utilities=>is_myfi( iv_doc_num = lv_bus2014_key ) EQ abap_true.
+    MESSAGE e001(zmfp) WITH lv_bus2014_key
+    RAISING condition_evaluates_to_false.
+  ENDIF.
+
+
+ENDFUNCTION.

@@ -1,0 +1,291 @@
+FUNCTION Z_MFP_BUS2012_RELEASE_WF_CHKFM
+  IMPORTING
+    VALUE(SENDER) TYPE SIBFLPORB
+    VALUE(EVENT) TYPE SIBFEVENT
+    VALUE(RECTYPE) TYPE SWFERECTYP
+    VALUE(EVENT_CONTAINER) TYPE REF TO IF_SWF_IFS_PARAMETER_CONTAINER
+  EXCEPTIONS
+    ERROR_CONVERTING_CURRENCY
+    ERROR_EVALUATING_CONDITION
+    CONDITION_EVALUATES_TO_FALSE
+    SSP_PO.
+
+
+
+
+*----------------------------------------------------------------------*
+* PROGRAM ID:         Z_MFP_BUS2012_RELEASE_WF_CHKFM
+* DESCRIPTION:        This function is a copy of the standard function
+*                     "SWB_2_CHECK_FB_START_COND_EVAL" which was used as
+*                     the check function for workflow WS90600003 for
+*                     PO approval. An additional check has been
+*                     added to the logic to check if the PO has
+*                     been submitted for approval by the MFP app.  If
+*                     so, the WS90600003 will not commence, as there
+*                     is already another workflow that will have been
+*                     triggered for approvals by the MFP app.
+*
+* AUTHOR:             Stephen Ning (290977SCN)
+* CREATE DATE:        29.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 29.05.20 290977SCN RD2K919078 WS-11-20-08-01 Created Function Module
+* 10.06.20 070667JPS RD2K919078 WS-11-20-08-01 Documentation
+*-----------------------------------------------------------------------
+*
+*-----------------------------------------------------------------------
+
+* The following are data statements for SWB_2_CHECK_FB_START_COND_EVAL.
+  DATA: evaluation_result LIKE sy-binpt,    " 'true' or 'false'
+        errortype         TYPE symsgty.     "  X, A, E, W, I or S.
+
+  DATA: BEGIN OF rule_table OCCURS 16.
+          INCLUDE STRUCTURE swb_cond.
+          DATA:     defaultcur TYPE sycurr,
+        END OF rule_table.
+  DATA: current_condition LIKE LINE OF rule_table.
+
+  DATA: receiver_id      LIKE swbrulecou-workflowid,
+        receiver_version LIKE swbrulecou-version.
+  DATA: num_lines         TYPE         i.
+  DATA: default_cur       TYPE         sycurr. " rule's default currency
+**** for currency conversions:
+  DATA: save_container    TYPE STANDARD TABLE OF swcont.
+  DATA: num_attributes    TYPE         i.
+  DATA: container_if      TYPE REF TO  if_swf_cnt_container.
+  DATA: lcx_exception TYPE REF TO  cx_swf_ifs_exception,
+        l_sender      TYPE         string,
+        l_rulename    TYPE         string,
+        l_msg         TYPE         swf_t100ms.
+
+* The following block was added for the MFP application check
+  DATA:
+      lv_bus2012_key TYPE ebeln.
+  lv_bus2012_key = sender-instid.
+
+  IF zcl_mfp_utilities=>is_myfi( iv_doc_num = lv_bus2012_key ) EQ abap_true.
+    MESSAGE e001(zmfp) WITH lv_bus2012_key
+    RAISING condition_evaluates_to_false.
+  ENDIF.
+
+* End of block added for the MFP application check
+
+* The remainder below is standard code for SWB_2_CHECK_FB_START_COND_EVAL.
+**** prepare key for accessing rule table
+
+  receiver_id      = rectype(10).
+  receiver_version = rectype+10(4).
+
+  IF ( receiver_version IS INITIAL ) AND
+     (     ( ( receiver_id(2) = swb1_ws_task ) OR
+             ( receiver_id(2) = swb1_wf_task ) OR
+             ( receiver_id(2) = swb1_ts_task ) OR
+             ( receiver_id(2) = swb1_t__task ) )
+       AND ( receiver_id+2(8) CO '0123456789' ) ).
+
+    receiver_version = swb1_workflow_current_version.
+
+  ENDIF.
+
+**** load condition. First, client dependent, then client independent
+**** to save time, select directly
+
+  IF sender-catid = swfex_objkind_bor.
+**** for a BOR object, the CATID is empty or equal 'BO'
+    SELECT * FROM swbrulecom
+      INTO CORRESPONDING FIELDS OF TABLE rule_table
+      WHERE workflowid = receiver_id            AND
+            version    = receiver_version       AND
+            ( catid    = space             OR
+              catid    = swfex_objkind_bor    ) AND
+            objtype    = sender-typeid          AND
+            event      = event                  AND
+            is_context <> 'X'.
+  ELSE.
+    SELECT * FROM swbrulecom
+      INTO CORRESPONDING FIELDS OF TABLE rule_table
+      WHERE workflowid = receiver_id         AND
+            version    = receiver_version    AND
+            catid      = sender-catid        AND
+            objtype    = sender-typeid       AND
+            event      = event               AND
+            is_context <> 'X'.
+  ENDIF.
+  IF sy-subrc <> 0.
+**** no client dependent rule found? Check client INdependent.
+    IF sender-catid = swfex_objkind_bor.
+****  for a BOR object, the CATID is empty or equal 'BO'
+      SELECT * FROM swbrulecou
+        INTO CORRESPONDING FIELDS OF TABLE rule_table
+        WHERE workflowid = receiver_id            AND
+              version    = receiver_version       AND
+              ( catid    = space             OR
+                catid    = swfex_objkind_bor    ) AND
+              objtype    = sender-typeid          AND
+              event      = event                  AND
+              is_context <> 'X'.
+    ELSE.
+      SELECT * FROM swbrulecou
+        INTO CORRESPONDING FIELDS OF TABLE rule_table
+        WHERE workflowid = receiver_id       AND
+              version    = receiver_version  AND
+              catid      = sender-catid      AND
+              objtype    = sender-typeid     AND
+              event      = event             AND
+              is_context <> 'X'.
+    ENDIF.
+  ENDIF.
+
+  IF    ( sy-subrc <> 0 )
+     OR ( sy-dbcnt = 0 ).
+    EXIT.                          " no condition -> nothing to check.
+  ELSEIF ( sy-dbcnt = 1 ).
+    READ TABLE rule_table INDEX 1 INTO current_condition. "#EC CI_NOORDER
+    IF current_condition IS INITIAL OR
+       current_condition-parse_typ = swb1_parse_type_dummy.
+      EXIT.                        " empty condition -> nothing to check
+    ENDIF.
+  ENDIF.
+
+  TRY.
+      container_if ?= event_container. " cast to full container interface.
+    CATCH cx_root.
+      container_if ?= cl_swf_ifs_container_base=>create( ).
+      TRY.
+          CALL METHOD container_if->import_from_param_container
+            EXPORTING
+              parameter_container    = event_container
+              only_import_param      = space
+              only_export_param      = space
+              overwrite              = 'X'
+              copy                   = space
+              import_system_elements = 'X'
+              import_null_values     = 'X'.
+        CATCH cx_swf_cnt_container.
+      ENDTRY.
+  ENDTRY.
+
+  READ TABLE rule_table INDEX 1 INTO current_condition. "#EC CI_NOORDER
+  default_cur   = current_condition-defaultcur.
+
+  IF default_cur IS NOT INITIAL. " no currency conversion
+
+**** Ask the business object which of its attributes are
+**** currency fields. Convert these fields to the default currency
+**** and add the corresponding lines to a copy of the event container.
+
+    IF container_if IS NOT BOUND.
+      RAISE error_converting_currency.
+    ENDIF.
+    TRY.
+        CALL METHOD container_if->to_bor_container
+          IMPORTING
+            values = save_container.
+      CATCH cx_swf_cnt_element INTO lcx_exception.
+        l_msg = lcx_exception->t100_msg.
+        IF l_msg IS NOT INITIAL.
+          MESSAGE ID l_msg-msgid TYPE l_msg-msgty NUMBER l_msg-msgno
+            WITH l_msg-msgv1 l_msg-msgv2 l_msg-msgv3 l_msg-msgv4.
+        ELSE.
+          RAISE error_converting_currency.
+        ENDIF.
+    ENDTRY.
+
+    CALL FUNCTION 'SWB_QUERY_CURRENCY_ATTRIBUTES'
+      EXPORTING
+        object                    = sender-typeid
+        local_currency            = default_cur
+        convert_to_local_currency = 'X'
+        get_texts                 = ' '
+      IMPORTING
+        num_currency_attributes   = num_attributes
+      TABLES
+        container_runtime         = save_container
+      EXCEPTIONS
+        OTHERS                    = 1.
+
+    IF sy-subrc <> 0.
+      MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+         WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4
+         RAISING error_converting_currency.
+    ELSE.
+      TRY.
+          CALL METHOD container_if->import_from_bor_container
+            EXPORTING
+              values = save_container[].
+        CATCH cx_swf_ifs_exception INTO lcx_exception.
+          l_msg = lcx_exception->t100_msg.
+          IF l_msg IS NOT INITIAL.
+            MESSAGE ID l_msg-msgid TYPE l_msg-msgty NUMBER l_msg-msgno
+              WITH l_msg-msgv1 l_msg-msgv2 l_msg-msgv3 l_msg-msgv4.
+          ELSE.
+            RAISE error_converting_currency.
+          ENDIF.
+      ENDTRY.
+    ENDIF.
+
+  ENDIF.
+
+**** evaluate condition on (perhaps enhanced) container
+  DATA: exception_ref TYPE REF TO cx_swf_ifs_exception.
+
+  CALL FUNCTION 'SWB_COND_EVAL'
+    EXPORTING
+      container_if     = container_if
+    IMPORTING
+      result           = evaluation_result
+      worsterror       = errortype
+      exception_return = exception_ref
+    TABLES
+****          rule_table has an additional trailing field that
+****          does not exist in condition. Otherwise, both
+****          are of type SWB_COND.
+      condition        = rule_table.
+
+  IF ( errortype = 'E' ) OR
+     ( errortype = 'A' ) OR
+     ( errortype = 'X' ) OR
+     ( evaluation_result = space ).
+    IF exception_ref IS BOUND.
+      MESSAGE ID     exception_ref->t100_msg-msgid
+              TYPE   exception_ref->t100_msg-msgty
+              NUMBER exception_ref->t100_msg-msgno
+              WITH   exception_ref->t100_msg-msgv1
+                     exception_ref->t100_msg-msgv2
+                     exception_ref->t100_msg-msgv3
+                     exception_ref->t100_msg-msgv4
+              RAISING error_evaluating_condition.
+    ELSE.
+      CONCATENATE '[' sender-catid  ','
+                    sender-typeid ','
+                    sender-instid ']'
+        INTO l_sender.
+      CONDENSE l_sender NO-GAPS.
+      MESSAGE e401(swf_rls_001) WITH l_sender
+        RAISING error_evaluating_condition.
+    ENDIF.
+  ELSEIF ( evaluation_result = 'F' ).
+    CONCATENATE '[' sender-catid  ','
+                    sender-typeid ','
+                    sender-instid ']'
+    INTO l_sender.
+    CONDENSE l_sender NO-GAPS.
+    CLEAR l_rulename. " would require to re-read the full header line.
+    MESSAGE e400(swf_rls_001) WITH l_rulename l_sender
+      RAISING condition_evaluates_to_false.
+  ELSE.
+
+**** When we have reached this point, the condition was successfully
+**** loaded, evaluated, and COND_EVAL returned a value of 'true'.
+
+  ENDIF.
+
+
+ENDFUNCTION.

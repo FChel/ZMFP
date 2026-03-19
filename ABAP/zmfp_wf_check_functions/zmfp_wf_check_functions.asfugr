@@ -1,0 +1,15 @@
+*******************************************************************
+*   System-defined Include-files.                                 *
+*******************************************************************
+  INCLUDE LZMFP_WF_CHECK_FUNCTIONSTOP.       " Global Declarations
+  INCLUDE LZMFP_WF_CHECK_FUNCTIONSUXX.       " Function Modules
+
+*******************************************************************
+*   User-defined Include-files (if necessary).                    *
+*******************************************************************
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONSF...       " Subroutines
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONSO...       " PBO-Modules
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONSI...       " PAI-Modules
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONSE...       " Events
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONSP...       " Local class implement.
+* INCLUDE LZMFP_WF_CHECK_FUNCTIONST99.       " ABAP Unit tests
