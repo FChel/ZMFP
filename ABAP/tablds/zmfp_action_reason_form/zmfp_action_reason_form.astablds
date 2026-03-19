@@ -1,0 +1,10 @@
+@EndUserText.label : 'Action Reason Form'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zmfp_action_reason_form {
+  action        : powl_actionid_ty;
+  recipient     : syuname
+    with value help user_addr
+      where bname = zmfp_action_reason_form.recipient;
+  action_reason : text255;
+
+}

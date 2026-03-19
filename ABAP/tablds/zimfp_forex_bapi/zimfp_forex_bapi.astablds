@@ -1,0 +1,6 @@
+@EndUserText.label : 'Include structure for budget exchange rate'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zimfp_forex_bapi {
+  kkurs : kkurs;
+
+}

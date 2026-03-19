@@ -1,0 +1,9 @@
+@EndUserText.label : 'NPS - Cost Centre for ASA'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsfss_nps_cost_centre {
+  kostl : kostl;
+  datbi : datbi;
+  bukrs : bukrs;
+  abtei : abtei;
+
+}

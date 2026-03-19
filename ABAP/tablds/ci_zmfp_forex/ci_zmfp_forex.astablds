@@ -1,0 +1,6 @@
+@EndUserText.label : 'Budget exchange rate for MyFi Outline agreements'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type ci_zmfp_forex {
+  kkurs : kkurs;
+
+}

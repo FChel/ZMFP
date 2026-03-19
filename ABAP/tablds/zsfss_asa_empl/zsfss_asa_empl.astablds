@@ -1,0 +1,7 @@
+@EndUserText.label : 'Structure for Employee Org unit'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsfss_asa_empl {
+  is_asa_empl : boole_d;
+  is_fo_empl  : boole_d;
+
+}

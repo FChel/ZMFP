@@ -1,0 +1,9 @@
+@EndUserText.label : 'NPS - Cost Centre for ASA'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsfss_mfp_asa_cc {
+  ebeln : ebeln;
+  ebelp : ebelp;
+  kostl : kostl;
+  prctr : prctr;
+
+}
