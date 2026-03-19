@@ -1,0 +1,1179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="ZEDM_MFP_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="Contract" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ContractNumber"/>
+				</Key>
+				<Property Name="ContractNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Contract Number"/>
+				<Property Name="RequestID" Type="Edm.String" MaxLength="10" sap:label="RequestID"/>
+				<Property Name="IsDraft" Type="Edm.Boolean" sap:label="Is Draft"/>
+				<Property Name="IsSinglePO" Type="Edm.Boolean" sap:label="Is Single Purchase Order"/>
+				<Property Name="IsMultiPO" Type="Edm.Boolean" sap:label="Is Multi Purchase Orders"/>
+				<Property Name="IsContractOnly" Type="Edm.Boolean" sap:label="Is Contract Only"/>
+				<Property Name="IsLegacy" Type="Edm.Boolean" sap:label="Is Legacy"/>
+				<Property Name="PurchaseOrder" Type="Edm.String" MaxLength="10" sap:label="PurchaseOrder(either a number or a count)"/>
+				<Property Name="VendorNumber" Type="Edm.String" MaxLength="10" sap:label="Vendor Number"/>
+				<Property Name="VendorName" Type="Edm.String" MaxLength="35" sap:label="Vendor Name"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="StartDate" Type="Edm.DateTime" sap:label="Start Date"/>	
+				<Property Name="EndDate" Type="Edm.DateTime" sap:label="End Date"/>
+				<Property Name="PurchasingGroup" Type="Edm.String" MaxLength="3" sap:label="Purchasing Group"/>
+				<Property Name="PurchasingGroupName" Type="Edm.String" MaxLength="18" sap:label="Purchasing Group Name"/>
+				<Property Name="SON" Type="Edm.String" MaxLength="20" sap:label="Standing Offer Number"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>
+				<Property Name="ExchangeRate" Type="Edm.Decimal" Precision="9" Scale="5" sap:label="Exchange Rate"/>				
+				<Property Name="PaymentTerms" Type="Edm.String" MaxLength="4" sap:label="Payment Terms"/>
+				<Property Name="PaymentTermsJustification" Type="Edm.String" MaxLength="100" sap:label="Payment Terms Justification"/>
+				<Property Name="InvoicingPartyName" Type="Edm.String" MaxLength="35" sap:label="Invoicing Party Name"/>				
+				<Property Name="InvoicingPartyNumber" Type="Edm.String" MaxLength="10" sap:label="Invoicing Party Number"/>					
+				<Property Name="RomanComment" Type="Edm.String" sap:label="Roman Comment"/>
+				<Property Name="Status" Type="Edm.String" MaxLength="2" sap:label="Status Description"/>
+				<Property Name="StatusDesc" Type="Edm.String" MaxLength="20" sap:label="Status Description"/>
+				<Property Name="StatusDescLong" Type="Edm.String" MaxLength="20" sap:label="Status Description"/>
+				<Property Name="TotalValue" Type="Edm.Decimal" Precision="16" Scale="3"  sap:label="Total Value"/>			
+				<!--<Property Name="ValueForMoney" Type="Edm.String" sap:label="Value For Money Assessment"/>-->	
+				<!--<Property Name="IsSection23" Type="Edm.Boolean" sap:label="Is Section 23"/>-->
+				<!--<Property Name="DelegateID" Type="Edm.String" MaxLength="12" sap:label="Delegate ID"/>-->
+				<Property Name="ApproverID" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>
+				<Property Name="ApproverName" Type="Edm.String" MaxLength="50" sap:label="Approver Name"/>
+				<!--<Property Name="CommentForApprover" Type="Edm.String" sap:label="Comment For Approver"/>-->
+				<!--<Property Name="RejectComments" Type="Edm.String" sap:label="Reject Comments"/>				-->
+				<Property Name="PRFURL" Type="Edm.String" MaxLength="800" sap:label="PRF worklist"/>
+				<Property Name="PRFURLDisplay" Type="Edm.String" MaxLength="800" sap:label="PRF item Display"/>
+				<Property Name="PRFURLEdit" Type="Edm.String" MaxLength="800" sap:label="PRF item Edit"/>
+				<Property Name="IsSameAddressForAll" Type="Edm.Boolean" sap:label="Is Same Address For All"/>
+				<!--<Property Name="IsSelfApproval" Type="Edm.Boolean" sap:label="Is Self Approval"/>-->
+				<Property Name="IsRestrictedLegacy" Type="Edm.Boolean" sap:label="Is Restricted Legacy - Document not to be displayed"/>
+				<Property Name="ChangeLogUrl" Type="Edm.String" MaxLength="255" sap:label="Change Log Url"/>				
+				<Property Name="DraftAssigneeID" Type="Edm.String" MaxLength="12" sap:label="Draft Assignee ID"/>				
+				<Property Name="CreatedByName" Type="Edm.String" MaxLength="110" sap:label="Created By Name"/>
+				<Property Name="CreatedByID" Type="Edm.String" MaxLength="12" sap:label="Created By ID"/>
+				<Property Name="ChangedByName" Type="Edm.String" MaxLength="110" sap:label="Changed By Name"/>
+				<Property Name="ChangedByID" Type="Edm.String" MaxLength="12" sap:label="Changed By ID"/>
+				<Property Name="CreatedDate" Type="Edm.DateTime" sap:label="Creation Date"/>
+				<Property Name="ChangedDate" Type="Edm.DateTime" sap:label="Change Date"/>
+				<Property Name="UserAction" Type="Edm.String" MaxLength="2" sap:label="User Action"/>
+				<Property Name="GLAccount" Type="Edm.String" MaxLength="10" sap:label="GL Account"/>
+				<Property Name="CostCentre" Type="Edm.String" MaxLength="10" sap:label="Cost Centre"/>
+				<Property Name="Asset" Type="Edm.String" MaxLength="12" sap:label="Asset"/>
+				<Property Name="AssetSubNumber" Type="Edm.String" MaxLength="4" sap:label="Asset SubNumber"/>
+				<Property Name="WBSElement" Type="Edm.String" MaxLength="24" sap:label="WBS Element"/>
+				<Property Name="IsCloseable" Type="Edm.Boolean" sap:unicode="false" sap:label="Is Closeable"/>
+				<Property Name="YourReference" Type="Edm.String" MaxLength="12" sap:label="Your Reference"/>
+				
+				<NavigationProperty Name="IndigenousSubcontractors" Relationship="ZEDM_MFP_SRV.Contract_To_M_IndigenousSubcontractors" FromRole="FromRole_Contract_IndigenousSubcontractor" ToRole="ToRole_Contract_IndigenousSubcontractor"/>
+				<NavigationProperty Name="ContractLIs" Relationship="ZEDM_MFP_SRV.Contract_To_M_ContractLIs" FromRole="FromRole_Contract_ContractLI" ToRole="ToRole_Contract_ContractLI"/>
+				<NavigationProperty Name="PurchaseOrders" Relationship="ZEDM_MFP_SRV.Contract_To_M_PurchaseOrders" FromRole="FromRole_Contract_PurchaseOrder" ToRole="ToRole_Contract_PurchaseOrder"/>
+				<NavigationProperty Name="Phasings" Relationship="ZEDM_MFP_SRV.Contract_To_M_Phasings" FromRole="FromRole_Contract_Phasing" ToRole="ToRole_Contract_Phasing"/>
+				<NavigationProperty Name="Attachments" Relationship="ZEDM_MFP_SRV.Contract_To_M_Attachments" FromRole="FromRole_Contract_Attachment" ToRole="ToRole_Contract_Attachment"/>	
+				<NavigationProperty Name="AdminDetails" Relationship="ZEDM_MFP_SRV.Contract_To_M_AdminDetails" FromRole="FromRole_Contract_AdminDetail" ToRole="ToRole_Contract_AdminDetail"/>	
+				<NavigationProperty Name="HeaderTexts" Relationship="ZEDM_MFP_SRV.Contract_To_M_HeaderTexts" FromRole="FromRole_Contract_HeaderText" ToRole="ToRole_Contract_HeaderText"/>
+				<NavigationProperty Name="ContactDetails" Relationship="ZEDM_MFP_SRV.Contract_To_M_ContactDetails" FromRole="FromRole_Contract_ContactDetail" ToRole="ToRole_Contract_ContactDetail"/>
+				<NavigationProperty Name="ApprovalDetails" Relationship="ZEDM_MFP_SRV.Contract_To_M_ApprovalDetails" FromRole="FromRole_Contract_ApprovalDetail" ToRole="ToRole_Contract_ApprovalDetail"/>
+				<NavigationProperty Name="DeliveryAddresses" Relationship="ZEDM_MFP_SRV.Contract_To_M_DeliveryAddresses" FromRole="FromRole_Contract_DeliveryAddress" ToRole="ToRole_Contract_DeliveryAddress"/>
+				<NavigationProperty Name="ConsumptionSummary" Relationship="ZEDM_MFP_SRV.Contract_To_M_ConsumptionSummary" FromRole="FromRole_Contract_ConsumptionSummary" ToRole="ToRole_Contract_ConsumptionSummary"/>	
+				<NavigationProperty Name="ConsumptionGRs" Relationship="ZEDM_MFP_SRV.Contract_To_M_ConsumptionGRs" FromRole="FromRole_Contract_ConsumptionGR" ToRole="ToRole_Contract_ConsumptionGR"/>	
+				<NavigationProperty Name="ConsumptionIRs" Relationship="ZEDM_MFP_SRV.Contract_To_M_ConsumptionIRs" FromRole="FromRole_Contract_ConsumptionIR" ToRole="ToRole_Contract_ConsumptionIR"/>
+				<NavigationProperty Name="Approvals" Relationship="ZEDM_MFP_SRV.Contract_To_M_Approvals" FromRole="FromRole_Contract_Approval" ToRole="ToRole_Contract_Approval"/>
+				<NavigationProperty Name="ChangeLogs" Relationship="ZEDM_MFP_SRV.Contract_To_M_ChangeLogs" FromRole="FromRole_Contract_ChangeLog" ToRole="ToRole_Contract_ChangeLog"/>
+				<NavigationProperty Name="AccountAssignments" Relationship="ZEDM_MFP_SRV.Contract_To_M_AccountAssignments" FromRole="FromRole_Contract_AccountAssignment" ToRole="ToRole_Contract_AccountAssignment"/>
+			</EntityType>			
+			
+			<EntityType Name="PurchaseOrder" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="PONumber"/>
+				</Key>				
+				<Property Name="PONumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="PO Number"/>
+				<Property Name="ContractNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Contract Number"/>
+				<Property Name="RequestID" Type="Edm.String" MaxLength="10" sap:label="RequestID"/>
+				<Property Name="IsSinglePO" Type="Edm.Boolean" sap:label="Is Single Purchase Order"/>
+				<!--<Property Name="IsStandalonePO" Type="Edm.Boolean" sap:label="Is Standalone Purchase Order"/>-->
+				<Property Name="IsDraft" Type="Edm.Boolean" sap:label="Is Draft"/>				
+				<Property Name="IsLegacy" Type="Edm.Boolean" sap:label="Is Legacy"/>
+				<Property Name="VendorNumber" Type="Edm.String" MaxLength="10" sap:label="Vendor Number"/>
+				<Property Name="VendorName" Type="Edm.String" MaxLength="35" sap:label="Vendor Name"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="StartDate" Type="Edm.DateTime" sap:label="Start Date"/>	
+				<Property Name="EndDate" Type="Edm.DateTime" sap:label="End Date"/>
+				<Property Name="PurchasingGroup" Type="Edm.String" MaxLength="3" sap:label="Purchasing Group"/>
+				<Property Name="PurchasingGroupName" Type="Edm.String" MaxLength="18" sap:label="Purchasing Group Name"/>
+				<Property Name="SON" Type="Edm.String" MaxLength="20" sap:label="Standing Offer Number"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>
+				<Property Name="ExchangeRate" Type="Edm.Decimal" Precision="9" Scale="5" sap:label="Exchange Rate"/>				
+				<Property Name="PaymentTerms" Type="Edm.String" MaxLength="4" sap:label="Payment Terms"/>
+				<Property Name="PaymentTermsJustification" Type="Edm.String" MaxLength="100" sap:label="Payment Terms Justification"/>
+				<Property Name="InvoicingPartyName" Type="Edm.String" MaxLength="35" sap:label="Invoicing Party Name"/>				
+				<Property Name="InvoicingPartyNumber" Type="Edm.String" MaxLength="10" sap:label="Invoicing Party Number"/>					
+				<Property Name="RomanComment" Type="Edm.String" sap:label="RomanComment"/>
+				<Property Name="Status" Type="Edm.String" MaxLength="2" sap:label="Status Description"/>
+				<Property Name="StatusDesc" Type="Edm.String" MaxLength="20" sap:label="Status Description"/>
+				<Property Name="StatusDescLong" Type="Edm.String" MaxLength="20" sap:label="Status Description"/>
+				<!--<Property Name="ValueForMoney" Type="Edm.String" sap:label="Value For Money Assessment"/>-->	
+				<Property Name="TotalValue" Type="Edm.Decimal" Precision="16" Scale="3"  sap:label="Total Value"/>			
+				<!--<Property Name="IsSection23" Type="Edm.Boolean" sap:label="Is Section 23"/>-->
+				<!--<Property Name="DelegateID" Type="Edm.String" MaxLength="12" sap:label="Delegate ID"/>-->
+				<!--<Property Name="ApproverID" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>-->
+				<Property Name="ApproverID" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>
+				<Property Name="ApproverName" Type="Edm.String" MaxLength="50" sap:label="Approver Name"/>
+				<!--<Property Name="CommentForApprover" Type="Edm.String" sap:label="Comment For Approver"/>-->
+				<Property Name="PRFURL" Type="Edm.String" MaxLength="800" sap:label="PRF worklist"/>
+				<Property Name="PRFURLDisplay" Type="Edm.String" MaxLength="800" sap:label="PRF item display"/>
+				<Property Name="PRFURLEdit" Type="Edm.String" MaxLength="800" sap:label="PRF item Edit"/>
+				<!--<Property Name="RejectComments" Type="Edm.String" sap:label="Reject Comments"/>-->
+				<Property Name="IsRestrictedLegacy" Type="Edm.Boolean" sap:label="Is Restricted Legacy - Document not to be displayed"/>
+				<Property Name="IsSameAddressForAll" Type="Edm.Boolean" sap:label="Is Same Address For All"/>
+				<Property Name="IsConsumption" Type="Edm.Boolean" sap:label="Is Consumption"/>
+				
+				<Property Name="ChangeLogUrl" Type="Edm.String" MaxLength="255" sap:label="Change Log Url"/>
+				<Property Name="GLAccount" Type="Edm.String" MaxLength="10" sap:label="GL Account"/>
+				<Property Name="CostCentre" Type="Edm.String" MaxLength="10" sap:label="Cost Centre"/>
+				<Property Name="Asset" Type="Edm.String" MaxLength="12" sap:label="Asset"/>
+				<Property Name="AssetSubNumber" Type="Edm.String" MaxLength="4" sap:label="Asset SubNumber"/>
+				<Property Name="WBSElement" Type="Edm.String" MaxLength="24" sap:label="WBS Element"/>
+				
+				<Property Name="DraftAssigneeID" Type="Edm.String" MaxLength="12" sap:label="Draft Assignee ID"/>				
+				<Property Name="CreatedByName" Type="Edm.String" MaxLength="110" sap:label="Created By Name"/>
+				<Property Name="CreatedByID" Type="Edm.String" MaxLength="12" sap:label="Created By ID"/>
+				<Property Name="ChangedByName" Type="Edm.String" MaxLength="110" sap:label="Changed By Name"/>
+				<Property Name="ChangedByID" Type="Edm.String" MaxLength="12" sap:label="Changed By ID"/>
+				<Property Name="CreatedDate" Type="Edm.DateTime" sap:label="Creation Date"/>
+				<Property Name="ChangedDate" Type="Edm.DateTime" sap:label="Change Date"/>
+				<Property Name="UserAction" Type="Edm.String" MaxLength="2" sap:label="User Action"/>
+				<Property Name="IsCopyable" Type="Edm.Boolean" sap:label="Is PO Copyable"/>
+				<Property Name="IsCloseable" Type="Edm.Boolean" sap:unicode="false" sap:label="Is Closeable"/>
+				<Property Name="YourReference" Type="Edm.String" MaxLength="12" sap:label="Your Reference"/>
+				<NavigationProperty Name="PurchaseOrderLIs" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_PurchaseOrderLIs" FromRole="FromRole_PurchaseOrder_PurchaseOrderLI" ToRole="ToRole_PurchaseOrder_PurchaseOrderLI"/>
+				<NavigationProperty Name="Phasings" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_Phasings" FromRole="FromRole_PurchaseOrder_Phasing" ToRole="ToRole_PurchaseOrder_Phasing"/>
+				<NavigationProperty Name="Attachments" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_Attachments" FromRole="FromRole_PurchaseOrder_Attachment" ToRole="ToRole_PurchaseOrder_Attachment"/>
+				<NavigationProperty Name="HeaderTexts" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_HeaderTexts" FromRole="FromRole_PurchaseOrder_HeaderText" ToRole="ToRole_PurchaseOrder_HeaderText"/>
+				<NavigationProperty Name="ContactDetails" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ContactDetails" FromRole="FromRole_PurchaseOrder_ContactDetail" ToRole="ToRole_PurchaseOrder_ContactDetail"/>
+				<NavigationProperty Name="DeliveryAddresses" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_DeliveryAddresses" FromRole="FromRole_PurchaseOrder_DeliveryAddress" ToRole="ToRole_PurchaseOrder_DeliveryAddress"/>	
+				<NavigationProperty Name="ApprovalDetails" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ApprovalDetails" FromRole="FromRole_PurchaseOrder_ApprovalDetail" ToRole="ToRole_PurchaseOrder_ApprovalDetail"/>
+				<NavigationProperty Name="ConsumptionSummary" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionSummary" FromRole="FromRole_PurchaseOrder_ConsumptionSummary" ToRole="ToRole_PurchaseOrder_ConsumptionSummary"/>	
+				<NavigationProperty Name="ConsumptionGRs" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionGRs" FromRole="FromRole_PurchaseOrder_ConsumptionGR" ToRole="ToRole_PurchaseOrder_ConsumptionGR"/>	
+				<NavigationProperty Name="ConsumptionIRs" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionIRs" FromRole="FromRole_PurchaseOrder_ConsumptionIR" ToRole="ToRole_PurchaseOrder_ConsumptionIR"/>	
+				<NavigationProperty Name="Approvals" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_Approvals" FromRole="FromRole_PurchaseOrder_Approval" ToRole="ToRole_PurchaseOrder_Approval"/>
+				<NavigationProperty Name="ChangeLogs" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_ChangeLogs" FromRole="FromRole_PurchaseOrder_ChangeLog" ToRole="ToRole_PurchaseOrder_ChangeLog"/>
+				<NavigationProperty Name="AccountAssignments" Relationship="ZEDM_MFP_SRV.PurchaseOrder_To_M_AccountAssignments" FromRole="FromRole_PurchaseOrder_AccountAssignment" ToRole="ToRole_PurchaseOrder_AccountAssignment"/>
+			</EntityType>
+
+			<EntityType Name="LineItem" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+					<PropertyRef Name="LineNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="LineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="LineNumber"/>
+				<Property Name="ParentLineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="Contract LineNumber"/>				
+				<Property Name="AssignmentTypeCode" Type="Edm.String" MaxLength="1" sap:label="Assignment Type Code"/>
+				<Property Name="LineDescription" Type="Edm.String" MaxLength="40" sap:label="Line Description"/>
+				
+				<Property Name="IsReturn" Type="Edm.Boolean" sap:label="Is Return"/>
+				<Property Name="Distribution" Type="Edm.String" MaxLength="10" sap:label="Distribution type"/>
+				<Property Name="PartialInvoiceInd" Type="Edm.String" MaxLength="40" sap:label="Partial Invoice Indicator"/>
+				
+				<!--<Property Name="GLAccount" Type="Edm.String" MaxLength="10" sap:label="GL Account"/>-->
+				<!--<Property Name="CostCentre" Type="Edm.String" MaxLength="10" sap:label="Cost Centre"/>-->
+				<!--<Property Name="Fund" Type="Edm.String" MaxLength="10" sap:label="Fund"/>				-->
+				<!--<Property Name="Asset" Type="Edm.String" MaxLength="12" sap:label="Asset"/>-->
+				<!--<Property Name="AssetSubNumber" Type="Edm.String" MaxLength="4" sap:label="Asset SubNumber"/>-->
+				<!--<Property Name="WBSElement" Type="Edm.String" MaxLength="24" sap:label="WBS Element"/>-->
+				<!--<Property Name="InternalOrder" Type="Edm.String" MaxLength="12" sap:label="Internal Order"/>-->
+				<Property Name="MaterialGroup" Type="Edm.String" MaxLength="9" sap:label="Material Group"/>
+				<Property Name="OrderUnit" Type="Edm.String" MaxLength="3" sap:label="Order Unit"/>
+				<Property Name="UnitQty" Type="Edm.Decimal" Precision="13" Scale="3"  sap:label="Unit Quantity"/>
+				<Property Name="QtyLeft" Type="Edm.Decimal" Precision="13" Scale="3"  sap:label="Quantity Left"/>
+				<Property Name="UnitPrice" Type="Edm.Decimal" Precision="17" Scale="3"  sap:label="Unit Price"/>
+				<Property Name="NetPrice" Type="Edm.Decimal" Precision="17" Scale="9"  sap:label="Net Price ex GST"/>
+				<Property Name="TaxCode" Type="Edm.String" MaxLength="2" sap:label="Tax Code"/>
+				<Property Name="ESP" Type="Edm.String" MaxLength="10" sap:label="Esp Number"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>
+				<Property Name="DeliveryDate" Type="Edm.DateTime" sap:label="Delivery Date"/>
+				<Property Name="Status" Type="Edm.Boolean" sap:label="Status(empty=none, S=locked, L=deleted)"/>
+				<Property Name="StatusDesc" Type="Edm.String" MaxLength="20" sap:label="Status Description"/>
+				<Property Name="IsPrepayment" Type="Edm.Boolean" sap:label="Is Prepayment"/>				
+				<Property Name="PrepaymentCompletedDate" Type="Edm.DateTime" sap:label="Prepayment Complettion Date"/>
+				<Property Name="IsStraightLine" Type="Edm.Boolean" sap:label="Is Straight-line"/>
+				<Property Name="IsFinalInvoice" Type="Edm.Boolean" sap:label="Is Final Invoice"/>
+				<Property Name="IsDeliveryComplete" Type="Edm.Boolean" sap:label="Is Delivery Complete"/>
+				<Property Name="IsNonDeletable" Type="Edm.Boolean" sap:label="Is Non Deletable"/>	
+				<Property Name="IsUOMChangeable" Type="Edm.Boolean" sap:label="Is UOM Changeable"/>	
+				
+				<Property Name="ItemText" Type="Edm.String" sap:unicode="false" sap:label="Item text"/>
+				<Property Name="InfoRecordNote" Type="Edm.String" sap:unicode="false" sap:label="Info Record Note"/>
+				<Property Name="InfoRecordPoText" Type="Edm.String" sap:unicode="false" sap:label="Info Record PO Text"/>
+				<Property Name="InfoNote" Type="Edm.String" sap:unicode="false" sap:label="Info Note"/>
+				<Property Name="MaterialPoText" Type="Edm.String" sap:unicode="false" sap:label="Material PO Text"/>
+				<Property Name="VendorMaterial" Type="Edm.String" MaxLength="35" sap:unicode="false" sap:label="Vendor Material"/>
+				<Property Name="TrackingNo" Type="Edm.String" MaxLength="10" sap:unicode="false" sap:label="Tracking No"/>
+				<Property Name="IsZeroLine" Type="Edm.Boolean" sap:unicode="false" sap:label="Zero Value"/>
+				<Property Name="DvdQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:unicode="false" sap:label="Quantity Delivered"/>
+				<Property Name="InvQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:unicode="false" sap:label="Quantity Invoiced"/>
+				<Property Name="IsCloseable" Type="Edm.Boolean" sap:unicode="false" sap:label=" Is Closeable"/>
+				<Property Name="NetPriceDocCurr" Type="Edm.Decimal" Precision="16" Scale="3" sap:unicode="false" sap:label="Net Price Doc Currency" sap:filterable="false"/>
+				<Property Name="AssignedQty" Type="Edm.Decimal" Precision="13" Scale="3" sap:unicode="false" sap:label="Assigned Quantity"/>
+				<Property Name="AssignedValDocCurr" Type="Edm.Decimal" Precision="16" Scale="3" sap:unicode="false" sap:label="Assigned Value Doc Currency"/>
+				<Property Name="ExchangeRate" Type="Edm.Decimal" Precision="9" Scale="5" sap:unicode="false" sap:label="Budget Exchange Rate"/>
+				<Property Name="IsRateChanged" Type="Edm.Boolean" sap:unicode="false" sap:label="Is Rate Changed"/>
+				<Property Name="IsGR" Type="Edm.Boolean" sap:unicode="false" sap:label="Is GR"/>
+			</EntityType>
+			
+			<EntityType Name="AccountAssignment" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="AssignmentLineNumber"/>
+					<PropertyRef Name="ItemLineNumber"/>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="AssignmentLineNumber" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="Phasing Line Number"/>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="ItemLineNumber" Type="Edm.String" Nullable="false" MaxLength="5" sap:label="Item Line Number"/>
+				<Property Name="IsDeleted" Type="Edm.Boolean" sap:label="Is logically deleted"/>
+				<Property Name="GLAccount" Type="Edm.String" MaxLength="10" sap:label="GL Account"/>
+				<Property Name="GLAccountDesc" Type="Edm.String" MaxLength="30" sap:label="GL Account Description"/>
+				<Property Name="CostCentre" Type="Edm.String" MaxLength="10" sap:label="Cost Centre"/>
+				<Property Name="CostCentreDesc" Type="Edm.String" MaxLength="30" sap:label="Cost Centre Description"/>
+				<Property Name="Asset" Type="Edm.String" MaxLength="12" sap:label="Asset"/>
+				<Property Name="AssetDesc" Type="Edm.String" MaxLength="30" sap:label="Asset Description"/>
+				<Property Name="AssetSubNumber" Type="Edm.String" MaxLength="4" sap:label="Asset SubNumber"/>
+				<Property Name="WBSElement" Type="Edm.String" MaxLength="24" sap:label="WBS Element"/>
+				<Property Name="WBSElementDesc" Type="Edm.String" MaxLength="30" sap:label="WBS Element Description"/>
+				<Property Name="InternalOrder" Type="Edm.String" MaxLength="12" sap:label="Internal Order"/>
+				<Property Name="InternalOrderDesc" Type="Edm.String" MaxLength="30" sap:label="Internal Order Description"/>
+				<Property Name="Fund" Type="Edm.String" MaxLength="10" sap:label="Fund"/>				
+				<Property Name="Quantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:label="Quantity"/>
+				<Property Name="Amount" Type="Edm.Decimal" Precision="17" Scale="9"  sap:label="Amount"/>
+				<Property Name="Percentage" Type="Edm.Decimal" Precision="4" Scale="2"  sap:label="Percentage"/>
+				<Property Name="IsDeleted" Type="Edm.Boolean" sap:unicode="false" sap:label="Is Deleted"/>
+			</EntityType>
+					
+			<EntityType Name="Phasing" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="PhasingLineNumber"/>
+					<PropertyRef Name="ItemLineNumber"/>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="PhasingLineNumber" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="Phasing Line Number"/>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="ItemLineNumber" Type="Edm.String" Nullable="false" MaxLength="5" sap:label="Item Line Number"/>
+				<Property Name="IsDeleted" Type="Edm.Boolean" sap:label="Is logically deleted"/>
+				<Property Name="LineDescription" Type="Edm.String" MaxLength="40" sap:label="Line Description"/>
+				<Property Name="DeliveryDate" Type="Edm.DateTime" sap:label="Delivery Date"/>
+				<Property Name="SchQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:label="Scheduled Quantity"/>
+				<Property Name="DvdQuantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:unicode="false" sap:label="Quantity Delivered"/>	
+			</EntityType>
+			
+			<EntityType Name="HeaderTexts" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:unicode="false" sap:label="Parent Number"/>
+				<Property Name="HeaderText" Type="Edm.String" sap:unicode="false" sap:label="Header Text"/>
+				<Property Name="HeaderNote" Type="Edm.String" sap:unicode="false" sap:label="Header Note"/>
+				<Property Name="ContractRiders" Type="Edm.String" sap:unicode="false" sap:label="Contract Riders (clauses)"/>
+				<Property Name="Delivery" Type="Edm.String" sap:unicode="false" sap:label="Delivery"/>
+				<Property Name="VendorMemoGeneral" Type="Edm.String" sap:unicode="false" sap:label="Vendor Memo (General)"/>
+				<Property Name="VendorMemoSpecial" Type="Edm.String" sap:unicode="false" sap:label="Vendor Memo (Special)"/>
+				<Property Name="AlternateTC" Type="Edm.Boolean" sap:unicode="false" sap:label="Alternate TC"/>
+				<Property Name="AlternateTCNo" Type="Edm.String" sap:unicode="false" sap:label="Alternate TC Agreement No."/>
+				<Property Name="InspectionQuality" Type="Edm.String" sap:unicode="false" sap:label="InspectionQuality"/>			
+			</EntityType>		
+			
+			<EntityType Name="ApprovalDetails" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="IsSection23" Type="Edm.Boolean" sap:label="Is Section 23"/>
+				<Property Name="DelegateID" Type="Edm.String" MaxLength="12" sap:label="Delegate ID"/>
+				<Property Name="ApproverID" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>
+				<Property Name="CommentForApprover" Type="Edm.String" sap:label="Comment For Approver"/>
+				<Property Name="RejectComments" Type="Edm.String" sap:label="Reject Comments"/>	
+				<Property Name="ValueForMoney" Type="Edm.String" sap:label="Value For Money Assessment"/>
+			</EntityType>
+			
+			<EntityType Name="ApprovalHistory" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="HistoryID"/>
+				</Key>				
+				<Property Name="HistoryID" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="History ID"/>
+				<Property Name="ParentNumber" Type="Edm.String"  MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="ApproverID" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>
+				<Property Name="ApproverName" Type="Edm.String" MaxLength="40" sap:label="Approver Name"/>
+				<Property Name="ApprovalDate" Type="Edm.DateTime" sap:label="Approval Date"/>
+				<Property Name="ApprovalTime" Type="Edm.Time" sap:label="Approval Time"/>
+			</EntityType>
+			
+			<EntityType Name="ChangeLog" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+					<PropertyRef Name="LineItem"/>
+					<PropertyRef Name="Changenr"/>
+					<PropertyRef Name="TableName"/>
+					<PropertyRef Name="ChangeInd"/>
+				</Key>				
+				<Property Name="LogID" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Log ID"/>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false"  MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="LineItem" Type="Edm.String" Nullable="false"  MaxLength="10" sap:label="Line Item Number"/>
+				<Property Name="Changenr" Type="Edm.String" Nullable="false"  MaxLength="10" sap:label="Change Number"/>
+				<Property Name="TableName" Type="Edm.String" Nullable="false"  MaxLength="10" sap:label="Object Type"/>
+				<Property Name="ChangeInd" Type="Edm.String" Nullable="false"  MaxLength="10" sap:label="Change Indicator"/>
+				<Property Name="FieldName" Type="Edm.String"  MaxLength="20" sap:label="Field Name"/>
+				<Property Name="FieldText" Type="Edm.String"  MaxLength="20" sap:label="Field Description"/>
+				<Property Name="OldValue" Type="Edm.String"  MaxLength="20" sap:label="Original Value"/>
+				<Property Name="NewValue" Type="Edm.String"  MaxLength="20" sap:label="New Value"/>
+				<Property Name="UserId" Type="Edm.String" MaxLength="12" sap:label="Approver ID"/>
+				<Property Name="UserName" Type="Edm.String" MaxLength="40" sap:label="Name of User"/>
+				<Property Name="ChangeDate" Type="Edm.DateTime" sap:label="Change Date"/>
+				<Property Name="ChangeTime" Type="Edm.Time" sap:label="Change Time"/>
+			</EntityType>
+			
+			<EntityType Name="ContactDetails" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="POContactID" Type="Edm.String" MaxLength="12" sap:label="Purchase Order contact ID"/>
+				<Property Name="POContactName" Type="Edm.String" MaxLength="110" sap:label="Purchase Order contact Name"/>
+				<Property Name="POContactPhone" Type="Edm.String" MaxLength="30" sap:label="Purchase Order contact Phone"/>
+				<Property Name="POContactEmail" Type="Edm.String" MaxLength="241" sap:label="Purchase Order contact Email"/>			
+				<Property Name="InvoiceContactEmail" Type="Edm.String" MaxLength="241" sap:label="Invoice contact Email"/>
+				<Property Name="SpecialInstructions" Type="Edm.String" sap:label="Special Instructions"/>				
+			</EntityType>
+			
+			<EntityType Name="DeliveryAddress" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+					<PropertyRef Name="LineNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="LineNumber"  Nullable="false" Type="Edm.String" MaxLength="5" sap:label="LineNumber"/>	
+				<Property Name="GRContactEmail" Type="Edm.String" MaxLength="241" sap:label="GR contact Email"/>				
+				<Property Name="DeliveryType" Type="Edm.String" MaxLength="10" sap:label="Delivery Type"/>	
+				<Property Name="NewAddressName" Type="Edm.String" MaxLength="40" sap:label="New Address Name"/>
+				<Property Name="NewAddressStreet" Type="Edm.String" MaxLength="60" sap:label="New Address Street"/>
+				<Property Name="NewAddressCity" Type="Edm.String" MaxLength="25" sap:label="New Address City"/>
+				<Property Name="NewAddressPostcode" Type="Edm.String" MaxLength="10" sap:label="New Address Postcode"/>
+				<Property Name="NewAddressCountry" Type="Edm.String" MaxLength="3" sap:label="New Address Country"/>
+				<Property Name="NewAddressRegion" Type="Edm.String" MaxLength="3" sap:label="New Address Region"/>				
+				<Property Name="PickupLocation" Type="Edm.String" sap:label="Pick up location"/>
+				<Property Name="RomanAddressCode" Type="Edm.String" MaxLength="10" sap:label="Roman Code"/>
+				<Property Name="InvoiceContactEmail" Type="Edm.String" MaxLength="241" sap:label="Invoice contact Email"/>
+			</EntityType>
+			
+			<EntityType Name="ContractConsumption" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ContractNumber"/>
+					<PropertyRef Name="ContractLi"/>
+					<PropertyRef Name="PoNumber"/>
+					<PropertyRef Name="PoLi"/>
+				</Key>
+				<Property Name="ContractNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Contract Number"/>
+				<Property Name="ContractLi" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="Contract LI"/>
+				<Property Name="PoNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="PO Number"/>
+				<Property Name="PoLi" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="PO LI"/>
+				<Property Name="IsContract" Type="Edm.Boolean" sap:label="Is Contract"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>
+				<Property Name="NetPrice" Type="Edm.Decimal" Precision="17" Scale="9" sap:label="Net Price ex GST"/>
+				<Property Name="TotalAssigned" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Total Assigned"/>
+				<Property Name="TotalUnassigned" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Total Unassigned"/>
+			</EntityType>
+			
+			<EntityType Name="ConsumptionSummary" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="ContractNumber" Type="Edm.String" MaxLength="10" sap:label="Contract Number"/>
+				<Property Name="PurchasingGroup" Type="Edm.String" MaxLength="3" sap:label="Purchasing Group"/>
+				<Property Name="CreatedDate" Type="Edm.DateTime" sap:label="Creation Date"/>
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>
+				<Property Name="ContractTotalValue" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Contract Total Value"/>
+				<Property Name="ContractTotalOrdered" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Contract Total Ordered"/>
+				<Property Name="ContractUnassignedValue" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Contract Unassigned Value"/>
+				<Property Name="TotalOrdered" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Total Ordered"/>
+				<Property Name="TotalOrdered" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="Total Ordered"/>
+				<Property Name="TotalDelivered" Type="Edm.Decimal" Precision="23" Scale="4"  sap:label="Total Delivered"/>
+				<Property Name="TotalInvoiced" Type="Edm.Decimal" Precision="23" Scale="4"  sap:label="Total Invoiced"/>
+				<Property Name="ToBeDelivered" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="To Be Delivered"/>
+				<Property Name="ToBeInvoiced" Type="Edm.Decimal" Precision="28" Scale="9"  sap:label="To Be Invoiced"/>				
+			</EntityType>
+			
+			<EntityType Name="ConsumptionGR" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+					<PropertyRef Name="POLineNumber"/>
+					<PropertyRef Name="LineNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="POLineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="PO Line Number"/>
+				<Property Name="LineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="Line Number"/>
+				<Property Name="Year" Nullable="false" Type="Edm.String" MaxLength="4" sap:label="Year"/>
+				<Property Name="DocNumber" Type="Edm.String" MaxLength="10" sap:label="Document Number"/>
+				<Property Name="PostingDate" Type="Edm.DateTime" sap:label="PostingDate"/>
+				<Property Name="DeliveryDate" Type="Edm.DateTime" sap:label="DeliveryDate"/>
+				<Property Name="MvT" Type="Edm.String" MaxLength="3" sap:label="MvT"/>
+				<Property Name="Quantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:label="Quantity"/>	
+				<Property Name="OrderUnit" Type="Edm.String" MaxLength="3" sap:label="Order Unit"/>	
+				<Property Name="Amount" Type="Edm.Decimal" Precision="23" Scale="4" sap:label="Amount"/>	
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>	
+				<Property Name="LocalAmount" Type="Edm.Decimal" Precision="23" Scale="4" sap:label="Local Amount"/>	
+				<Property Name="LocalCurrency" Type="Edm.String" MaxLength="5" sap:label="Local Currency"/>	
+				<Property Name="DeliveryNote" Type="Edm.String" MaxLength="35" sap:label="Delivery Note"/>					
+			</EntityType>
+			
+			<EntityType Name="ConsumptionIR" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+					<PropertyRef Name="POLineNumber"/>
+					<PropertyRef Name="LineNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="POLineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="PO Line Number"/>
+				<Property Name="LineNumber" Nullable="false" Type="Edm.String" MaxLength="5" sap:label="Line Number"/>
+				<Property Name="DocNumber" Type="Edm.String" MaxLength="10" sap:label="Document Number"/>
+				<Property Name="PostingDate" Type="Edm.DateTime" sap:label="PostingDate"/>
+				<Property Name="Quantity" Type="Edm.Decimal" Precision="13" Scale="3" sap:label="Quantity"/>	
+				<Property Name="OrderUnit" Type="Edm.String" MaxLength="3" sap:label="Order Unit"/>	
+				<Property Name="Amount" Type="Edm.Decimal" Precision="23" Scale="4" sap:label="Amount"/>	
+				<Property Name="Currency" Type="Edm.String" MaxLength="5" sap:label="Currency"/>	
+				<Property Name="LocalAmount" Type="Edm.Decimal" Precision="23" Scale="4" sap:label="Local Amount"/>	
+				<Property Name="LocalCurrency" Type="Edm.String" MaxLength="5" sap:label="Local Currency"/>	
+				<Property Name="Reference" Type="Edm.String" MaxLength="35" sap:label="Reference"/>	
+				<Property Name="PaymentDate" Type="Edm.DateTime" Precision="7" sap:unicode="false" sap:label="Payment Date"/>
+				<Property Name="InvReference" Type="Edm.String" MaxLength="35" sap:unicode="false" sap:label="Invoice Reference"/>
+			</EntityType>
+			
+			<EntityType Name="AdminDetails" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="ParentNumber"/>
+				</Key>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="IsGoods" Type="Edm.Boolean" sap:label="Is Goods"/>
+				<Property Name="IsServices" Type="Edm.Boolean" sap:label="Is Services"/>
+				<Property Name="IsPrepayment" Type="Edm.String" MaxLength="1" sap:label="Is Prepayment"/>
+				<Property Name="IsContractorConsultant" Type="Edm.String" MaxLength="1" sap:label="Is Consultant/Contractor/Outsourced"/>
+				<Property Name="SESApproverID" Type="Edm.String" MaxLength="12" sap:label="SES Approver ID"/>
+				<Property Name="SESApproverName" Type="Edm.String" MaxLength="110" sap:label="SES Approver Name"/>
+				<Property Name="IsRateAbove4500" Type="Edm.String" MaxLength="1" sap:label="Is Rate Above $4500"/>
+				<Property Name="IsSecretaryAdvised" Type="Edm.String" MaxLength="1" sap:label="Is Secretary Advised"/>
+				<Property Name="OutcomesOrTime" Type="Edm.String" MaxLength="2" sap:label="Outcomes Or Time Material"/>
+				<Property Name="IsICTSoftwareHardware" Type="Edm.String" MaxLength="1" sap:label="Is ICT Software or Hardware"/>
+				<Property Name="IsSoftware" Type="Edm.Boolean" sap:label="Is Software"/>
+				<Property Name="IsHardware" Type="Edm.Boolean" sap:label="Is Hardware"/>
+				<Property Name="IsIndigenousIdentified" Type="Edm.String" MaxLength="1" sap:label="Is Indigenous Identified"/>
+				<Property Name="IsIndigenousQuote" Type="Edm.String" MaxLength="1" sap:label="IsIndigenousQuote"/>
+				<Property Name="IndigenousNoApprochReason" Type="Edm.String" sap:label="Indigenous No Approch Reason"/>
+				<Property Name="IndigenousOutcome" Type="Edm.String" MaxLength="2" sap:label="Indigenous Outcome"/>
+				<Property Name="IsIndigenousSubcontractor" Type="Edm.String" MaxLength="1" sap:label="Is Indigenous Subcontractor"/>
+				<Property Name="IsEndorsedToProceed" Type="Edm.String" MaxLength="1"  sap:label="Is Endorsed To Proceed"/> 
+				<Property Name="ETPJustification" Type="Edm.String" sap:label="ETP Justification"/> 
+				<Property Name="QuoteInvitationCount" Type="Edm.Int16" sap:label="Quote Invitation Count"/>	
+				<Property Name="QuoteReceivedCount" Type="Edm.Int16" sap:label="Quote Received Count"/>
+				<Property Name="IsSp020" Type="Edm.String" MaxLength="1" sap:label="Is Sp 020"/>				
+			</EntityType>
+			
+			<EntityType Name="IndigenousSubcontractor" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Sequence"/>
+					<PropertyRef Name="ContractNumber"/>
+				</Key>
+				<Property Name="Sequence" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Sequence"/>				
+				<Property Name="ContractNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="ContractorABN" Type="Edm.String" MaxLength="20" sap:label="Contractor ABN"/>
+				<Property Name="ContractorName" Type="Edm.String" MaxLength="100" sap:label="Contractor Name"/>
+			</EntityType>
+			
+			<EntityType Name="Attachment" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="AttachmentGuid"/>
+				</Key>
+				<Property Name="AttachmentGuid" Type="Edm.Guid" Nullable="false"  sap:label="Attachment Guid"/>
+				<Property Name="ParentNumber" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Number"/>
+				<Property Name="FileName" Type="Edm.String" MaxLength="255" sap:label="File Name"/>
+                <Property Name="SourceURI" Type="Edm.String" MaxLength="4096" sap:label="URI"/>
+                <Property Name="MimeType" Type="Edm.String" MaxLength="128" sap:label="MIME Type"/>
+                <Property Name="FileSize" Type="Edm.String" MaxLength="10" sap:label="File Size"/>
+                <Property Name="AttachmentType" Type="Edm.String" MaxLength="20" sap:unicode="false" sap:label="Type"/>
+                <Property Name="ContentX" Type="Edm.Binary" sap:unicode="false" sap:label="Content X"/>
+			</EntityType>
+				
+			<EntityType Name="RefData" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="DataType"/>
+					<PropertyRef Name="Key"/>
+				</Key>				
+				<Property Name="DataType" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Data Type"/>
+				<Property Name="Key" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Key"/>
+				<Property Name="Value" Type="Edm.String" sap:label="Value"/>
+				<Property Name="Rate" Type="Edm.String" sap:label="Rate"/>
+				<Property Name="Name" Type="Edm.String" sap:label="Name"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>	
+				<Property Name="AccountAssignment" Type="Edm.String" MaxLength="1" sap:label="Account Assignment"/>
+				
+			</EntityType>
+			
+			<EntityType Name="Asset" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="AssetNumber"/>
+					<PropertyRef Name="SubNumber"/>
+				</Key>
+				<Property Name="AssetNumber" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="AssetNumber"/>
+				<Property Name="SubNumber" Type="Edm.String" Nullable="false" MaxLength="4" sap:label="SubNumber"/>				
+				<Property Name="Description" Type="Edm.String" sap:label="Description"/>
+				<Property Name="Description1" Type="Edm.String" sap:label="Description1"/>
+				<Property Name="Description2" Type="Edm.String" sap:label="Description2"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="CostCentre" Type="Edm.String" MaxLength="30" sap:label="Cost Centre"/>
+			</EntityType>
+			
+			<EntityType Name="Fund" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Key"/>
+				</Key>
+				<Property Name="Key" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Key"/>
+				<Property Name="Description" Type="Edm.String" MaxLength="40" sap:label="Description"/>				
+				<Property Name="AccountAssignment" Type="Edm.String" MaxLength="1" sap:label="Account Assignment"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="Asset" Type="Edm.String" MaxLength="12" sap:label="Asset"/>
+				<Property Name="AssetSubNumber" Type="Edm.String" MaxLength="4" sap:label="Asset SubNumber"/>				
+				<Property Name="GLAccount" Type="Edm.String" MaxLength="10" sap:label="GL Account"/>
+				<Property Name="CostCentre" Type="Edm.String" MaxLength="10" sap:label="Cost Centre"/>
+				<Property Name="WBSElement" Type="Edm.String" MaxLength="24" sap:label="WBS Element"/>
+			</EntityType>
+			
+			<EntityType Name="WBSElement" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Key"/>
+				</Key>				
+				<Property Name="Key" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="Key"/>
+				<Property Name="Description" Type="Edm.String" sap:label="Description"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="Project" Type="Edm.String" MaxLength="24" sap:label="Project"/>
+				<Property Name="ProjectDescription" Type="Edm.String" sap:label="Project Description"/>	
+				<Property Name="AccountAssignment" Type="Edm.String" MaxLength="1" sap:label="Account Assignment"/>				
+			</EntityType>
+			
+			<EntityType Name="Vendor" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="LIFNR"/>
+				</Key>				
+				<Property Name="LIFNR" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Vendor Number"/>
+				<Property Name="NAME1" Type="Edm.String" MaxLength="35" sap:label="Name"/>
+				<Property Name="ABN" Type="Edm.String" MaxLength="11" sap:label="ABN"/>
+				<Property Name="City" Type="Edm.String" MaxLength="40" sap:label="City"/>
+				<Property Name="Postcode" Type="Edm.String" MaxLength="10" sap:label="Postcode"/>
+				<Property Name="Parent" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Parent Vendor Number"/>
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+			</EntityType>
+			
+			
+			<EntityType Name="SON" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Key"/>
+				</Key>				
+				<Property Name="Key" Type="Edm.String" Nullable="false" MaxLength="30" sap:label="SON Key"/>
+				<Property Name="Description" Type="Edm.String" MaxLength="50" sap:label="Description"/>
+				<Property Name="Vendor" Type="Edm.String" MaxLength="20" sap:label="Vendor"/>
+				<Property Name="CompanyCode"  Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="StartDate" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="StartDate"/>
+				<Property Name="EndDate" Type="Edm.DateTime" Precision="0" sap:unicode="false" sap:label="EndDate"/>				
+			</EntityType>
+			
+			<EntityType Name="User" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="UserId"/>
+				</Key>				
+				<Property Name="UserId" Type="Edm.String" Nullable="false" MaxLength="12" sap:label="User ID"/>
+				<Property Name="FullName" Type="Edm.String" MaxLength="110" sap:label="Full Name"/>
+				<Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="First Name"/>
+				<Property Name="Surname" Type="Edm.String" MaxLength="40" sap:label="Surname"/>				
+				<Property Name="Email" Type="Edm.String" MaxLength="241" sap:label="Email"/>
+				<Property Name="Phone" Type="Edm.String" MaxLength="30" sap:label="Phone"/>
+				<Property Name="Position" Type="Edm.String" MaxLength="8" sap:label="Position"/>
+				<Property Name="Classification" Type="Edm.String" MaxLength="20" sap:label="Position"/>				
+				<Property Name="ManagerID" Type="Edm.String" MaxLength="12" sap:label="Manager ID"/>	
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="ManagerName" Type="Edm.String" MaxLength="110" sap:label="Manager Name"/>
+			</EntityType>
+			
+			<EntityType Name="Employee" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="UserId"/>
+				</Key>
+				<Property Name="UserId" Type="Edm.String" Nullable="false" MaxLength="12" sap:label="User ID"/>
+				<Property Name="EmployeeId" Type="Edm.String" MaxLength="8" sap:label="Employee ID"/>								
+				<Property Name="FullName" Type="Edm.String" MaxLength="110" sap:label="Full Name"/>
+				<Property Name="FirstName" Type="Edm.String" MaxLength="40" sap:label="First Name"/>
+				<Property Name="Surname" Type="Edm.String" MaxLength="40" sap:label="Surname"/>				
+				<Property Name="Email" Type="Edm.String" MaxLength="241" sap:label="Email"/>
+				<Property Name="Phone" Type="Edm.String" MaxLength="30" sap:label="Phone"/>
+				<Property Name="Position" Type="Edm.String" MaxLength="8" sap:label="Position"/>
+				<Property Name="Classification" Type="Edm.String" MaxLength="20" sap:label="Position"/>					
+				<Property Name="ManagerID" Type="Edm.String" MaxLength="12" sap:label="Manager ID"/>	
+				<Property Name="ManagerName" Type="Edm.String" MaxLength="110" sap:label="Manager Name"/>	
+				<Property Name="CompanyCode" Type="Edm.String" MaxLength="4" sap:label="Company Code"/>
+				<Property Name="IsSES" Type="Edm.Boolean" sap:label="Is SES"/>
+				<Property Name="IsDelegate" Type="Edm.Boolean" sap:label="Is Delegate"/>
+				<Property Name="TotalValue" Type="Edm.Decimal" Precision="16" Scale="3"  sap:label="Total Value"/>
+				<Property Name="TotalValueCurrency" Type="Edm.String" MaxLength="5" sap:label="Total Value Currency"/>
+			</EntityType>
+			
+			<EntityType Name="RomanAddress" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Number"/>
+				</Key>				
+				<Property Name="Number" Type="Edm.String" Nullable="false" MaxLength="10" sap:label="Address Number"/>
+				<Property Name="Name" Type="Edm.String" MaxLength="40" sap:label="Name"/>
+				<Property Name="Street" Type="Edm.String" MaxLength="60" sap:label="Street"/>
+				<Property Name="City" Type="Edm.String" MaxLength="40" sap:label="City"/>
+				<Property Name="Postcode" Type="Edm.String" MaxLength="10" sap:label="Postcode"/>
+				<Property Name="Country" Type="Edm.String" MaxLength="3" sap:label="Country"/>
+				<Property Name="CountryTxt" Type="Edm.String" MaxLength="15" sap:unicode="false" sap:label="Name"/>	
+				<Property Name="Email" Type="Edm.String" sap:label="Email"/>
+				<Property Name="Region" Type="Edm.String" sap:unicode="false"/>				
+			</EntityType>
+			
+			<EntityType Name="FeedbackRating" sap:content-version="1">
+				<Key>
+					<PropertyRef Name="Ipaddress"/>
+				</Key>
+				<Property Name="Ipaddress" Type="Edm.String" Nullable="false" MaxLength="15" sap:unicode="false" sap:label="IP address" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+				<Property Name="Rating" Type="Edm.String" MaxLength="1" sap:unicode="false" sap:label="Rating" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+				<Property Name="Comments" Type="Edm.String" sap:unicode="false" sap:label="Comment" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+				<Property Name="SourceApp" Type="Edm.String" MaxLength="4" sap:unicode="false" sap:label="MyFi App" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+				<Property Name="SourceKey" Type="Edm.String" sap:unicode="false" sap:label="String" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+			</EntityType>
+			
+			<Association Name="Contract_To_M_Phasings" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_Phasing"/>
+				<End Type="ZEDM_MFP_SRV.Phasing" Multiplicity="*" Role="ToRole_Contract_Phasing"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_Phasing">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_Phasing">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_PurchaseOrders" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_PurchaseOrder"/>
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="*" Role="ToRole_Contract_PurchaseOrder"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_PurchaseOrder">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_PurchaseOrder">
+						<PropertyRef Name="ContractNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_ContractLIs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ContractLI"/>
+				<End Type="ZEDM_MFP_SRV.LineItem" Multiplicity="*" Role="ToRole_Contract_ContractLI"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ContractLI">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ContractLI">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_Attachments" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_Attachment"/>
+				<End Type="ZEDM_MFP_SRV.Attachment" Multiplicity="*" Role="ToRole_Contract_Attachment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_Attachment">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_Attachment">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>			
+			<Association Name="Contract_To_M_AdminDetails" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_AdminDetail"/>
+				<End Type="ZEDM_MFP_SRV.AdminDetails" Multiplicity="0..1" Role="ToRole_Contract_AdminDetail"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_AdminDetail">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_AdminDetail">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_HeaderTexts" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_HeaderText"/>
+				<End Type="ZEDM_MFP_SRV.HeaderTexts" Multiplicity="0..1" Role="ToRole_Contract_HeaderText"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_HeaderText">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_HeaderText">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			<Association Name="Contract_To_M_ContactDetails" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ContactDetail"/>
+				<End Type="ZEDM_MFP_SRV.ContactDetails" Multiplicity="0..1" Role="ToRole_Contract_ContactDetail"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ContactDetail">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ContactDetail">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			<Association Name="Contract_To_M_ApprovalDetails" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ApprovalDetail"/>
+				<End Type="ZEDM_MFP_SRV.ApprovalDetails" Multiplicity="0..1" Role="ToRole_Contract_ApprovalDetail"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ApprovalDetail">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ApprovalDetail">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			<Association Name="Contract_To_M_DeliveryAddresses" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_DeliveryAddress"/>
+				<End Type="ZEDM_MFP_SRV.DeliveryAddress" Multiplicity="*" Role="ToRole_Contract_DeliveryAddress"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_DeliveryAddress">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_DeliveryAddress">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			
+			
+			
+			<Association Name="Contract_To_M_ConsumptionSummary" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ConsumptionSummary"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionSummary" Multiplicity="0..1" Role="ToRole_Contract_ConsumptionSummary"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ConsumptionSummary">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ConsumptionSummary">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="Contract_To_M_ConsumptionGRs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ConsumptionGR"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionGR" Multiplicity="*" Role="ToRole_Contract_ConsumptionGR"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ConsumptionGR">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ConsumptionGR">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="Contract_To_M_ConsumptionIRs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ConsumptionIR"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionIR" Multiplicity="*" Role="ToRole_Contract_ConsumptionIR"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ConsumptionIR">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ConsumptionIR">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			<Association Name="Contract_To_M_Approvals" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_Approval"/>
+				<End Type="ZEDM_MFP_SRV.ApprovalHistory" Multiplicity="*" Role="ToRole_Contract_Approval"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_Approval">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_Approval">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_ChangeLogs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_ChangeLog"/>
+				<End Type="ZEDM_MFP_SRV.ChangeLog" Multiplicity="*" Role="ToRole_Contract_ChangeLog"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_ChangeLog">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_ChangeLog">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Contract_To_M_AccountAssignments" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_AccountAssignment"/>
+				<End Type="ZEDM_MFP_SRV.AccountAssignment" Multiplicity="*" Role="ToRole_Contract_AccountAssignment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_AccountAssignment">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_AccountAssignment">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+						
+			<Association Name="Contract_To_M_IndigenousSubcontractors" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.Contract" Multiplicity="1" Role="FromRole_Contract_IndigenousSubcontractor"/>
+				<End Type="ZEDM_MFP_SRV.IndigenousSubcontractor" Multiplicity="*" Role="ToRole_Contract_IndigenousSubcontractor"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Contract_IndigenousSubcontractor">
+						<PropertyRef Name="ContractNumber"/>
+					</Principal>
+					<Dependent Role="ToRole_Contract_IndigenousSubcontractor">
+						<PropertyRef Name="ContractNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			
+			
+			<Association Name="PurchaseOrder_To_M_Phasings" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_Phasing"/>
+				<End Type="ZEDM_MFP_SRV.Phasing" Multiplicity="*" Role="ToRole_PurchaseOrder_Phasing"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_Phasing">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_Phasing">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="PurchaseOrder_To_M_PurchaseOrderLIs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_PurchaseOrderLI"/>
+				<End Type="ZEDM_MFP_SRV.LineItem" Multiplicity="*" Role="ToRole_PurchaseOrder_PurchaseOrderLI"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_PurchaseOrderLI">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_PurchaseOrderLI">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			<Association Name="PurchaseOrder_To_M_HeaderTexts" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_HeaderText"/>
+				<End Type="ZEDM_MFP_SRV.HeaderTexts" Multiplicity="0..1" Role="ToRole_PurchaseOrder_HeaderText"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_HeaderText">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_HeaderText">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="PurchaseOrder_To_M_ApprovalDetails" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ApprovalDetail"/>
+				<End Type="ZEDM_MFP_SRV.ApprovalDetails" Multiplicity="0..1" Role="ToRole_PurchaseOrder_ApprovalDetail"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ApprovalDetail">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ApprovalDetail">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="PurchaseOrder_To_M_ContactDetails" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ContactDetail"/>
+				<End Type="ZEDM_MFP_SRV.ContactDetails" Multiplicity="0..1" Role="ToRole_PurchaseOrder_ContactDetail"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ContactDetail">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ContactDetail">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="PurchaseOrder_To_M_DeliveryAddresses" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_DeliveryAddress"/>
+				<End Type="ZEDM_MFP_SRV.DeliveryAddress" Multiplicity="*" Role="ToRole_PurchaseOrder_DeliveryAddress"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_DeliveryAddress">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_DeliveryAddress">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			
+			
+			<Association Name="PurchaseOrder_To_M_ConsumptionSummary" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ConsumptionSummary"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionSummary" Multiplicity="0..1" Role="ToRole_PurchaseOrder_ConsumptionSummary"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ConsumptionSummary">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ConsumptionSummary">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="PurchaseOrder_To_M_ConsumptionGRs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ConsumptionGR"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionGR" Multiplicity="*" Role="ToRole_PurchaseOrder_ConsumptionGR"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ConsumptionGR">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ConsumptionGR">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="PurchaseOrder_To_M_ConsumptionIRs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ConsumptionIR"/>
+				<End Type="ZEDM_MFP_SRV.ConsumptionIR" Multiplicity="*" Role="ToRole_PurchaseOrder_ConsumptionIR"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ConsumptionIR">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ConsumptionIR">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="PurchaseOrder_To_M_Attachments" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_Attachment"/>
+				<End Type="ZEDM_MFP_SRV.Attachment" Multiplicity="*" Role="ToRole_PurchaseOrder_Attachment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_Attachment">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_Attachment">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>			
+			<Association Name="PurchaseOrder_To_M_Approvals" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_Approval"/>
+				<End Type="ZEDM_MFP_SRV.ApprovalHistory" Multiplicity="*" Role="ToRole_PurchaseOrder_Approval"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_Approval">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_Approval">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>  
+			<Association Name="PurchaseOrder_To_M_ChangeLogs" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_ChangeLog"/>
+				<End Type="ZEDM_MFP_SRV.ChangeLog" Multiplicity="*" Role="ToRole_PurchaseOrder_ChangeLog"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_ChangeLog">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_ChangeLog">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>	
+			
+			<Association Name="PurchaseOrder_To_M_AccountAssignments" sap:content-version="1">
+				<End Type="ZEDM_MFP_SRV.PurchaseOrder" Multiplicity="1" Role="FromRole_PurchaseOrder_AccountAssignment"/>
+				<End Type="ZEDM_MFP_SRV.AccountAssignment" Multiplicity="*" Role="ToRole_PurchaseOrder_AccountAssignment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_PurchaseOrder_AccountAssignment">
+						<PropertyRef Name="PONumber"/>
+					</Principal>
+					<Dependent Role="ToRole_PurchaseOrder_AccountAssignment">
+						<PropertyRef Name="ParentNumber"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+      
+			<EntityContainer Name="ZEDM_MFP_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet Name="Contracts" EntityType="ZEDM_MFP_SRV.Contract" sap:label="Contract Set"/>
+				<EntitySet Name="LineItems" EntityType="ZEDM_MFP_SRV.LineItem" sap:label="Line Item Set"/>
+				<EntitySet Name="PurchaseOrders" EntityType="ZEDM_MFP_SRV.PurchaseOrder" sap:label="Purchase Order Set"/>
+				<EntitySet Name="Attachments" EntityType="ZEDM_MFP_SRV.Attachment" sap:label="Attachment Set"/>
+				<EntitySet Name="AdminDetails" EntityType="ZEDM_MFP_SRV.AdminDetails" sap:label="Admin Details"/>
+				<EntitySet Name="ContactDetails" EntityType="ZEDM_MFP_SRV.ContactDetails" sap:label="Contact Details"/>
+				<EntitySet Name="ApprovalDetails" EntityType="ZEDM_MFP_SRV.ApprovalDetails" sap:label="Approval Details"/>
+				<EntitySet Name="HeaderTexts" EntityType="ZEDM_MFP_SRV.HeaderTexts" sap:label="Header Texts"/>
+				<EntitySet Name="IndigenousSubcontractors" EntityType="ZEDM_MFP_SRV.IndigenousSubcontractor" sap:label="IndigenousSubcontractor"/>
+				<EntitySet Name="RefDataSet" EntityType="ZEDM_MFP_SRV.RefData" sap:label="Reference Data Set"/>
+				<EntitySet Name="WBSElements" EntityType="ZEDM_MFP_SRV.WBSElement" sap:label="WBSElement Set"/>
+				<EntitySet Name="Assets" EntityType="ZEDM_MFP_SRV.Asset" sap:label="Asset Set"/>
+				<EntitySet Name="Funds" EntityType="ZEDM_MFP_SRV.Fund" sap:label="Fund Set"/>				
+				<EntitySet Name="Vendors" EntityType="ZEDM_MFP_SRV.Vendor" sap:label="Vendor Set"/>
+				<EntitySet Name="SONs" EntityType="ZEDM_MFP_SRV.SON" sap:label="SON Set"/>
+				<EntitySet Name="Addresses" EntityType="ZEDM_MFP_SRV.RomanAddress" sap:label="Address Set"/>
+				<EntitySet Name="Users" EntityType="ZEDM_MFP_SRV.User" sap:label="User Set"/>
+				<EntitySet Name="Employees" EntityType="ZEDM_MFP_SRV.Employee" sap:label="Employee Set"/>
+				<EntitySet Name="Phasings" EntityType="ZEDM_MFP_SRV.Phasing" sap:label="Phasing Set"/>
+				<EntitySet Name="DeliveryAddresses" EntityType="ZEDM_MFP_SRV.DeliveryAddress" sap:label="Delivery Address Set"/>	
+				<EntitySet Name="ApprovalHistory" EntityType="ZEDM_MFP_SRV.ApprovalHistory" sap:label="Approval History Set"/>
+				<EntitySet Name="ChangeLogs" EntityType="ZEDM_MFP_SRV.ChangeLog" sap:label="Change Log Set"/>
+				<EntitySet Name="AccountAssignments" EntityType="ZEDM_MFP_SRV.AccountAssignment" sap:label="Account Assignment Set"/>
+				<EntitySet Name="ConsumptionSummary" EntityType="ZEDM_MFP_SRV.ConsumptionSummary" sap:label="ConsumptionSummary Set"/>
+				<EntitySet Name="ConsumptionGRs" EntityType="ZEDM_MFP_SRV.ConsumptionGR" sap:label="Consumption GR Set"/>
+				<EntitySet Name="ConsumptionIRs" EntityType="ZEDM_MFP_SRV.ConsumptionIR" sap:label="Consumption IR Set"/>
+				<EntitySet Name="FeedbackRatings" EntityType="ZEDM_MFP_SRV.FeedbackRating" sap:label="FeedbackRatings Set" />
+				<EntitySet Name="ContractConsumptions" EntityType="ZEDM_MFP_SRV.ContractConsumption" sap:label="ContractConsumptions Set" />
+				
+				<AssociationSet Name="Contract_To_M_ContractLIs_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ContractLIs" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ContractLI"/>
+					<End EntitySet="LineItems" Role="ToRole_Contract_ContractLI"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_Phasings_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_Phasings" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_Phasing"/>
+					<End EntitySet="Phasings" Role="ToRole_Contract_Phasing"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_PurchaseOrders_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_PurchaseOrders" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_PurchaseOrder"/>
+					<End EntitySet="PurchaseOrders" Role="ToRole_Contract_PurchaseOrder"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_Attachments_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_Attachments" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_Attachment"/>
+					<End EntitySet="Attachments" Role="ToRole_Contract_Attachment"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_AdminDetails_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_AdminDetails" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_AdminDetail"/>
+					<End EntitySet="AdminDetails" Role="ToRole_Contract_AdminDetail"/>
+				</AssociationSet>
+				
+				
+				<AssociationSet Name="Contract_To_M_ConsumptionSummary_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ConsumptionSummary" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ConsumptionSummary"/>
+					<End EntitySet="ConsumptionSummary" Role="ToRole_Contract_ConsumptionSummary"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_ConsumptionGRs_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ConsumptionGRs" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ConsumptionGR"/>
+					<End EntitySet="ConsumptionGRs" Role="ToRole_Contract_ConsumptionGR"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_ConsumptionIRs_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ConsumptionIRs" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ConsumptionIR"/>
+					<End EntitySet="ConsumptionIRs" Role="ToRole_Contract_ConsumptionIR"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_Approvals_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_Approvals" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_Approval"/>
+					<End EntitySet="ApprovalHistory" Role="ToRole_Contract_Approval"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_ChangeLogs_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ChangeLogs" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ChangeLog"/>
+					<End EntitySet="ChangeLogs" Role="ToRole_Contract_ChangeLog"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_AccountAssignments_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_AccountAssignments" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_AccountAssignment"/>
+					<End EntitySet="AccountAssignments" Role="ToRole_Contract_AccountAssignment"/>
+				</AssociationSet>
+				
+				
+				<AssociationSet Name="Contract_To_M_HeaderTexts_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_HeaderTexts" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_HeaderText"/>
+					<End EntitySet="HeaderTexts" Role="ToRole_Contract_HeaderText"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_ContactDetails_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ContactDetails" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ContactDetail"/>
+					<End EntitySet="ContactDetails" Role="ToRole_Contract_ContactDetail"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_ApprovalDetails_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_ApprovalDetails" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_ApprovalDetail"/>
+					<End EntitySet="ApprovalDetails" Role="ToRole_Contract_ApprovalDetail"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_DeliveryAddresses_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_DeliveryAddresses" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_DeliveryAddress"/>
+					<End EntitySet="DeliveryAddresses" Role="ToRole_Contract_DeliveryAddress"/>
+				</AssociationSet>
+				<AssociationSet Name="Contract_To_M_IndigenousSubcontractors_AssocSet" Association="ZEDM_MFP_SRV.Contract_To_M_IndigenousSubcontractors" sap:content-version="1">
+					<End EntitySet="Contracts" Role="FromRole_Contract_IndigenousSubcontractor"/>
+					<End EntitySet="IndigenousSubcontractors" Role="ToRole_Contract_IndigenousSubcontractor"/>
+				</AssociationSet>
+				
+				<AssociationSet Name="PurchaseOrder_To_M_Phasings_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_Phasings" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_Phasing"/>
+					<End EntitySet="Phasings" Role="ToRole_PurchaseOrder_Phasing"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_HeaderTexts_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_HeaderTexts" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_HeaderText"/>
+					<End EntitySet="HeaderTexts" Role="ToRole_PurchaseOrder_HeaderText"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_ContactDetails_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ContactDetails" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ContactDetail"/>
+					<End EntitySet="ContactDetails" Role="ToRole_PurchaseOrder_ContactDetail"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_ApprovalDetails_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ApprovalDetails" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ApprovalDetail"/>
+					<End EntitySet="ApprovalDetails" Role="ToRole_PurchaseOrder_ApprovalDetail"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_DeliveryAddresses_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_DeliveryAddresses" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_DeliveryAddress"/>
+					<End EntitySet="DeliveryAddresses" Role="ToRole_PurchaseOrder_DeliveryAddress"/>
+				</AssociationSet>
+				
+				
+				<AssociationSet Name="PurchaseOrder_To_M_ConsumptionSummary_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionSummary" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ConsumptionSummary"/>
+					<End EntitySet="ConsumptionSummary" Role="ToRole_PurchaseOrder_ConsumptionSummary"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_ConsumptionGRs_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionGRs" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ConsumptionGR"/>
+					<End EntitySet="ConsumptionGRs" Role="ToRole_PurchaseOrder_ConsumptionGR"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_ConsumptionIRs_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ConsumptionIRs" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ConsumptionIR"/>
+					<End EntitySet="ConsumptionIRs" Role="ToRole_PurchaseOrder_ConsumptionIR"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_PurchaseOrderLIs_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_PurchaseOrderLIs" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_PurchaseOrderLI"/>
+					<End EntitySet="LineItems" Role="ToRole_PurchaseOrder_PurchaseOrderLI"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_Attachments_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_Attachments" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_Attachment"/>
+					<End EntitySet="Attachments" Role="ToRole_PurchaseOrder_Attachment"/>
+				</AssociationSet>
+				<AssociationSet Name="PurchaseOrder_To_M_Approvals_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_Approvals" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_Approval"/>
+					<End EntitySet="ApprovalHistory" Role="ToRole_PurchaseOrder_Approval"/>
+				</AssociationSet>		
+				<AssociationSet Name="PurchaseOrder_To_M_ChangeLogs_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_ChangeLogs" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_ChangeLog"/>
+					<End EntitySet="ChangeLogs" Role="ToRole_PurchaseOrder_ChangeLog"/>
+				</AssociationSet>
+				
+				<AssociationSet Name="PurchaseOrder_To_M_AccountAssignments_AssocSet" Association="ZEDM_MFP_SRV.PurchaseOrder_To_M_AccountAssignments" sap:content-version="1">
+					<End EntitySet="PurchaseOrders" Role="FromRole_PurchaseOrder_AccountAssignment"/>
+					<End EntitySet="AccountAssignments" Role="ToRole_PurchaseOrder_AccountAssignment"/>
+				</AssociationSet>
+				
+				<FunctionImport Name="MailPo" EntitySet="PurchaseOrders" sap:action-for="ZEDM_MFP_SRV.PurchaseOrder" m:HttpMethod="GET" ReturnType="ZEDM_MFP_SRV.PurchaseOrder">
+					<Parameter Name="DocNo" MaxLength="10" Type="Edm.String" Mode="In"/>
+				</FunctionImport>
+			</EntityContainer>
+			<atom:link rel="self" href="http://localhost:9090/webidedispatcher/destinations/CID/sap/opu/odata/sap/ZEDM_MFP_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+			<atom:link rel="latest-version" href="http://localhost:9090/webidedispatcher/destinations/CID/sap/opu/odata/sap/ZEDM_MFP_SRV/$metadata"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
