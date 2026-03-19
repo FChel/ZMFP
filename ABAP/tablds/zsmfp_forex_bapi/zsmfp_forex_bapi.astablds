@@ -1,0 +1,6 @@
+@EndUserText.label : 'Budget exchange rate'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+extend type bapi_te_meoutitem with zsmfp_forex_bapi {
+  kursf : kursf_char;
+
+}

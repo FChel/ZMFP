@@ -1,0 +1,13 @@
+@EndUserText.label : 'MyFi Workflow Action Log'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsmfp_wf_actions {
+  zmfp_doc_id : ebeln;
+  action      : zwf_action;
+  action_date : datum;
+  action_time : time;
+  wi_id       : sww_wiid;
+  approver    : usnam;
+  requestor   : usnam;
+  recipient   : usnam;
+
+}

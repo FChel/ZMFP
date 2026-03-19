@@ -1,0 +1,22 @@
+@EndUserText.label : 'POWL Fieldcat'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_powl_fieldcat {
+  colid         : powl_colid_ty;
+  col_visible   : powl_xflag_ty;
+  header        : powl_header_ty;
+  colpos        : powl_colpos_ty;
+  width         : powl_width_ty;
+  fixed         : powl_xflag_ty;
+  text          : abap.char(30);
+  text_ref      : abap.char(30);
+  technical_col : powl_xflag_ty;
+  enabled       : powl_xflag_ty;
+  allow_filter  : powl_xflag_ty;
+  sort_order    : powl_sortorder_ty;
+  display_type  : powl_display_ty;
+  tooltip       : powl_toolt_ty;
+  tooltip_ref   : abap.char(30);
+  icon_src      : abap.string(0);
+  icon_src_ref  : abap.char(30);
+
+}

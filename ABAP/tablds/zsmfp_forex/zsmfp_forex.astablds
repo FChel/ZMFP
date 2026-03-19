@@ -1,0 +1,6 @@
+@EndUserText.label : 'Budget exchange rate for MyFi Outline agreements'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+extend type ekpo with zsmfp_forex {
+  kursf : zmfp_kursf_char;
+
+}

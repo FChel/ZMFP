@@ -1,0 +1,7 @@
+@EndUserText.label : 'Structure for import header'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_memory_header {
+  name  : char255;
+  value : ztmfp_doc_header;
+
+}

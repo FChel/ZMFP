@@ -1,0 +1,7 @@
+@EndUserText.label : 'Invalid Dates'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsmfp_invalid_dates {
+  deliv_date  : boole_d;
+  budget_date : boole_d;
+
+}

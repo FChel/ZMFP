@@ -1,0 +1,6 @@
+@EndUserText.label : 'Budget exchange rate for MyFi OA'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+extend type meout_itemx with zsmfp_forex_meout_itemx {
+  kursf : bapiupdate;
+
+}

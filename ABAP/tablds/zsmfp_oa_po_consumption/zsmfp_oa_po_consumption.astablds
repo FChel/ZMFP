@@ -1,0 +1,17 @@
+@EndUserText.label : 'MyFi Purchasing - OA to PO Consumption'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsmfp_oa_po_consumption {
+  contractnumber   : konnr;
+  contract_li      : ktpnr;
+  ponumber         : ebeln;
+  po_li            : ebelp;
+  iscontract       : boole_d;
+  currency         : waers;
+  @Semantics.amount.currencyCode : 'zsmfp_oa_po_consumption.currency'
+  netprice         : bwert;
+  @Semantics.amount.currencyCode : 'zsmfp_oa_po_consumption.currency'
+  total_assigned   : ktwrt;
+  @Semantics.amount.currencyCode : 'zsmfp_oa_po_consumption.currency'
+  total_unassigned : ktwrt;
+
+}

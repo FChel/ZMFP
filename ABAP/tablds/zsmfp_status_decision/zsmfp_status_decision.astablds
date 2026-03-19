@@ -1,0 +1,9 @@
+@EndUserText.label : 'Status Decision structure for MyFi BRF+ decision'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_status_decision {
+  action        : zmfp_action;
+  myfi_doc_type : zmfp_category;
+  old_status    : zmfp_status;
+  mm_status     : frgke;
+
+}

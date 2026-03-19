@@ -1,0 +1,11 @@
+@EndUserText.label : 'Sensitive Account Assignment'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_sensitive_acc_assign {
+  gl    : boole_d;
+  cc    : boole_d;
+  io    : boole_d;
+  wbs   : boole_d;
+  asset : boole_d;
+  esp   : boole_d;
+
+}

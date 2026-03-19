@@ -1,0 +1,8 @@
+@EndUserText.label : 'FSS POWL user data'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_powl_data {
+  userid : uname;
+  include ekko;
+  include zsmfp_powl_data_ext;
+
+}

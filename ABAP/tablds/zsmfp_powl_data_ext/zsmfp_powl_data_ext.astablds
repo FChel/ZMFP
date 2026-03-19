@@ -1,0 +1,12 @@
+@EndUserText.label : 'MyFi Purchasing POWL Extention DATA'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_powl_data_ext {
+  name1          : name1_gp;
+  status         : zmfp_status;
+  eknam          : eknam;
+  category       : zmfp_category;
+  changed_in_gui : zmfp_bool;
+  zmfp_doc_id    : ebeln;
+  islegacy       : zmfp_bool;
+
+}
