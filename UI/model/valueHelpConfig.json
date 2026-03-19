@@ -1,0 +1,1080 @@
+{
+  "worklistVendorDlg": {
+    "dialogTitle": "VH.vendor.title",
+        "dialogType": "VH.vendor.type",
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/Vendors",
+
+    "fieldList":
+    {
+      "LIFNR": {
+        "label": "VH.vendor.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "searchModel>/VendorNumber",
+        "width": "8rem"
+      },
+      "NAME1": {
+        "label": "VH.vendor.name",
+        "filterOperator": "Contains",
+        "boundField": "worklistView>/VendorName",
+                "isDescription": true
+      },
+      "ABN": {
+        "label": "VH.vendor.abn",
+        "filterOperator": "Contains",
+        "width": "8rem"
+      },
+      "City": {
+        "label": "VH.vendor.city",
+        "width": "10rem"
+      },
+      "Postcode": {
+        "label": "VH.vendor.postcode",
+        "width": "6rem"
+      }
+    }
+  },
+    "createVendorDlg": {
+    "parent": "worklistVendorDlg",
+
+    "fieldList":
+    {
+      "LIFNR": {
+        "boundField": "VendorNumber"
+      },
+
+      "NAME1": {
+        "boundField": "VendorName"
+      },
+      "CompanyCode": {
+        "value": "{CompanyCode}",
+        "filterOperator": "EQ",
+        "valueName": "CompanyCode"
+      },
+      "IsPrePaymentExempt": {
+        "boundField": "IsPrePaymentExempt"
+      }
+
+    }
+  },
+
+
+
+  "createInvPartyDlg": {
+    "parent": "createVendorDlg",
+    "dialogTitle": "VH.invParty.title",
+        "dialogType": "VH.invParty.type",
+    "fieldList":
+    {
+      "LIFNR": {
+        "boundField": "InvoicingPartyNumber"
+      },
+
+      "NAME1": {
+        "boundField": "InvoicingPartyName"
+      },
+      "Parent": {
+        "value": "{VendorNumber}",
+        "filterOperator": "EQ"
+      }
+    }
+  },
+
+  "userSearchParent": {
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "dialogTitle": "VH.employee.title",
+        "dialogType": "VH.employee.type",
+    "modelName": "searchHelpModel",
+    "entitySet": "/Users",
+
+    "fieldList":
+    {
+      "UserId": {
+        "label": "VH.user.userId",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "width": "8rem"
+      },
+      "FirstName": {
+        "label": "VH.employee.firstName",
+        "filterOperator": "Contains"
+      },
+      "Surname": {
+        "label": "VH.employee.surname",
+        "filterOperator": "Contains"
+      },
+      "Email": {
+        "label": "VH.employee.email"
+      }
+    }
+  },
+
+  "employeeSearchParent":{
+    "modelName": "searchHelpModel",
+    "entitySet": "/Employees",
+
+    "fieldList":
+    {
+      "UserId": {
+        "isKey": true,
+        "label": "VH.delegate.empId",
+        "keySearchOnly": true
+      },
+      "EmployeeId":{
+        "label": "VH.delegate.empId",
+        "filterOperator": "Contains",
+        "width": "8rem"
+      },
+      "FirstName": {
+        "label": "VH.employee.firstName",
+        "filterOperator": "Contains"
+      },
+      "Surname": {
+        "label": "VH.employee.surname",
+        "filterOperator": "Contains"
+      },
+      "Classification": {
+        "label": "VH.employee.classification"
+      },
+      "Email": {
+        "label": "VH.employee.email"
+      }
+    }
+  },
+
+  "createSESDlg": {
+    "parent": "employeeSearchParent",
+    "dialogTitle": "VH.ses.title",
+        "dialogType": "VH.ses.type",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "AdminDetails/SESApproverID"
+      },
+      "EmployeeId":{
+        "label": "VH.ses.userId"
+      },
+      "FullName":{
+        "boundField": "viewModel>/vhDisplay/SESApproverName"
+      },
+      "IsSES": {
+        "controlType": "boolean",
+        "type": "boolean",
+        "filterOperator": "EQ",
+        "value": true
+      }
+    }
+  },
+
+  "createDAODlg": {
+    "parent": "employeeSearchParent",
+    "dialogTitle": "VH.dao.title",
+        "dialogType": "VH.dao.type",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "ApproverID"
+      }
+    }
+  },
+
+  "createDelegateDlg": {
+    "parent": "employeeSearchParent",
+    "dialogTitle": "VH.delegate.title",
+        "dialogType": "VH.delegate.type",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "ApprovalDetails/DelegateID"
+      },
+      "EmployeeId":{
+        "boundField": "viewModel>/vhDisplay/DelegateEID"
+      },
+      "IsDelegate": {
+        "controlType": "boolean",
+        "type": "boolean",
+        "filterOperator": "EQ",
+        "value": true
+      },
+      "FullName":{
+        "boundField": "viewModel>/vhDisplay/DelegateName"
+      },
+      "EmpType": {
+        "value": "{empModel>/EmpType}",
+        "filterOperator": "EQ",
+        "valueName": "EmpType"
+      }
+    }
+  },
+
+  "createDelegateApprDlg": {
+    "parent": "createDelegateDlg",
+    "dialogTitle": "VH.delegate.title",
+        "dialogType": "VH.delegate.type",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "/DelegateID"
+      },
+      "EmployeeId":{
+        "boundField": "viewModel>/vhDisplay/DelegateEIDAppr"
+      },
+      "FullName":{
+        "boundField": "viewModel>/vhDisplay/DelegateNameAppr"
+      }
+    }
+  },
+
+  "createPOContactEmpDlg": {
+    "parent": "userSearchParent",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "ContactDetails/POContactID"
+      },
+      "FullName": {
+        "boundField": "ContactDetails/POContactName"
+      },
+      "Email": {
+        "boundField": "ContactDetails/POContactEmail"
+      },
+      "Phone": {
+        "boundField": "ContactDetails/POContactPhone"
+      }
+    }
+  },
+
+  "draftAssignDlg": {
+    "parent": "userSearchParent",
+    "dialogTitle": "VH.user.title",
+        "dialogType": "VH.user.type",
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "/DraftAssigneeID"
+      },
+      "FullName": {
+        "boundField": "/DraftAssigneeName"
+      },
+      "Classification": {
+        "label": ""
+      }
+    }
+  },
+
+  "worklistCreatedByDlg": {
+    "parent": "draftAssignDlg",
+
+    "fieldList":
+    {
+      "UserId": {
+        "boundField": "searchModel>/CreatedByID"
+      },
+
+      "FullName": {
+        "boundField": "worklistView>/CreatedByName"
+      }
+    }
+  },
+
+  "createRomanAddressDlg": {
+    "dialogTitle": "VH.address.title",
+        "dialogType": "VH.address.type",
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/Addresses",
+
+    "fieldList":
+    {
+      "Number": {
+        "label": "VH.address.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "RomanAddressCode",
+        "width": "8rem"
+      },
+      "Name": {
+        "label": "VH.address.name",
+        "filterOperator": "Contains",
+        "boundField": "NewAddressName"
+      },
+      "Street": {
+        "label": "VH.address.street",
+        "filterOperator": "Contains",
+        "boundField": "NewAddressStreet"
+      },
+      "City": {
+        "label": "VH.address.city",
+        "filterOperator": "Contains",
+        "width": "10rem",
+        "boundField": "NewAddressCity"
+      },
+      "Postcode": {
+        "label": "VH.address.postcode",
+        "filterOperator": "Contains",
+        "width": "6rem",
+        "boundField": "NewAddressPostcode"
+      },
+      "Country": {
+        "label": "VH.address.country",
+        "width": "5rem",
+        "boundField": "NewAddressCountry"
+      },
+      "Region": {
+        "boundField": "NewAddressRegion"
+      },
+      "Email": {
+        "label": "VH.address.email",
+        "filterOperator": "Contains",
+        "boundField": "InvoiceContactEmail"
+      }
+    }
+  },
+
+  "createRomanAddressDlg_BACKUP": {
+    "dialogTitle": "VH.address.title",
+        "dialogType": "VH.address.type",
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/Addresses",
+
+    "fieldList":
+    {
+      "Number": {
+        "label": "VH.address.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "DeliveryAddresses/RomanAddressCode",
+        "width": "8rem"
+      },
+      "Name": {
+        "label": "VH.address.name",
+        "filterOperator": "Contains",
+        "boundField": "DeliveryAddresses/NewAddressName"
+      },
+      "Street": {
+        "label": "VH.address.street",
+        "filterOperator": "Contains",
+        "boundField": "DeliveryAddresses/NewAddressStreet"
+      },
+      "City": {
+        "label": "VH.address.city",
+        "filterOperator": "Contains",
+        "width": "10rem",
+        "boundField": "DeliveryAddresses/NewAddressCity"
+      },
+      "Postcode": {
+        "label": "VH.address.postcode",
+        "filterOperator": "Contains",
+        "width": "6rem",
+        "boundField": "DeliveryAddresses/NewAddressPostcode"
+      },
+      "Country": {
+        "label": "VH.address.country",
+        "width": "5rem",
+        "boundField": "DeliveryAddresses/NewAddressCountry"
+      },
+      "Region": {
+        "boundField": "DeliveryAddresses/NewAddressRegion"
+      },
+      "Email": {
+        "label": "VH.address.email",
+        "filterOperator": "Contains",
+        "boundField": "DeliveryAddresses/InvoiceContactEmail"
+      }
+    }
+  },
+
+  "refDataDlg": {
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/RefDataSet",
+
+    "fieldList":
+    {
+      "Key": {
+        "label": "VH.refdata.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "width": "10rem"
+      },
+      "Name":{
+
+      },
+      "Value": {
+        "label": "VH.refdata.description",
+        "filterOperator": "Contains",
+                "isDescription": true
+      },
+      "DataType": {
+        "filterOperator": "EQ"
+      },
+      "CompanyCode": {
+        "value": "{DocumentModel>/CompanyCode}",
+        "filterOperator": "EQ",
+        "valueName": "CompanyCode"
+      },
+      "EmpType": {
+        "value": "{empModel>/EmpType}",
+        "filterOperator": "EQ",
+        "valueName": "EmpType"
+      }
+    }
+  },
+
+  "createLIGLDlg": {
+    "parent": "refDataDlg",
+    "dialogTitle": "VH.glAccount.title",
+        "dialogType": "VH.glAccount.type",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "AssignmentModel>/GLAccount"
+      },
+      "Value": {
+        "boundField": "AssignmentModel>/GLAccountDesc"
+      },
+      "DataType": {
+        "value": "GLAccount"
+      },
+      "AccountAssignment" : {
+        "value": "{/AssignmentTypeCode}",
+        "filterOperator": "EQ",
+        "valueName": "AssignmentType"
+      }
+
+    }
+  },
+
+  "worklistGLDlg": {
+    "parent": "createLIGLDlg",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "searchModel>/GLAccount"
+      },
+      "Value": {
+        "boundField": "worklistView>/GLAccountName"
+      },
+      "CompanyCode": {
+        "value": "{searchModel>/CompanyCode}",
+        "optional": true
+      },
+      "AccountAssignment" : {
+        "filterOperator": null
+      }
+
+    }
+  },
+
+  "purchasingGroupDlg": {
+    "parent": "refDataDlg",
+    "dialogTitle": "VH.purchaseGroup.title",
+        "dialogType": "VH.purchaseGroup.type",
+    "allowNoFilter": true,
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "PurchasingGroup"
+      },
+      "Value": {
+        "boundField": "viewModel>/vhDisplay/PurchasingGroupName"
+      },
+      "DataType": {
+        "value": "PurchGroup"
+      },
+      "CompanyCode": {
+        "value": "",
+        "filterOperator": ""
+      }
+    }
+  },
+
+  "worklistPurchasingGroupDlg": {
+    "parent": "purchasingGroupDlg",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "searchModel>/PurchasingGroup"
+      },
+      "Value": {
+        "boundField": "worklistView>/PurchasingGroupName"
+      }
+    }
+  },
+
+
+  "createLICostDlg": {
+    "parent": "refDataDlg",
+    "dialogTitle": "VH.costCentre.title",
+        "dialogType": "VH.costCentre.type",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "AssignmentModel>/CostCentre"
+      },
+      "Name":{
+        "label": "VH.costCentre.name",
+        "boundField": "AssignmentModel>/CostCentreDesc",
+        "width": "15rem"
+      },
+      "Value": {
+        "searchLabel": "VH.costCentre.description"
+      },
+      "DataType": {
+        "value": "CostCentres"
+      }
+    }
+  },
+
+  "createLIMaterialDlg": {
+    "parent": "refDataDlg",
+    "dialogTitle": "VH.materialGroup.title",
+        "dialogType": "VH.materialGroup.type",
+    "allowNoFilter": true,
+    "message": "VH.materialGroup.message",
+        "messageType": "Information",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "/MaterialGroup"
+      },
+      "Value": {
+        "boundField": "DisplayModel>/MaterialGroupDescription"
+      },
+      "DataType": {
+        "value": "MaterialGroups"
+      },
+      "AccountAssignment" : {
+        "value": "",
+        "filterOperator": ""
+      },
+      "CompanyCode": {
+        "value": "",
+        "filterOperator": ""
+      }
+    }
+  },
+
+  "worklistCostDlg": {
+    "parent": "createLICostDlg",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "searchModel>/CostCentre"
+      },
+      "Name":{
+        "boundField": "worklistView>/CostCentreName"
+      },
+      "Value": {
+        "searchLabel": "VH.costCentre.description",
+        "boundField": "worklistView>/CostCentre"
+      },
+      "CompanyCode": {
+        "value": "{searchModel>/CompanyCode}",
+        "optional": true
+      }
+    }
+  },
+
+  "createLIInternalDlg": {
+    "parent": "refDataDlg",
+    "dialogTitle": "VH.internalOrder.title",
+        "dialogType": "VH.internalOrder.type",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "AssignmentModel>/InternalOrder"
+      },
+      "Value": {
+        "boundField": "AssignmentModel>/InternalOrderDesc"
+      },
+      "DataType": {
+        "value": "InternalOrders"
+      }
+    }
+  },
+
+  "createLIWBSDlg": {
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/WBSElements",
+    "dialogTitle": "VH.wBSElement.title",
+        "dialogType": "VH.wBSElement.type",
+
+    "fieldList":
+    {
+      "Key": {
+        "label": "VH.refdata.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "AssignmentModel>/WBSElement",
+        "width": "15rem",
+        "showFull": true
+      },
+      "Description": {
+        "label": "VH.refdata.description",
+        "filterOperator": "Contains",
+                "isDescription": true,
+        "boundField": "AssignmentModel>/WBSElementDesc"
+      },
+      "Project": {
+        "label": "VH.wBSElement.project",
+        "filterOperator": "Contains",
+        "width": "7rem"
+      },
+      "ProjectDescription": {
+        "label": "VH.wBSElement.projectDescription",
+        "filterOperator": "Contains"
+      },
+      "CompanyCode": {
+        "value": "{DocumentModel>/CompanyCode}",
+        "filterOperator": "EQ",
+        "valueName": "CompanyCode"
+      },
+      "AccountAssignment" : {
+        "value": "{/AssignmentTypeCode}",
+        "filterOperator": "EQ",
+        "valueName": "AccountAssignment"
+      },
+      "EmpType": {
+        "value": "{empModel>/EmpType}",
+        "filterOperator": "EQ",
+        "valueName": "EmpType"
+      }
+    }
+  },
+
+  "worklistWBSDlg": {
+    "parent": "createLIWBSDlg",
+
+    "fieldList":
+    {
+      "Key": {
+        "boundField": "searchModel>/WBSElement"
+      },
+      "Description": {
+        "boundField": "worklistView>/WBSElementName"
+      },
+      "CompanyCode": {
+        "value": "{searchModel>/CompanyCode}",
+        "optional": true
+      },
+      "AccountAssignment" : {
+        "filterOperator": null
+      }
+    }
+  },
+
+  "createLIAssetDlg": {
+    "serviceName": "ZEDM_MFP_ODATA_SRV",
+    "modelName": "searchHelpModel",
+    "entitySet": "/Assets",
+    "dialogTitle": "VH.asset.title",
+        "dialogType": "VH.asset.type",
+        "message": "VH.asset.message",
+        "messageType":"Warning",
+    "fieldList":
+    {
+      "AssetNumber": {
+        "label": "VH.refdata.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "AssignmentModel>/Asset",
+        "width": "10rem"
+      },
+      "Description": {
+        "label": "VH.refdata.description",
+        "searchOnly": true,
+        "filterOperator": "Contains",
+                "isDescription": true
+      },
+      "SubNumber": {
+        "label": "VH.asset.subNumber",
+        "boundField": "AssignmentModel>/AssetSubNumber",
+        "width": "5rem"
+      },
+      "CostCentre": {
+        "label": "VH.asset.costCentre",
+        "filterOperator": "Contains",
+        "width": "7rem"
+      },
+      "Description1": {
+        "label": "VH.asset.descroption1",
+        "boundField": "AssignmentModel>/AssetDesc"
+      },
+      "Description2": {
+        "label": "VH.asset.descroption2"
+      },
+      "CompanyCode": {
+        "value": "{DocumentModel>/CompanyCode}",
+        "filterOperator": "EQ",
+        "valueName": "CompanyCode"
+      },
+      "EmpType": {
+        "value": "{empModel>/EmpType}",
+        "filterOperator": "EQ",
+        "valueName": "EmpType"
+      }
+    }
+  },
+
+  "worklistAssetDlg": {
+    "parent": "createLIAssetDlg",
+
+    "fieldList":
+    {
+      "AssetNumber": {
+        "label": "VH.refdata.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "searchModel>/Asset",
+        "width": "10rem"
+      },
+      "SubNumber": {
+        "label": "VH.asset.subNumber",
+        "boundField": "searchModel>/AssetSubNumber",
+        "width": "5rem"
+      },
+      "Description1": {
+        "boundField": "worklistView>/AssetName"
+      },
+      "CompanyCode": {
+        "value": "{searchModel>/CompanyCode}",
+        "optional": true
+      }
+    }
+  },
+
+  "poSearchDlg": {
+    "dialogTitle": "VH.po.title",
+        "dialogType": "VH.po.type",
+    "entitySet": "/PurchaseOrders",
+    "serviceName": "ZEDM_MFP_SRV",
+    "modelName": "mainModel",
+    "widthPath": "device>/",
+    "widthFormatter": "contractSearchDialogWidth",
+
+
+    "fieldList":
+    {
+      "PONumber": {
+        "label": "VH.po.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "viewModel>/poNumber",
+        "width": "8rem"
+      },
+      "ContractNumber": {
+        "label": "VH.po.contract",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "width": "8rem",
+        "boundField": "viewModel>/contractNumber"
+      },
+      "PurchaseOrder": {
+
+
+      },
+      "VendorNumber": {
+        "label": "VH.po.vendorNumber",
+        "searchOnly": true,
+        "filterOperator": "Contains"
+      },
+      "VendorName": {
+        "label": "VH.po.vendor"
+      },
+      "CreatedByID": {
+        "label": "VH.po.createdBy",
+        "tableLabel": "VH.po.createdByTable",
+        "placeholderLabel": "VH.po.createdByPlaceholder",
+        "filterOperator": "Contains"
+      },
+      "CompanyCode": {
+        "label": "VH.po.companyCode",
+        "filterOperator": "EQ",
+        "width": "8rem",
+        "controlType": "comboBox",
+        "items": "dropDownModel>/CompanyCode",
+        "itemsSorter": "path: 'Key', descending: false",
+        "itemKey":"dropDownModel>Key",
+        "formatter": "valueHelpDisplay",
+        "itemValue": "dropDownModel>Value"
+      },
+      "PurchasingGroup": {
+        "label": "VH.po.pGrp",
+        "tableLabel": "VH.po.pGrpTable",
+        "filterOperator": "Contains",
+        "width": "4rem",
+        "tableTooltip": "VH.po.pGrp"
+      },
+      "Currency": {
+        "label": "VH.po.Currency",
+        "tableLabel": "VH.po.Curr",
+        "tableTooltip": "VH.po.Currency",
+        "filterOperator": "EQ",
+        "width": "4rem",
+        "controlType": "comboBox",
+        "items": "dropDownModel>/Currency",
+        "itemsSorter": "path: 'Key', descending: false",
+        "itemKey":"dropDownModel>Key",
+        "formatter": "valueHelpDisplay",
+        "itemValue": "dropDownModel>Value"
+      },
+      "Status":{
+        "boundField": "viewModel>/poStatus"
+      },
+      "IsLegacy":{
+        "boundField": "viewModel>/poLegacy"
+      }
+    }
+  },
+
+
+  "contractSearchDlg": {
+    "parent": "poSearchDlg",
+    "dialogTitle": "VH.contract.title",
+        "dialogType": "VH.contract.type",
+    "entitySet": "/Contracts",
+    "message": "dlg.contractSearch.warning",
+        "messageType": "Warning",
+
+
+    "fieldList":
+    {
+      "PONumber": {
+        "label": null,
+        "filterOperator": null,
+        "isKey": null,
+        "boundField": null,
+        "width": null
+      },
+      "ContractNumber": {
+        "label": "VH.contract.number",
+        "isKey": true,
+        "boundField": "viewModel>/contractNumber"
+      },
+      "Status":{
+        "boundField": "viewModel>/contractStatus"
+      },
+      "IsLegacy":{
+        "boundField": "viewModel>/contractLegacy"
+      },
+      "CreatedByID": {
+        "width": "8rem"
+      },
+
+      "StartDate": {
+        "label": "VH.contract.startDate",
+        "controlType": "dateRange",
+        "filterOperator": "BT",
+        "type": "date",
+        "oType": "sap.ui.model.type.Date",
+        "width": "7rem"
+      },
+      "StartDate_FROM": {
+        "filterOperator": "GE",
+        "type": "date",
+        "searchOnly": true
+      },
+      "StartDate_TO": {
+        "filterOperator": "LE",
+        "type": "date",
+        "searchOnly": true
+      },
+      "EndDate": {
+        "label": "VH.contract.endDate",
+        "filterOperator": "BT",
+        "type": "date",
+        "controlType": "dateRange",
+        "oType": "sap.ui.model.type.Date",
+        "width": "7rem"
+      },
+      "EndDate_FROM": {
+        "controlType": "date",
+        "filterOperator": "GE",
+        "type": "date",
+        "searchOnly": true
+      },
+      "EndDate_TO": {
+        "filterOperator": "LE",
+        "controlType": "date",
+        "type": "date",
+        "searchOnly": true
+      },
+      "TotalValue": {
+        "label": "VH.contract.totalValue",
+        "type": "decimal",
+        "oType": "sap.ui.model.type.Float",
+        "width": "10rem"
+      },
+      "TotalValue_FROM": {
+        "label": "VH.contract.totalValue",
+        "filterOperator": "GE",
+        "searchOnly": true
+      },
+      "TotalValue_TO": {
+        "label": "VH.contract.Empty",
+        "filterOperator": "LE",
+        "searchOnly": true
+      },
+      "IsSinglePO":{
+        "controlType": "boolean",
+        "type": "boolean",
+        "filterOperator": "EQ",
+        "value": "{viewModel>/isSingle}",
+        "optional": true
+      },
+      "IsContractOnly":{
+        "controlType": "boolean",
+        "type": "boolean",
+        "filterOperator": "EQ",
+        "value": "{viewModel>/isContractOnly}",
+        "optional": true
+      },
+      "IsDraft":{
+        "controlType": "boolean",
+        "type": "boolean",
+        "filterOperator": "EQ",
+        "value": "{viewModel>/isDraft}",
+        "optional": true
+      },
+      "StatusDesc":{
+        "label": "VH.po.Status",
+        "width": "7rem"
+      }
+    }
+  },
+
+  "contractSingleSearchDlg": {
+    "parent": "contractSearchDlg",
+    "dialogTitle": "VH.contractSingle.title",
+        "dialogType": "VH.contractSingle.type",
+
+    "fieldList":
+    {
+      "PurchaseOrder": {
+        "tableLabel": "VH.contract.poNumberTable",
+        "label": "VH.contract.poNumber",
+        "filterOperator": "Contains",
+        "width": "8rem"
+
+      }
+    }
+  },
+
+
+  "poSearchDlg_WITH_SEARCH_HELP": {
+    "dialogTitle": "VH.po.title",
+        "dialogType": "VH.po.type",
+    "entitySet": "/PurchaseOrders",
+    "serviceName": "ZEDM_MFP_SRV",
+    "modelName": "mainModel",
+    "widthPath": "device>/",
+    "widthFormatter": "contractSearchDialogWidth",
+
+
+    "fieldList":
+    {
+      "PONumber": {
+        "label": "VH.po.number",
+        "filterOperator": "Contains",
+        "isKey": true,
+        "boundField": "viewModel>/poNumber",
+        "width": "8rem"
+      },
+      "ContractNumber": {
+        "label": "VH.po.contract",
+        "filterOperator": "EQ",
+        "isKey": true,
+        "width": "9rem"
+      },
+      "VendorNumber": {
+        "label": "VH.po.vendorNumber",
+        "searchOnly": true,
+        "filterOperator": "EQ",
+        "controlType": "valueHelp",
+        "dialogName": "contractSearchVendorDlg",
+        "vhDescription": "VendorName",
+        "vhFormatter": "",
+        "valueHelpRequest": "",
+        "change": ""
+      },
+      "VendorName": {
+        "label": "VH.po.vendor"
+      },
+      "CreatedByID": {
+        "label": "VH.po.createdBy",
+        "filterOperator": "EQ"
+      },
+      "CompanyCode": {
+        "label": "VH.po.companyCode",
+        "filterOperator": "EQ",
+        "width": "8rem",
+        "controlType": "comboBox",
+        "items": "dropDownModel>/CompanyCode",
+        "itemsSorter": "path: 'Key', descending: false",
+        "itemKey":"dropDownModel>Key",
+        "formatter": "valueHelpDisplay",
+        "itemValue": "dropDownModel>Value"
+      },
+      "PurchasingGroup": {
+        "label": "VH.po.pGrp",
+        "filterOperator": "EQ",
+        "width": "9rem"
+      },
+      "Currency": {
+        "label": "VH.po.Currency",
+        "filterOperator": "EQ",
+        "width": "7rem",
+        "controlType": "comboBox",
+        "items": "dropDownModel>/Currency",
+        "itemsSorter": "path: 'Key', descending: false",
+        "itemKey":"dropDownModel>Key",
+        "formatter": "valueHelpDisplay",
+        "itemValue": "dropDownModel>Value"
+      },
+      "Status":{
+        "boundField": "viewModel>/poStatus"
+      }
+    }
+  },
+
+  "contractSearchVendorDlg": {
+    "parent": "worklistVendorDlg",
+
+    "fieldList":
+    {
+      "LIFNR": {
+        "boundField": "filterModel>/VendorNumber"
+      },
+
+      "NAME1": {
+        "boundField": "displayModel>/VendorName"
+      },
+      "CompanyCode": {
+        "value": "{CompanyCode}",
+        "filterOperator": "EQ",
+        "valueName": "CompanyCode",
+        "optional": true
+      }
+    }
+  }
+
+
+}

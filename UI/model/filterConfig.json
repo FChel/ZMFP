@@ -1,0 +1,45 @@
+{		
+	"changeLog":{
+		"entitySet": "ChangeLogs",
+		"fieldList": {
+			"LineItem": {
+				"label": "ChangeLog.lineItem",
+				"filterOperator": "EQ",
+				"controlType": "comboBox",
+				"items": "dropDownModel>/LineItems",
+				"itemsSorter": {"path": "value", "descending": false},
+				"itemKey":"dropDownModel>key",
+				"formatter": "valueHelpDisplayValue",
+				"itemValue": "dropDownModel>value"
+			},
+			"FieldName": {
+				"label": "ChangeLog.fieldName",
+				"filterOperator": "EQ",
+				"controlType": "comboBox",
+				"items": "dropDownModel>/Fields",
+				"itemsSorter": {"path": "value", "descending": false},
+				"itemKey":"dropDownModel>key",
+				"formatter": "valueHelpDisplayValue",
+				"itemValue": "dropDownModel>value"
+			},
+			"UserId": {
+				"label": "ChangeLog.user",
+				"filterOperator": "EQ",
+				"controlType": "comboBox",
+				"items": "dropDownModel>/Users",
+				"itemsSorter": {"path": "key", "descending": false},
+				"itemKey":"dropDownModel>key",
+				"formatter": "valueHelpDisplay",
+				"itemValue": "dropDownModel>value"
+			},
+			"ChangeDate": {
+				"label": "ChangeLog.changeDate",
+				"controlType": "range",
+				"filterOperator": "BT",
+				"type": "date",
+				"oType": "sap.ui.model.type.Date"
+			}
+			
+		}
+	}
+}

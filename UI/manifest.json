@@ -1,0 +1,250 @@
+{
+  "_version": "1.9.0",
+  "sap.app": {
+    "id": "fss.ssp",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZEDM_MFP_SRV",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "SearchHelp": {
+        "uri": "/sap/opu/odata/sap/ZEDM_SEARCHHELP_SRV",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "vhConfig": {
+        "uri": "model/valueHelpConfig.json",
+        "type": "JSON"
+      },
+      "filterConfig": {
+        "uri": "model/filterConfig.json",
+        "type": "JSON"
+      }
+    },
+    "sourceTemplate": {
+      "id": "sap.ui.ui5-template-plugin.2masterdetail",
+      "version": "1.52.7"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "sap-icon://detail-view",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "rootView": {
+      "viewName": "fss.ssp.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "app"
+    },
+    "dependencies": {
+      "minUI5Version": "1.42.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.m": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": false
+    },
+    "services": {
+      "ShellUIService": {
+        "factoryName": "sap.ushell.ui5service.ShellUIService"
+      }
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "fss.ssp.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "defaultCountMode": "Inline",
+          "defaultBindingMode": "TwoWay"
+        }
+      },
+      "searchHelpModel": {
+        "dataSource": "SearchHelp",
+        "preload": true,
+        "settings": {
+          "useBatch": false,
+          "defaultCountMode": "Inline"
+        }
+      },
+      "vhConfigModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "vhConfig",
+                "preload": true
+      },
+      "filterConfigModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "dataSource": "filterConfig",
+                "preload": true
+      }
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "viewPath": "fss.ssp.view",
+        "controlId": "idAppControl",
+        "controlAggregation": "pages",
+        "bypassed": {
+          "target": ["master", "notFound"]
+        },
+        "async": true
+      },
+      "routes": [{
+          "name": "worklist",
+          "pattern": "",
+          "target": ["worklist"]
+        },{
+          "name": "displayPo",
+          "pattern": "PO/{docId}",
+          "target": ["displayPo"]
+        },{
+          "name": "displayPoStandalone",
+          "pattern": "POStandalone/{docId}",
+          "target": ["displayContract"]
+        },
+        {
+          "name": "displayContract",
+          "pattern": "Contracts/{docId}",
+          "target": ["displayContract"]
+        }, {
+          "name": "createContract",
+            "pattern": "CreateContract",
+            "target": ["createContract"]
+        }, {
+          "name": "createSingle",
+          "pattern": "CreateSingle",
+          "target": ["createContract"]
+        }, {
+          "name": "editContract",
+            "pattern": "EditContract",
+            "target": ["createContract"]
+        }, {
+          "name": "editSingle",
+          "pattern": "EditSingle",
+          "target": ["createContract"]
+        },{
+          "name": "createPO",
+          "pattern": "Contract/CreatePO",
+          "target": ["CreatePo"]
+          }, {
+          "name": "createContractPO",
+          "pattern": "Contracts/{docId}/CreatePO",
+          "target": ["CreatePo"]
+          },{
+          "name": "editDoc",
+          "pattern": "EditDoc/{docId}",
+          "target": ["createContract"]
+          },{
+          "name": "copyContractDoc",
+          "pattern": "CopyContractDoc/{docId}",
+          "target": ["createContract"]
+          },{
+          "name": "editPO",
+          "pattern": "EditPO",
+          "target": ["CreatePo"]
+          },{
+          "name": "editPODoc",
+          "pattern": "EditPODoc/{docId}",
+          "target": ["CreatePo"]
+          },{
+          "name": "editPOStandalone",
+          "pattern": "EditPOStandalone/{docId}",
+          "target": ["createContract"]
+          },{
+          "name": "copyPODoc",
+          "pattern": "CopyPODoc/{docId}",
+          "target": ["CreatePo"]
+          },{
+          "name": "editPOLegacy",
+            "pattern": "EditPOLegacy/{docId}",
+            "target": ["CreatePo"]
+        }
+        ],
+      "targets": {
+        "worklist": {
+          "viewName": "Worklist",
+          "viewId": "worklist",
+          "viewLevel": 1,
+          "controlId": "idAppControl",
+                    "controlAggregation": "pages"
+        },
+        "createContract": {
+          "viewName": "CreateContract",
+          "viewId": "createContract",
+          "viewLevel": 1,
+          "controlId": "idAppControl",
+                    "controlAggregation": "pages"
+        },
+        "displayContract": {
+          "viewName": "DisplayContract",
+          "viewId": "displayContract",
+          "viewLevel": 1,
+          "controlId": "idAppControl",
+                    "controlAggregation": "pages"
+        },
+        "CreatePo": {
+          "viewName": "CreatePo",
+          "viewId": "CreatePo",
+          "viewLevel": 1,
+          "controlId": "idAppControl",
+                    "controlAggregation": "pages"
+        },
+        "displayPo": {
+          "viewName": "DisplayPo",
+          "viewId": "displayPo",
+          "viewLevel": 1,
+          "controlId": "idAppControl",
+                    "controlAggregation": "pages"
+        },
+        "detailObjectNotFound": {
+          "viewName": "DetailObjectNotFound",
+          "viewId": "detailObjectNotFound"
+        },
+        "detailNoObjectsAvailable": {
+          "viewName": "DetailNoObjectsAvailable",
+          "viewId": "detailNoObjectsAvailable"
+        },
+        "notFound": {
+          "viewName": "NotFound",
+          "viewId": "notFound"
+        }
+      }
+    }
+  }
+}

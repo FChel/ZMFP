@@ -1,0 +1,102 @@
+/*Adds a solid red border to a container*/
+.consumptionReport .sapMText{
+  font-weight: bold;
+}
+
+.containerErrorState {
+  border-color: red;
+    border-style: solid;
+    border-width: 2px;
+}
+
+.rightTextAlignStatus .sapMOHRStatus{
+  text-align: right;
+}
+
+.rightTextAlign{
+  text-align: right;
+}
+
+.centreTextAlign{
+  text-align: center;
+}
+
+.sapMTextArea .sapMInputBaseIconContainer{
+  width: 100%;
+}
+
+.sapMTextArea .sapMInputBaseIconContainer .sapMInputBaseIcon{
+  float: right;
+}
+
+.sapMObjectAttributeActive .sapMObjectAttributeText, .sapMLnk:not(.sapMLnkDsbl), .hyperlinkAttribue .sapMObjectAttributeText{
+  text-decoration: underline;
+}
+
+.sapMOHRAttr .invisible{
+  display: none;
+}
+.sapMITBFilter .sapMITBText{
+  width: initial;
+}
+
+.headerForm{
+  padding: 0.3rem 0.5rem 0.3rem 0.5rem;
+}
+
+.noBorderBar{
+  border-bottom-width: 0px;
+}
+
+.errorbtnInDialog {
+    /*position: absolute;*/
+    float: left;
+}
+
+.zTinyPadding div[class*='sapMOHRBg']:last-of-type{
+  padding-top: 0.2rem;
+  padding-bottom: 0.6rem;
+}
+
+.zTinyPadding .sapMOHRStates{
+  padding-top: 0.4rem;
+}
+
+.poPanel .sapMPanelWrappingDiv, .poPanel .sapMPanelContent:not(.sapMPanelBGTransparent){
+  border-bottom-width: 0px;
+}
+.poPanel .sapMPanelHdr{
+  font-size: 1rem;
+}
+.poPanel .sapMListHdrText{
+  height: 2rem;
+  line-height: 2rem;
+}
+
+.sapUiSizeCompact .sapMListTblSubCnt{
+  padding: 0 0 .25rem .5rem;
+}
+
+.worklistTable .sapMListTblCell{
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+}
+
+.worklistTable .sapMListTblSubCnt{
+  font-size: 0rem;
+  padding-bottom: 0rem;
+}
+
+.noInnerTitleForm .sapUiRespGridSpanXL6{
+  height: 0;
+}
+
+.noInnerTitleForm .sapUiFormResGrid>div{
+  padding-bottom: 0;
+}
+
+/*.errorbtnInDialog, .errorbtnInDialog:focus {*/
+/*    color: white;*/
+/*    background-color: #cc1919;*/
+/*    border-color: #b51616;*/
+/*}*/
