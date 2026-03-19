@@ -1,0 +1,429 @@
+class ZCL_MFP_ACTION_RSN_FORM_FEEDER definition
+  public
+  final
+  create public .
+
+public section.
+
+*"* public components of class ZCL_MFP_ACTION_RSN_FORM_FEEDER
+*"* do not include other source files here!!!
+  interfaces IF_FPM_GUIBB
+      all methods final .
+  interfaces IF_FPM_GUIBB_FORM
+      all methods final .
+
+  constants C_STRUCTURE type TABNAME value 'ZSMFP_ACTION_REASON_FORM' ##NO_TEXT.
+  constants:
+    BEGIN OF e_field,
+              BEGIN OF action_reason,
+                  name TYPE fpmgb_s_formfield_descr-name VALUE 'ACTION_REASON' ##no_text,
+                  label_text TYPE fpmgb_s_formfield_descr-label_text VALUE 'Reason' ##no_text,
+              END OF action_reason,
+            END OF e_field .
+  constants:
+    BEGIN OF e_action,
+                BEGIN OF cancel,
+                  id TYPE fpmgb_s_actiondef-id VALUE 'CANCEL' ##no_text,
+                  text TYPE fpmgb_s_actiondef-text VALUE 'Cancel' ##no_text,
+                  enabled TYPE fpmgb_s_actiondef-enabled VALUE abap_true ##no_text,
+                  visible TYPE fpmgb_s_actiondef-visible VALUE cl_wd_uielement=>e_visible-visible ##no_text,
+                END OF cancel,
+                BEGIN OF submit,
+                  id TYPE fpmgb_s_actiondef-id VALUE 'SUBMIT' ##no_text,
+                  text TYPE fpmgb_s_actiondef-text VALUE 'Submit' ##no_text,
+                  enabled TYPE fpmgb_s_actiondef-enabled VALUE abap_true ##no_text,
+                  visible TYPE fpmgb_s_actiondef-visible VALUE cl_wd_uielement=>e_visible-visible ##no_text,
+                END OF submit,
+              END OF e_action .
+  constants:
+    BEGIN OF e_event,
+            BEGIN OF fpm_open_dialog,
+              id TYPE fpm_event_id VALUE 'FPM_OPEN_DIALOG' ##no_text,
+              BEGIN OF parameters,
+                BEGIN OF mfp_action,
+                  key TYPE string VALUE 'MFP_ACTION' ##no_text,
+                END OF mfp_action,
+              END OF parameters,
+            END OF fpm_open_dialog,
+          END OF e_event .
+
+  class-methods REPORT_SY_MESSAGE
+    importing
+      !API type ref to IF_WD_CONTROLLER .
+protected section.
+*"* protected components of class ZCL_MFP_ACTION_RSN_FORM_FEEDER
+*"* do not include other source files here!!!
+private section.
+
+*"* private components of class ZCL_MFP_ACTION_RSN_FORM_FEEDER
+*"* do not include other source files here!!!
+  class-methods ADD_SY_MESSAGE
+    importing
+      !REF_NAME type FPMGB_S_T100_MESSAGE-REF_NAME optional
+      !REF_INDEX type FPMGB_S_T100_MESSAGE-REF_INDEX optional
+    changing
+      !MESSAGES type FPMGB_T_MESSAGES .
+  class-methods CLOSE_DIALOG .
+  class-methods RAISE_EVENT
+    importing
+      !DATA type ZSMFP_ACTION_REASON_FORM .
+  class-methods HANDLE_REJECT
+    importing
+      !DATA type DATA
+    changing
+      !MESSAGES type FPMGB_T_MESSAGES .
+  class-methods HANDLE_FORWARD
+    importing
+      !DATA type DATA
+    changing
+      !MESSAGES type FPMGB_T_MESSAGES .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_ACTION_RSN_FORM_FEEDER IMPLEMENTATION.
+
+
+METHOD ADD_SY_MESSAGE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~ADD_SY_MESSAGE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  DATA: ls_message TYPE fpmgb_s_t100_message.
+  CONSTANTS:
+    BEGIN OF e_msgty,
+      abort   TYPE sy-msgty VALUE 'A',
+      error   TYPE sy-msgty VALUE 'E',
+      info    TYPE sy-msgty VALUE 'I',
+      success TYPE sy-msgty VALUE 'S',
+      warning TYPE sy-msgty VALUE 'W',
+      abend   TYPE sy-msgty VALUE 'X',
+    END OF e_msgty.
+  CONSTANTS:
+    BEGIN OF e_severity,
+      error   TYPE fpmgb_severity VALUE 'E',
+      warning TYPE fpmgb_severity VALUE 'W',
+      success TYPE fpmgb_severity VALUE 'S',
+    END OF e_severity.
+
+  ls_message-msgid = sy-msgid.
+  ls_message-msgno = sy-msgno.
+  CASE sy-msgty.
+    WHEN e_msgty-info OR e_msgty-success.
+      ls_message-severity = e_severity-success.
+    WHEN e_msgty-warning.
+      ls_message-severity = e_severity-warning.
+    WHEN OTHERS.
+      ls_message-severity = e_severity-error.
+  ENDCASE.
+  ls_message-parameter_1 = sy-msgv1.
+  ls_message-parameter_2 = sy-msgv2.
+  ls_message-parameter_3 = sy-msgv3.
+  ls_message-parameter_4 = sy-msgv4.
+
+  ls_message-ref_name = ref_name.
+  ls_message-ref_index = ref_index.
+
+  APPEND ls_message TO messages.
+ENDMETHOD.
+
+
+METHOD CLOSE_DIALOG.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~CLOSE_DIALOG
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  DATA: lr_fpm TYPE REF TO if_fpm.
+
+  lr_fpm = cl_fpm_factory=>get_instance( ).
+  lr_fpm->raise_event_by_id( iv_event_id = cl_fpm_event=>gc_event_close_dialog_box ).
+ENDMETHOD.
+
+
+METHOD handle_forward ##needed.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~handle_forward
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+*  DATA: ls_data TYPE zmfp_action_reason_form.
+*
+*  ls_data = data.
+*  raise_event( data = ls_data ).
+*  close_dialog( ).
+ENDMETHOD.
+
+
+METHOD handle_reject ##needed.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~handle_reject
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+*
+*  DATA: ls_data TYPE zsmfp_action_reason_form.
+*
+*  ls_data = data.
+*  raise_event( data = ls_data ).
+*  close_dialog( ).
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~CHECK_CONFIG ##needed.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~FLUSH ##needed.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~GET_DATA ##needed.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~IF_FPM_GUIBB_FORM~GET_DATA
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 29.10.20 290977SCN RD2K919656 DS-11-32-07-01 S 6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+  DATA: ls_data TYPE zsmfp_action_reason_form.
+  DATA: l_dummy TYPE string ##needed.
+
+  IF io_event IS NOT BOUND.
+    RETURN.
+  ENDIF.
+  CASE io_event->mv_event_id.
+    WHEN cl_fpm_event=>gc_event_open_dialog_box.
+      CLEAR ls_data.
+      io_event->mo_event_data->get_value(
+        EXPORTING
+          iv_key = e_event-fpm_open_dialog-parameters-mfp_action-key
+        IMPORTING
+          ev_value = ls_data
+      ).
+      CLEAR ls_data-action_reason.
+      cs_data = ls_data.
+      ev_data_changed = abap_true.
+    WHEN e_action-submit-id.
+      ls_data = cs_data.
+      IF ls_data-action_reason IS INITIAL.
+        MESSAGE e201(zmfp) WITH e_field-action_reason-label_text INTO l_dummy.
+        add_sy_message( CHANGING messages = et_messages ).
+        RETURN.
+      ELSE.
+        handle_reject( EXPORTING data = cs_data CHANGING messages = et_messages ).
+      ENDIF.
+    WHEN e_action-cancel-id.
+      close_dialog( ).
+      RETURN. "nothing to do...
+    WHEN OTHERS.
+      IF iv_raised_by_own_ui = abap_true.
+        ASSERT 0 = 1. "event not configured?
+      ELSE.
+        RETURN. "nothing to do...
+      ENDIF.
+  ENDCASE.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~GET_DEFAULT_CONFIG ##needed.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~GET_DEFINITION.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~IF_FPM_GUIBB_FORM~GET_DEFINITION
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  DATA: ls_field_description TYPE fpmgb_s_formfield_descr.
+  DATA: ls_action_definition TYPE fpmgb_s_actiondef.
+
+  DEFINE add_action. "<action>
+    clear ls_action_definition.
+    ls_action_definition-id = &1-id.
+    ls_action_definition-text = &1-text.
+    ls_action_definition-enabled = &1-enabled.
+    ls_action_definition-visible = &1-visible.
+    append ls_action_definition to et_action_definition.
+  END-OF-DEFINITION.
+  DEFINE add_field. "<field>
+    clear ls_field_description.
+    ls_field_description-name = &1-name.
+    ls_field_description-label_text = &1-label_text.
+    append ls_field_description to et_field_description.
+  END-OF-DEFINITION.
+
+  eo_field_catalog ?= cl_abap_structdescr=>describe_by_name( c_structure ).
+
+  add_field e_field-action_reason.
+
+  add_action e_action-cancel.
+  add_action e_action-submit.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB_FORM~PROCESS_EVENT ##needed.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB~GET_PARAMETER_LIST.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~IF_FPM_GUIBB~GET_PARAMETER_LIST
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+
+
+  CLEAR rt_parameter_descr.
+ENDMETHOD.
+
+
+METHOD IF_FPM_GUIBB~INITIALIZE ##needed.
+ENDMETHOD.
+
+
+METHOD RAISE_EVENT ##needed.
+ENDMETHOD.
+
+
+METHOD REPORT_SY_MESSAGE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_ACTION_RSN_FORM_FEEDER~REPORT_SY_MESSAGE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for the MyFi Admin POWL
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  DATA: lr_message_manager TYPE REF TO if_wd_message_manager.
+  ASSERT api IS BOUND.
+  lr_message_manager = api->get_message_manager( ).
+  lr_message_manager->report_t100_message(
+    msgid = sy-msgid
+    msgno = sy-msgno
+    msgty = sy-msgty
+    p1 = sy-msgv1
+    p2 = sy-msgv2
+    p3 = sy-msgv3
+    p4 = sy-msgv4
+  ).
+ENDMETHOD.
+ENDCLASS.

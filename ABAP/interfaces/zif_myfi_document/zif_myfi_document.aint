@@ -1,0 +1,116 @@
+interface ZIF_MYFI_DOCUMENT
+  public .
+
+
+  data:
+    approval_strings TYPE TABLE OF ztmfp_appstrings .
+  data NEW_ADM_DTL type ZSMFP_ADMIN_DETAIL .
+  data NEW_DOC_HEADER type ZSMFP_DOC_HEADER .
+  data NEW_EKKN type ME_EKKN .
+  data NEW_EKKO type EKKO .
+  data NEW_EKPO type ME_EKPO .
+  data:
+    new_inidigsub TYPE TABLE OF ztmfp_indigsub .
+  data:
+    new_strings TYPE TABLE OF ztmfp_strings .
+  data:
+    new_attachments TYPE TABLE OF ztmfp_doc_att .
+  data:
+    new_prepmnts TYPE TABLE OF ztmfp_prepmnt .
+  data OLD_ADM_DTL type ZSMFP_ADMIN_DETAIL .
+  data OLD_DOC_HEADER type ZSMFP_DOC_HEADER .
+  data OLD_EKKN type ME_EKKN .
+  data OLD_EKKO type EKKO .
+  data OLD_EKPO type ME_EKPO .
+  data:
+    old_inidigsub TYPE TABLE OF ztmfp_indigsub .
+  data:
+    old_strings TYPE TABLE OF ztmfp_strings .
+  data:
+    old_attachments TYPE TABLE OF ztmfp_doc_att .
+  data:
+    old_prepmnts TYPE TABLE OF ztmfp_prepmnt .
+  data SOURCE_DOC_NUM type EBELN .
+  data ADMIN_DETAIL type ZSMFP_EDM_ADMIN_DETAILS .
+  data GV_USERACTION type ZMFP_ACTION .
+  data POSTING_DOC_NUM type EBELN .
+  data GV_L4L_REF_ID type ZSMFP_DOC_HEADER-REF_ID .
+  data CHANGE_LOG type ZTMFP_CHANGELOG .
+  data GS_CHANGELOG type ZSMFP_CHANGELOG .
+  data APPROVAL_HISTORY type ZTMFP_APPROVALS .
+  data GV_PO_REL_IND type FRGKE .
+
+  methods BAPI_CHANGE
+    exporting
+      !EV_SUCCESS type BOOLE_D .
+  methods BAPI_CREATE
+    exporting
+      !EV_SUCCESS type BOOLE_D .
+  methods BAPI_READ
+    exporting
+      !EV_SUCCESS type BOOLE_D .
+  methods CHANGE .
+  methods CREATE .
+  methods DUPLICATE_CHK .
+  methods FILL_ATTACHMENT_ENTITYSET
+    exporting
+      !ET_ATTACHMENTS_ENT_SET type ZCL_ZEDM_MFP_MPC=>TT_ATTACHMENT .
+  methods FILL_DEEP_ENTITY .
+  methods GET_MM_DETAILS .
+  methods GET_MYFI_DETAILS .
+  methods GET_NEW_STATUS
+    returning
+      value(RV_STATUS) type ZMFP_STATUS .
+  methods HANDLE_ACTION .
+  methods HANDLE_ODATA .
+  methods IN_ACCOUNT_ASSIGNMENT .
+  methods IN_ADDRESS .
+  methods IN_HEADER .
+  methods IN_LINE_ITEMS .
+  methods IN_PHASINGS .
+  methods IN_STRINGS .
+  methods OUT_ACCOUNT_ASSIGNMENT .
+  methods OUT_HEADER .
+  methods OUT_LINE_ITEMS .
+  methods OUT_STRINGS .
+  methods READ_DATA .
+  methods REASSIGN_DOC .
+  methods SAVE_DRAFT .
+  methods UPDATE_ADMIN_TABLE
+    importing
+      !IV_CHANGE_INDICATOR type CDCHNGINDH
+    exporting
+      !ES_OLD_DATA type YZTMFP_ADMIN_DETL
+      !ES_NEW_DATA type YZTMFP_ADMIN_DETL
+      !ES_NEW_DATA_UPDATE type ZTMFP_ADMIN_DETL .
+  methods UPDATE_APPROVAL_STRINGS .
+  methods UPDATE_ATTACHMENTS_TABLE .
+  methods UPDATE_DOC_HEADER
+    importing
+      !IV_CHANGE_INDICATOR type CDCHNGINDH
+    exporting
+      !ET_OLD_DATA type YZTMFP_DOC_HEADERS
+      !ET_NEW_DATA type YZTMFP_DOC_HEADERS
+      !ES_NEW_DATA_UPDATE type ZTMFP_DOC_HEADER .
+  methods UPDATE_INDISUB
+    importing
+      !IV_CHANGE_INDICATOR type CDCHNGINDH
+    exporting
+      !ET_OLD_DATA type YZTMFP_INDIGSUB_TTY
+      !ET_NEW_DATA type YZTMFP_INDIGSUB_TTY
+      !ET_NEW_DATA_UPDATE type ZMFP_INDIGSUB_TTY .
+  methods UPDATE_MYFI_TABLES .
+  methods UPDATE_OLD_DOC_HEADER
+    importing
+      !IV_SOURCE_DOC_NUM type EBELN
+      !IV_POSTING_DOC_NUM type EBELN .
+  methods UPDATE_PREPMNT_TABLE
+    importing
+      !IV_CHANGE_INDICATOR type CDCHNGINDH
+    exporting
+      !ET_OLD_DATA type ZMFP_YZTMFP_PREPMNT_TT
+      !ET_NEW_DATA type ZMFP_YZTMFP_PREPMNT_TT
+      !ET_NEW_DATA_UPDATE type ZMFP_ZTMFP_PREPMNT_TT .
+  methods UPDATE_STRINGS .
+  methods VALIDATE .
+endinterface.
