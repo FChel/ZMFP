@@ -1,0 +1,195 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:core="sap.ui.core"
+	xmlns:tooltip="fss.ssp.controls.tooltip"
+	xmlns:c="fss.ssp.controls"
+	xmlns:combo="fss.ssp.controls.ComboBox"
+	xmlns:f="sap.ui.layout.form">
+	<!--<f:SimpleForm -->
+	<!--	editable="true"-->
+	<!--	layout="ColumnLayout"-->
+	<!--	columnsM="2"-->
+	<!--	columnsL="3"-->
+	<!--	columnsXL="3"-->
+	<!--	labelSpanXL="9"-->
+	<!--	labelSpanL="3"-->
+	<!--	labelSpanM="2">-->
+	<!--	<f:toolbar>-->
+	<!--		<Toolbar >-->
+	<!--			<Title text="{i18n>accountAssignment.title}"/>-->
+	<!--			<ToolbarSpacer/>-->
+	<!--			<Select	id="assignmentLineNumberSelect" width="18rem" -->
+	<!--				selectedKey="{viewModel>/AssignmentSelectedLine}" change="onLineItemChange">-->
+	<!--				<core:ListItem id="assignmentSelectItem" key="{LineNumber}" -->
+	<!--						text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+	<!--							formatter: '.formatter.valueHelpDisplay'}"-->
+	<!--						icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>-->
+	<!--			</Select>-->
+	<!--			<ToolbarSpacer/>-->
+	<!--			<Link text="{i18n>coa.app.title}" press="onCOAPress"/>-->
+	<!--		</Toolbar>-->
+	<!--	</f:toolbar>-->
+	<!--	<f:content>-->
+	<!--		<Label wrapping="true" text="{i18n>AssignmentType}"/>-->
+	<!--		<combo:ComboBox selectedKey="{lineModel>AssignmentTypeCode}" required="true" change="onAssignmentTypeChange"-->
+	<!--			visible="{= ${viewModel>/isPO} === true || ${IsSinglePO} === true}"-->
+	<!--			editable="{= ${viewModel>/hasConsumption} !== true}"-->
+	<!--			items="{ path : 'dropDownModel>/AssignmentType', sorter: {path: 'Key', descending: false}}">-->
+	<!--			<core:ListItem key="{dropDownModel>Key}" enabled="{= ${dropDownModel>disabled} !== true}"-->
+	<!--					text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], -->
+	<!--							formatter: '.formatter.valueHelpDisplay'}"/>-->
+	<!--		</combo:ComboBox>-->
+	<!--		<Label wrapping="true" text="{i18n>AssignmentType}"/>-->
+	<!--		<combo:ComboBox selectedKey="{lineModel>AssignmentTypeCode}" required="true" change="onAssignmentTypeChange"-->
+	<!--			visible="{= ${viewModel>/isPO} !== true &amp;&amp; ${IsSinglePO} !== true}"-->
+	<!--			editable="{= ${viewModel>/hasConsumption} !== true}"-->
+	<!--			items="{ path : 'dropDownModel>/AssignmentTypeContract', sorter: {path: 'Key', descending: false}}">-->
+	<!--			<core:ListItem key="{dropDownModel>Key}" enabled="{= ${dropDownModel>disabled} !== true}"-->
+	<!--					text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], -->
+	<!--							formatter: '.formatter.valueHelpDisplay'}"/>-->
+	<!--		</combo:ComboBox>-->
+			
+			
+	<!--		<Label wrapping="true" text="Distribution"/>-->
+	<!--		<combo:ComboBox selectedKey="{lineModel>Distribution}" required="true" change="onDistributionChange"-->
+	<!--			items="{ path : 'dropDownModel>/DistributionTypes', sorter: {path: 'Key', descending: false}}"-->
+	<!--			editable="{= ${viewModel>/hasConsumption} !== true}">-->
+	<!--			<core:ListItem key="{dropDownModel>Key}" text="{dropDownModel>Value}"/>-->
+	<!--		</combo:ComboBox>-->
+			
+			
+	<!--		<Label wrapping="true" text="Partial Invoice Indicator"/>-->
+	<!--		<combo:ComboBox selectedKey="{lineModel>PartialInvoiceInd}" change="onPartialInvoiceIndChange"-->
+	<!--			items="{ path : 'dropDownModel>/PartialInvoices', sorter: {path: 'Key', descending: false}}"-->
+	<!--			editable="{= ${viewModel>/hasConsumption} !== true}"-->
+	<!--			enabled="{= ${/Distribution} > 0}" required="{= ${/Distribution} > 0}">-->
+	<!--			<core:ListItem key="{dropDownModel>Key}" text="{dropDownModel>Value}"/>-->
+	<!--		</combo:ComboBox>-->
+	<!--	</f:content>-->
+	<!--</f:SimpleForm>-->
+	<Table
+		id="assignmentTable"
+		width="auto"
+		items="{ path : 'AccountAssignments', templateShareable: false,
+					sorter: {path: 'AssignmentLineNumber', descending: false}, 
+					filters: [
+					{
+						filters : [
+							{ path : 'ItemLineNumber', operator : 'EQ', value1 : 'xxx'},
+							{path : 'IsDeleted', operator : 'NE', value1 : 'true'}
+						], 
+						and: true
+					}]}"
+		noDataText="{i18n>assignmentsNoDataText}"
+		class="sapUiTinyMargin worklistTable"
+		updateFinished="onTableUpdateFinished">
+		<headerToolbar>
+			<Toolbar >
+				<Title text="{viewModel>/assignmentTableTitle}"/>
+				<!--<Link text="{i18n>coa.app.title}" press="onCOAPress"/>-->
+				<ToolbarSpacer/>
+				<Select	id="assignmentLineNumberSelect" width="18rem" 
+					selectedKey="{viewModel>/AssignmentSelectedLine}" change="onLineItemChange">
+					<core:ListItem id="assignmentSelectItem" key="{LineNumber}" 
+							text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], 
+								formatter: '.formatter.valueHelpDisplay'}"
+							icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>
+				</Select>
+				<ToolbarSpacer/>
+				<HBox visible="{= ${viewModel>/displayMode} !== true}">
+					<Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>btn.AddAssignment.tooltip}" text="{i18n>btn.AddAssignment}"  
+							press="onAddAssignment" enabled="{= ${viewModel>/enableAssignmentAction} === true}"/>
+				</HBox>
+			</Toolbar>
+		</headerToolbar>
+		<columns>
+			<Column width="3rem">
+				<Text text="Seq" />
+			</Column>
+			<Column visible="{= ${lineModel>AssignmentTypeCode} === 'A'}">
+				<Label text="{i18n>Asset}" />
+			</Column>
+			<Column visible="{= ${lineModel>AssignmentTypeCode} === 'K' || ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'T' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'X'}">
+				<Label text="{i18n>GLAccount}" />
+			</Column>
+			<Column visible="{= ${lineModel>AssignmentTypeCode} === 'K' || ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'T' || ${lineModel>AssignmentTypeCode} === 'X'}" >
+				<Label text="{i18n>CostCentre}" />
+			</Column>
+			<Column visible="{= ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'T'}">
+				<Label text="{i18n>InternalOrder}" />
+			</Column>
+			<Column visible="{= ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'T'}" >
+				<Label text="{i18n>WBSElement}" />
+			</Column>
+			<!--<Column >-->
+			<!--	<Label text="{i18n>Fund}"/>-->
+			<!--</Column>-->
+			<Column width="9rem" hAlign="End" visible="{= ${lineModel>Distribution} === '1'}">
+				<Text text="{i18n>AssignmentQuantity}"/>
+				<footer>
+					<Text visible="{= ${lineModel>Distribution} === '1'}" 
+						text="{path: 'viewModel>/qtyTotal', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				</footer>
+			</Column>
+			<Column width="7rem" hAlign="End" visible="{= ${lineModel>Distribution} === '2'}">
+				<Text text="{i18n>AssignmentPercentage}"/>
+				<footer>
+					<Text visible="{= ${lineModel>Distribution} === '2'}" 
+						text="{path: 'viewModel>/percTotal', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 1, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				</footer>
+			</Column>
+			<Column width="9rem" hAlign="End" visible="{= ${lineModel>Distribution} === '3'}">
+				<Text text="{i18n>AssignmentAmount}"/>
+				<footer>
+					<Text visible="{= ${lineModel>Distribution} === '3'}" text="{parts: [{path: 'viewModel>/amtTotal'}, {path:'lineModel>Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}, constraints:{minimum: 0}}"/>
+				</footer>
+			</Column>
+			<Column width="4.5rem" visible="{= ${viewModel>/displayMode} !== true}">
+				<Text text="{i18n>table.col.action}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="assignmentListItem" type="Navigation" press="onAssignmentPress" >
+				<Text text="{path: 'AssignmentLineNumber', formatter: '.formatter.lineNumberFormatter'}"/>
+				<Text visible="{= ${lineModel>AssignmentTypeCode} === 'A'}" text="{parts: [{path: 'Asset'}, {path:'AssetSubNumber'}, {path:'AssetDesc'}], formatter: '.formatter.assetValueHelpDisplay'}"/>
+				
+				<Text visible="{= ${lineModel>AssignmentTypeCode} === 'K' || ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'T' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'X'}"
+						text="{parts: [{path: 'GLAccount'}, {path:'GLAccountDesc'}], formatter: '.formatter.valueHelpDisplay'}"/>
+			
+				
+				<Text visible="{= ${lineModel>AssignmentTypeCode} === 'K' || ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'T' || ${lineModel>AssignmentTypeCode} === 'X'}"
+						text="{parts: [{path: 'CostCentre'}, {path:'CostCentreDesc'}], formatter: '.formatter.valueHelpDisplay'}"/>
+				
+				
+				<Text visible="{= ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'T'}" 
+						text="{parts: [{path: 'InternalOrder'}, {path:'InternalOrderDesc'}], formatter: '.formatter.valueHelpDisplay'}"/>
+				
+				
+				<Text visible="{= ${lineModel>AssignmentTypeCode} === 'F' || ${lineModel>AssignmentTypeCode} === 'P' || ${lineModel>AssignmentTypeCode} === 'T'}" 
+						text="{parts: [{path: 'WBSElement'}, {path:'WBSElementDesc'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"/>
+				
+				<Text text="{path: 'Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"  
+						visible="{= ${lineModel>Distribution} === '1'}"/>
+						
+				<Text text="{path: 'Percentage', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 1, groupingEnabled: true}, constraints:{scale: 'variable'}}" 
+						visible="{= ${lineModel>Distribution} === '2'}"/>
+				
+				<Text text="{parts: [{path: 'Amount'}, {path:'lineModel>Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}, constraints:{minimum: 0}}"  
+						visible="{= ${lineModel>Distribution} === '3'}"/>
+						
+						
+				
+				<HBox>
+					<Button icon="sap-icon://copy" tooltip="{i18n>btn.CopyLineItem}" press="onCopyAssignment" class="sapUiTinyMarginEnd"
+								enabled="{= ${viewModel>/enableAssignmentAction} === true}" 
+								visible="{= ${viewModel>/displayMode} !== true}"/>
+					<Button icon="sap-icon://delete" tooltip="{i18n>btn.DeleteLineItem}" press="onDeleteAssignment" class="sapUiTinyMarginEnd" 
+								enabled="{= ${viewModel>/enableAssignmentAction} === true &amp;&amp; ${viewModel>/enableAssignmentDelete} === true}" 
+								visible="{= ${viewModel>/displayMode} !== true}"/>
+				</HBox>
+				
+			</ColumnListItem>
+		</items>
+	</Table>
+</core:FragmentDefinition>

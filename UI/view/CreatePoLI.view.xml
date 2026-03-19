@@ -1,0 +1,86 @@
+<mvc:View xmlns:core="sap.ui.core" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	controllerName="fss.ssp.controller.CreatePoLI"
+	xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<core:Fragment fragmentName="fss.ssp.view.fragments.liTable" type="XML" />
+	<!--<Table-->
+	<!--	id="liTable"-->
+	<!--	width="auto"-->
+	<!--	items="{path: 'PurchaseOrderLIs'}"-->
+	<!--	noDataText="{i18n>liTableNoDataText}"-->
+	<!--	class="sapUiTinyMargin"-->
+	<!--	mode="None"-->
+	<!--	updateFinished="onTableUpdateFinished"-->
+	<!--	cd:required="true">-->
+	<!--	<headerToolbar>-->
+	<!--		<Toolbar >-->
+	<!--			<Title text="{viewModel>/lineItemTableTitle}"/>-->
+	<!--			<ToolbarSpacer/>-->
+	<!--			<Label design="Bold" text="{i18n>TotalEx}: {parts: [{path: 'viewModel>/totalEx'}, {path:'Currency'}], -->
+	<!--						formatter: '.formatter.netPriceFormatter'}"/>-->
+				<!--<ToolbarSpacer/>-->
+	<!--			<Label class="sapUiLargeMarginBegin" design="Bold" text="{i18n>TotalInc}: {parts: [{path: 'viewModel>/totalInc'}, {path:'Currency'}], -->
+	<!--						formatter: '.formatter.netPriceFormatter'}"/>-->
+				
+	<!--			<ToolbarSpacer/>-->
+	<!--			<HBox visible="{= ${viewModel>/displayMode} !== true}">-->
+					<!--<Button icon="sap-icon://copy" tooltip="{i18n>btn.CopyLineItem}" press="onCopyLI"  enabled="{= ${viewModel>/enableLiAction} === true}"/>-->
+					<!--<Button icon="sap-icon://edit" tooltip="{i18n>btn.EditLineItem}" press="onEditLI" enabled="{= ${viewModel>/enableLiAction} === true}"/>-->
+					<!--<Button icon="sap-icon://delete" tooltip="{i18n>btn.DeleteLineItem}" press="onDeleteLI" enabled="{= ${viewModel>/enableLiDelete} === true}"/>-->
+	<!--				<Button icon="sap-icon://add" tooltip="{i18n>btn.AddLineItem}" press="onAddLI" />-->
+	<!--			</HBox>-->
+	<!--		</Toolbar>-->
+	<!--	</headerToolbar>-->
+	<!--	<columns>-->
+	<!--		<Column width="3.5rem" visible="{= ${viewModel>/displayMode} !== true}">-->
+	<!--			<Text text="Action"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="4rem" >-->
+	<!--			<Text text="Status"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="3.5rem">-->
+	<!--			<Text text="{i18n>LineNumber}"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="23rem">-->
+	<!--			<Text text="{i18n>LineDescription}"/>-->
+	<!--		</Column>-->
+	<!--		<Column>-->
+	<!--			<Text text="{i18n>TaxCode}"/>-->
+	<!--		</Column>-->
+	<!--		<Column>-->
+	<!--			<Text text="{i18n>UnitQty}"/>-->
+	<!--		</Column>-->
+	<!--		<Column>-->
+	<!--			<Text text="{i18n>Currency}"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="8rem">-->
+	<!--			<Text text="{i18n>UnitPrice}"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="8rem">-->
+	<!--			<Text text="{i18n>NetPrice}"/>-->
+	<!--		</Column>-->
+	<!--	</columns>-->
+	<!--	<items>-->
+	<!--		<ColumnListItem id="liListItem" type="Navigation"	press="onLIPress" >-->
+	<!--			<Button visible="{= ${viewModel>/displayMode} !== true}" icon="sap-icon://overflow" tooltip="Actions" press="onMore"/>-->
+	<!--			<HBox>-->
+	<!--				<core:Icon src="sap-icon://locked" tooltip="Locked" visible="{= ${Status} === '1'}"/>-->
+	<!--				<core:Icon src="sap-icon://delete" tooltip="Deleted" visible="{= ${Status} === '2'}"/>-->
+					<!--<Button enabled="false" type="Reject" icon="sap-icon://locked" tooltip="Lock Line Item" visible="{= ${Status} === '1'}"/>-->
+					<!--<Button text="Delete" press="onLockPress" icon="sap-icon://delete" tooltip="Lock Line Item" visible="{= ${Status} === '2'}"/>-->
+	<!--			</HBox>-->
+	<!--			<Text text="{path: 'LineNumber', formatter: '.formatter.lineNumberFormatter'}"/>-->
+	<!--			<Text text="{LineDescription}"/>-->
+	<!--			<Text text="{TaxCode}"/>-->
+	<!--			<Text text="{path: 'UnitQty', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: false}, constraints:{scale: 'variable'}}"/>-->
+	<!--			<Text text="{Currency}"/>-->
+	<!--			<Text text="{parts: [{path: 'UnitPrice'}, {path:'Currency'}], -->
+	<!--					formatter: '.formatter.netPriceFormatter'}"/>-->
+	<!--			<Text text="{parts: [{path: 'NetPrice'}, {path:'Currency'}, {path: 'UnitPrice'}, {path:'UnitQty'}], -->
+	<!--					formatter: '.formatter.netPriceFormatter'}"/>-->
+	<!--		</ColumnListItem>-->
+	<!--	</items>-->
+	<!--</Table>-->
+</mvc:View>

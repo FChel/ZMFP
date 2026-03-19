@@ -1,0 +1,70 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:upload="fss.ssp.controls.upload"
+	xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+	
+	<List id="attachmentMsgList" 
+		visible="{= ${IsSection23} === true || ${AdminDetails/IsContractorConsultant} === true || ${viewModel>/assetUnknown} === true}"
+		headerText="Required Attachments"
+		class="sapUiSmallMarginBottom"
+		showUnread="true">
+		<items>
+			<CustomListItem
+				visible="{=${AdminDetails/IsContractorConsultant} === true }">
+				<Label class="sapUiSmallMarginBegin sapUiTinyMarginBottom" design="Bold" text="{i18n>Attachments.sesApproval}" required="true"/>
+				<!--<FormattedText htmlText="{i18n>Attachments.sesApproval}"/>-->
+			</CustomListItem>
+			<CustomListItem
+				visible="{= ${IsSection23} === true}">
+				<Label class="sapUiSmallMarginBegin sapUiTinyMarginBottom" design="Bold" text="{i18n>Attachments.section23}" required="true"/>
+			</CustomListItem>
+			<CustomListItem
+				visible="{= ${viewModel>/assetUnknown} === true}">
+				<Label class="sapUiSmallMarginBegin sapUiTinyMarginBottom" design="Bold" text="{i18n>Attachments.assetUnknown}" required="true"/>
+			</CustomListItem>
+		</items>
+	</List>
+	
+
+	<upload:UploadSet
+			id="uploadCollection"
+			items="{path: 'Attachments',
+				templateShareable: false}"
+			incompleteItems="{path: 'Attachments',
+				templateShareable: false}"
+			cd:required="{= ${IsSection23} === true || ${AdminDetails/IsContractorConsultant} === true || ${viewModel>/AssetUnknown} === true}"
+			maxFileNameLength="240"
+			maxFileSize="20"
+			fileTypes="{dropDownModel>/fileTypes}"
+			instantUpload="false"
+			busyIndicatorDelay="0"
+			
+			uploadEnabled="{= ${viewModel>/displayMode} !== true}"
+			noDataDescription="Drop files or use the &quot;+&quot; button for pending upload"
+			beforeItemRemoved="onFileDeleted"
+			fileNameLengthExceeded="onFilenameLengthExceed"
+			fileSizeExceeded="onFileSizeExceed"
+			fileTypeMismatch="onTypeMissmatch"
+			uploadCompleted="onUploadComplete"
+			uploadTerminated="onuplUadTerminated"
+			beforeUploadStarts="onBeforeUploadStarts" 
+			afterItemAdded="onAfterItemAdded">
+				<upload:items>
+					<upload:UploadSetItem
+						url="{SourceURI}"
+						fileName="{FileName}"
+						visibleEdit="false"
+						enabledEdit="false"/>
+				</upload:items>
+				<upload:incompleteItems>
+					<upload:UploadSetItem
+						url="{SourceURI}"
+						fileName="{FileName}"
+						visibleEdit="false"
+						enabledEdit="false"/>
+				</upload:incompleteItems>
+			</upload:UploadSet>
+</core:FragmentDefinition>

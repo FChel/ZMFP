@@ -1,0 +1,10 @@
+<mvc:View
+	controllerName="fss.ssp.controller.App"
+	xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true"
+	busy="{appView>/busy}"
+	busyIndicatorDelay="{appView>/delay}"
+	xmlns="sap.m">
+	<!--<SplitApp id="idAppControl" mode="HideMode"/>-->
+	<App id="idAppControl"/>
+</mvc:View>

@@ -1,0 +1,422 @@
+<mvc:View xmlns:core="sap.ui.core"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.ui.layout.form"
+  controllerName="fss.ssp.controller.Consumption"
+  xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:c="fss.ssp.controls">
+  <Toolbar class="sapUiTinyMargin">
+    <Title class="sapUiTinyMarginBegin" text="{i18n>Consumption.Summary.header}" level="H1" titleStyle="H2" />
+  </Toolbar>
+  <HBox id="headerBox" width="100%" alignItems="Start" class="headerForm sapUiTinyMargin">
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>Consumption.Summary.ordered}:"/>
+      <Text class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/TotalOrdered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>
+    </HBox>
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>Consumption.Summary.delivered}:"/>
+      <Text class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/TotalDelivered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>
+    </HBox>
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>Consumption.Summary.invoiced}:"/>
+      <Text  class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/TotalInvoiced'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>
+    </HBox>
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>Consumption.Summary.toBeDelivered}:"/>
+      <Text class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/ToBeDelivered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>
+    </HBox>
+    <HBox  width="100%">
+      <Label textAlign="End" text="{i18n>Consumption.Summary.toBeInvoiced}:"/>
+      <Text  class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/ToBeInvoiced'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>
+    </HBox>
+  </HBox>
+
+
+  <Table
+    id="lineItemTable"
+    width="auto"
+    items="{  path : 'ConsumptionModel>/LineItems'}"
+    noDataText="{i18n>Consumption.lineItems.NoDataText}"
+    class="sapUiTinyMargin worklistTable"
+    busy="{= ${viewModel>/consumptionBusy} === true}"
+    busyIndicatorDelay="0"
+    headerText="{i18n>Consumption.lineItems.header}">
+    <headerToolbar>
+      <Toolbar >
+        <Title text="{i18n>Consumption.lineItems.header}"/>
+        <ToolbarSpacer/>
+        <Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>btn.AddGr.tooltip}" text="{i18n>btn.AddGr}" press="onAddGr"
+            visible="{= ${viewModel>/createMode} !== true &amp;&amp; ${Status} === '40'}" enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column width="2rem">
+      </Column>
+      <Column width="3rem" hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.item}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>Consumption.lineItems.description}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.ordered}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.delivered}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.invoiced}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.toBeDelivered}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.lineItems.toBeInvoiced}"/>
+      </Column>
+      <Column width="5rem" hAlign="Center">
+        <Text text="{i18n>Consumption.lineItems.gr}"/>
+      </Column>
+      <Column visible="true" demandPopin="true" minScreenWidth="5500px" popinDisplay="WithoutHeader">
+        <Text text="{i18n>poTitle}"/>
+      </Column>
+    </columns>
+
+    <items>
+      <ColumnListItem>
+        <HBox>
+          <Button icon="sap-icon://navigation-right-arrow" type="Transparent" visible="{= ${ConsumptionModel>expand} !== true}"
+               press="onLiExpand" tooltip="Show consumption details"/>
+          <Button icon="sap-icon://navigation-down-arrow" type="Transparent" visible="{= ${ConsumptionModel>expand} === true}" press="onLiExpand" tooltip="Hide consumption details"/>
+        </HBox>
+        <Text text="{path: 'ConsumptionModel>LineNumber', formatter: '.formatter.lineNumberFormatter'}"/>
+        <Text text="{ConsumptionModel>LineDescription}" />
+        <Text text="{path: 'ConsumptionModel>UnitQty', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+        <Text text="{path: 'ConsumptionModel>DvdQuantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+        <Text text="{path: 'ConsumptionModel>InvQuantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+        <Text text="{path: 'ConsumptionModel>ToBeDelivered', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+        <Text text="{path: 'ConsumptionModel>ToBeInvoiced', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+        <!--<Switch type="AcceptReject" state="{= ${ConsumptionModel>IsGR} !== false}" enabled="false"/>-->
+        <core:Icon src="{= ${ConsumptionModel>IsGR} !== false ? 'sap-icon://accept' : 'sap-icon://decline'}"
+            color="{= ${ConsumptionModel>IsGR} !== false ? 'Positive' : 'Negative'}"
+            tooltip="{= ${ConsumptionModel>IsGR} !== false ? 'On' : 'Off'}"/>
+
+        <Panel visible="{= ${ConsumptionModel>expand} === true}" expandable="false" expanded="{= ${ConsumptionModel>expand} === true}"
+                class="sapUiSizeCompact sapUiSmallPaddingBeginEnd sapUiNoContentPadding poPanel">
+          <ScrollContainer horizontal="true" vertical="true" width="100%" focusable="true" >
+                  <!--<mvc:XMLView id="ContractPoTable" viewName="fss.ssp.view.ContractPoTableWorklist"/>-->
+            <Table
+              width="auto"
+              items="{  path : 'ConsumptionModel>/Consumptions',
+                templateShareable: false,
+                sorter: {path: 'Reference', descending: true},
+                filters: [
+                  {
+                    filters : [
+                      { path : 'POLineNumber', operator : 'EQ', value1 : 'xxx'}
+                    ],
+                    and: true
+                  }]
+                }"
+              noDataText="{i18n>Consumption.table.NoDataText}"
+              class="sapUiTinyMargin"
+              headerText="{i18n>Consumption.table.header}">
+              <columns>
+                <Column width="6.5rem">
+                  <Text text="{i18n>Consumption.table.docNum}"/>
+                </Column>
+                <Column width="6.5rem">
+                  <Text text="{i18n>Consumption.table.reference}"/>
+                </Column>
+                <Column width="3rem">
+                  <Text text="{i18n>Consumption.table.type}"/>
+                </Column>
+                <Column width="6.5rem">
+                  <Text text="{i18n>Consumption.table.postingDate}"/>
+                </Column>
+                <Column hAlign="End">
+                  <Text text="{i18n>Consumption.table.quantity}"/>
+                </Column>
+                <Column hAlign="End">
+                  <Text text="{i18n>Consumption.table.amount}"/>
+                </Column>
+                <Column hAlign="End">
+                  <Text text="{i18n>Consumption.table.localAmount}"/>
+                </Column>
+                <Column width="6.5rem">
+                  <Text text="{i18n>Consumption.table.datePaid}"/>
+                </Column>
+                <Column>
+                  <Text text="{i18n>Consumption.table.invRef}" tooltip="{i18n>Consumption.table.invRefTooltip}"/>
+                </Column>
+              </columns>
+
+              <items>
+                <ColumnListItem>
+                  <HBox>
+                    <Link text="{ConsumptionModel>DocNumber}" visible="{= ${ConsumptionModel>Type} === 'GR'}" press="onGrDocPress"/>
+                    <Text text="{ConsumptionModel>DocNumber}" visible="{= ${ConsumptionModel>Type} !== 'GR'}"/>
+                  </HBox>
+                  <Text text="{ConsumptionModel>Reference}" />
+                  <Text text="{ConsumptionModel>Type}" />
+                  <Text text="{path: 'ConsumptionModel>PostingDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />
+                  <ObjectStatus text="{path: 'ConsumptionModel>Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"
+                      state="{= ${ConsumptionModel>Quantity} >= 0 ? 'None' : 'Error'}" />
+
+                  <HBox justifyContent="End">
+                    <ObjectStatus text="{parts: [{path: 'ConsumptionModel>Amount'}, {path:'ConsumptionModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"
+                      state="{= ${ConsumptionModel>Amount} >= 0 ? 'None' : 'Error'}" />
+                    <ObjectStatus text="{ConsumptionModel>Currency}" class="sapUiTinyMarginBegin"
+                      state="{= ${ConsumptionModel>Amount} >= 0 ? 'None' : 'Error'}" />
+                  </HBox>
+                  <HBox justifyContent="End">
+                    <ObjectStatus text="{parts: [{path: 'ConsumptionModel>LocalAmount'}, {path:'ConsumptionModel>LocalCurrency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"
+                        state="{= ${ConsumptionModel>LocalAmount} >= 0 ? 'None' : 'Error'}" />
+                    <ObjectStatus text="{ConsumptionModel>LocalCurrency}" class="sapUiTinyMarginBegin"
+                        state="{= ${ConsumptionModel>LocalAmount} >= 0 ? 'None' : 'Error'}" />
+                  </HBox>
+                  <Text text="{path: 'ConsumptionModel>PaymentDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />
+                  <Text text="{ConsumptionModel>InvReference}"/>
+                </ColumnListItem>
+              </items>
+            </Table>
+          </ScrollContainer>
+        </Panel>
+      </ColumnListItem>
+    </items>
+  </Table>
+
+
+  <!--<Table-->
+  <!--  id="grTable"-->
+  <!--  width="auto"-->
+  <!--  items="{  path : 'ConsumptionModel>/Consumptions', -->
+  <!--        sorter: {path: 'Reference', descending: true},-->
+  <!--        filters : [-->
+  <!--            { path : 'POLineNumber', operator : 'EQ', value1 : '001', and: true}-->
+
+  <!--        ]}"-->
+  <!--  noDataText="{i18n>Consumption.table.NoDataText}"-->
+  <!--  class="sapUiTinyMargin"-->
+  <!--  headerText="{i18n>Consumption.table.header}">-->
+  <!--  <columns>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.docNum}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.reference}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.type}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.postingDate}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.quantity}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.amount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.localAmount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.datePaid}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.table.invRef}" tooltip="{i18n>Consumption.table.invRefTooltip}"/>-->
+  <!--    </Column>-->
+  <!--  </columns>-->
+
+  <!--  <items>-->
+  <!--    <ColumnListItem>-->
+  <!--      <Link text="{ConsumptionModel>DocNumber}" press="onGrDocPress"/>-->
+  <!--      <Text text="{ConsumptionModel>Reference}" />-->
+  <!--      <Text text="{ConsumptionModel>Type}" />-->
+  <!--      <Text text="{path: 'ConsumptionModel>PostingDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />-->
+  <!--      <ObjectStatus text="{path: 'ConsumptionModel>Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}" -->
+  <!--          state="{= ${ConsumptionModel>Quantity} >= 0 ? 'None' : 'Error'}" />-->
+
+  <!--      <ObjectStatus text="{parts: [{path: 'ConsumptionModel>Amount'}, {path:'ConsumptionModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}" -->
+  <!--          state="{= ${ConsumptionModel>Amount} >= 0 ? 'None' : 'Error'}" />-->
+        <!--<Text text="{parts: [{path: 'ConsumptionModel>Amount'}, {path:'ConsumptionModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>-->
+  <!--      <ObjectStatus text="{parts: [{path: 'ConsumptionModel>LocalAmount'}, {path:'ConsumptionModel>LocalCurrency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}" -->
+  <!--          state="{= ${ConsumptionModel>LocalAmount} >= 0 ? 'None' : 'Error'}" />-->
+        <!--<Text text="{parts: [{path: 'ConsumptionModel>LocalAmount'}, {path:'ConsumptionModel>LocalCurrency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>-->
+  <!--      <Text text="{path: 'ConsumptionModel>PaymentDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />-->
+  <!--      <Text text="{ConsumptionModel>InvReference}"/>-->
+  <!--    </ColumnListItem>-->
+  <!--  </items>-->
+  <!--</Table>-->
+
+  <!--<ScrollContainer vertical="true" width="100%" focusable="false" height="16rem">-->
+  <!--<Table-->
+  <!--  id="grTable"-->
+  <!--  width="auto"-->
+  <!--  items="{  path : 'ConsumptionGRs', -->
+  <!--        sorter: {path: 'LineNumber', descending: false},-->
+  <!--        filters : [-->
+  <!--            { path : 'POLineNumber', operator : 'EQ', value1 : 'xxxx', and: true}-->
+
+  <!--        ]}"-->
+  <!--  noDataText="{i18n>Consumption.GR.NoDataText}"-->
+  <!--  class="sapUiTinyMargin"-->
+  <!--  headerText="{i18n>Consumption.GR.header}">-->
+  <!--  <headerToolbar>-->
+  <!--    <Toolbar >-->
+  <!--      <Title text="{i18n>Consumption.GR.header}"/>-->
+  <!--      <ToolbarSpacer/>-->
+  <!--      <c:Select width="18rem" id="grLiContractSelect" visible="{= ${viewModel>/isContract} === true}" change="onConsumptionLiChange"-->
+  <!--        items="{ path : 'ContractLIs', events: { change: '.onLiDataChangeGr' }}">-->
+  <!--        <core:ListItem key="{LineNumber}" -->
+  <!--            text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+  <!--              formatter: '.formatter.valueHelpDisplay'}"-->
+  <!--            icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>-->
+          <!--<core:ListItem key="{LineNumber}" -->
+          <!--  text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+          <!--    formatter: '.formatter.valueHelpDisplay'}"/>-->
+
+  <!--      </c:Select>-->
+  <!--      <c:Select width="18rem" id="grLiPoSelect" visible="{= ${viewModel>/isPO} === true}" change="onConsumptionLiChange"-->
+  <!--        items="{ path : 'PurchaseOrderLIs', events: { change: '.onLiDataChangeGr' }}">-->
+  <!--        <core:ListItem key="{LineNumber}" -->
+  <!--            text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+  <!--              formatter: '.formatter.valueHelpDisplay'}"-->
+  <!--            icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>-->
+          <!--<core:ListItem key="{LineNumber}" -->
+          <!--  text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+          <!--    formatter: '.formatter.valueHelpDisplay'}"/>-->
+          <!--<c:layoutData>-->
+          <!--  <l:GridData span="XL4 L4 M4 S6"/>-->
+          <!--</c:layoutData>-->
+  <!--      </c:Select>-->
+  <!--      <ToolbarSpacer/>-->
+  <!--      <Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>btn.AddGr.tooltip}" text="{i18n>btn.AddGr}" press="onAddGr" -->
+  <!--          visible="{= ${viewModel>/createMode} !== true &amp;&amp; ${Status} === '40'}"/>-->
+
+  <!--    </Toolbar>-->
+  <!--  </headerToolbar>-->
+  <!--  <columns>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.docNum}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.postingDate}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.quantity}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.orderUnit}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.amount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.localAmount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.deliveryNote}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.deliveryDate}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.GR.mvT}"/>-->
+  <!--    </Column>-->
+  <!--  </columns>-->
+
+  <!--  <items>-->
+  <!--    <ColumnListItem>-->
+  <!--      <Link text="{DocNumber}" press="onGrDocPress"/>-->
+  <!--      <Text text="{path: 'PostingDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />-->
+  <!--      <Text text="{path: 'Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>-->
+  <!--      <Text text="{OrderUnit}"/>-->
+  <!--      <Text text="{parts: [{path: 'Amount'}, {path:'Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>-->
+  <!--      <Text text="{parts: [{path: 'LocalAmount'}, {path:'LocalCurrency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>-->
+  <!--      <Text text="{DeliveryNote}"/>-->
+  <!--      <Text text="{path: 'DeliveryDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}"/>-->
+  <!--      <Text text="{MvT}"/>-->
+  <!--    </ColumnListItem>-->
+  <!--  </items>-->
+  <!--</Table>-->
+  <!--</ScrollContainer>-->
+
+  <!--<ScrollContainer class="sapUiSmallMarginTop"  vertical="true" width="100%" focusable="false" height="16rem">-->
+  <!--<Table-->
+  <!--  id="irTable"-->
+  <!--  width="auto"-->
+  <!--  items="{  path : 'ConsumptionIRs', -->
+  <!--        sorter: {path: 'POLineNumber', descending: false},-->
+  <!--        filters : [-->
+  <!--            { path : 'POLineNumber', operator : 'EQ', value1 : 'xxx', and: true}-->
+
+  <!--        ]}"-->
+  <!--  noDataText="{i18n>Consumption.IR.NoDataText}"-->
+  <!--  class="sapUiTinyMargin "-->
+  <!--  headerText="{i18n>Consumption.IR.header}">-->
+  <!--  <headerToolbar>-->
+  <!--    <Toolbar >-->
+  <!--      <Title text="{i18n>Consumption.IR.header}"/>-->
+  <!--      <ToolbarSpacer/>-->
+  <!--      <c:Select width="18rem" id="irLiContractSelect" visible="{= ${viewModel>/isContract} === true}" change="onConsumptionLiChange"-->
+  <!--        items="{ path : 'ContractLIs', events: { change: '.onLiDataChangeIr' }}">-->
+  <!--        <core:ListItem key="{LineNumber}" -->
+  <!--            text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+  <!--              formatter: '.formatter.valueHelpDisplay'}"-->
+  <!--            icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>-->
+
+  <!--      </c:Select>-->
+  <!--      <c:Select width="18rem" id="irLiPoSelect" visible="{= ${viewModel>/isPO} === true}" change="onConsumptionLiChange"-->
+  <!--        items="{ path : 'PurchaseOrderLIs', events: { change: '.onLiDataChangeIr' }}">-->
+  <!--        <core:ListItem key="{LineNumber}" -->
+  <!--            text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+  <!--              formatter: '.formatter.valueHelpDisplay'}"-->
+  <!--            icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>-->
+          <!--<c:layoutData>-->
+          <!--  <l:GridData span="XL4 L4 M4 S6"/>-->
+          <!--</c:layoutData>-->
+  <!--      </c:Select>-->
+  <!--      <ToolbarSpacer/>-->
+
+
+  <!--    </Toolbar>-->
+  <!--  </headerToolbar>-->
+  <!--  <columns>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.docNum}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.postingDate}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.quantity}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.orderUnit}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.amount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.localAmount}"/>-->
+  <!--    </Column>-->
+  <!--    <Column>-->
+  <!--      <Text text="{i18n>Consumption.IR.reference}"/>-->
+  <!--    </Column>-->
+  <!--  </columns>-->
+  <!--  <items>-->
+  <!--    <ColumnListItem>-->
+  <!--      <Text text="{DocNumber}"/>-->
+  <!--      <Text text="{path: 'PostingDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" />-->
+  <!--      <Text text="{path: 'Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>-->
+  <!--      <Text text="{OrderUnit}"/>-->
+  <!--      <Text text="{parts: [{path: 'Amount'}, {path:'Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>-->
+  <!--      <Text text="{parts: [{path: 'LocalAmount'}, {path:'LocalCurrency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}"/>-->
+  <!--      <Text text="{Reference}"/>-->
+  <!--    </ColumnListItem>-->
+  <!--  </items>-->
+  <!--</Table>-->
+  <!--</ScrollContainer>-->
+</mvc:View>

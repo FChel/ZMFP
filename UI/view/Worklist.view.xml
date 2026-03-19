@@ -1,0 +1,464 @@
+<mvc:View xmlns:core="sap.ui.core"
+  controllerName="fss.ssp.controller.Worklist"
+  xmlns="sap.m"
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:semantic="sap.m.semantic"
+  xmlns:c="fss.ssp.controls"
+  xmlns:combo="fss.ssp.controls.ComboBox">
+
+  <Page
+    id="page"
+    enableScrolling="true"
+    showHeader="{= !${componentModel>/inFLP}}">
+
+    <customHeader>
+      <Bar class="sapMTBStandard">
+        <contentLeft>
+          <Button icon="sap-icon://nav-back" press="onNavBack" tooltip="{i18n>btn.back.tooltip}"/>
+          <Button icon="sap-icon://home" press="onHomePress" tooltip="{i18n>btn.home.tooltip}"/>
+        </contentLeft>
+        <contentMiddle>
+          <Title level="H1" text="{i18n>workListTitle}"/>
+        </contentMiddle>
+        <contentRight>
+          <Button icon="sap-icon://sys-help" press="onHelpPress" tooltip="{i18n>btn.help.tooltip}"/>
+          <Button text="{i18n>btn.PrfWorkList}" tooltip="{i18n>btn.PrfWorkList}" press="onPrfWorklistPress"  type="Ghost"  enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+              <Button text="{i18n>btn.create.text}" tooltip="{i18n>btn.create.tooltip}" press="onAddClick" type="Emphasized" enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+          <Button text="{userModel>/FullName}" press="onUserPress"  icon="sap-icon://customer" />
+          <Button enabled="false" tooltip="{i18n>btn.more}" icon="sap-icon://overflow" press="onMorePress" />
+        </contentRight>
+      </Bar>
+      </customHeader>
+
+    <content>
+      <f:SimpleForm
+        id="worklistForm"
+        editable="true"
+        layout="ColumnLayout"
+        title="{i18n>SearchDoc}"
+        columnsM="2"
+        columnsL="2"
+        columnsXL="3"
+        labelSpanXL="4"
+        labelSpanL="5"
+        labelSpanM="5">
+        <f:content >
+          <Label id="docTypeLbl" text="{i18n>DocType}" tooltip="{i18n>DocType}" required="true"/>
+          <RadioButtonGroup columns="2">
+                      <RadioButton text="{i18n>Contract}" selected="{path:'searchModel>/Is_Contract'}"/>
+                      <RadioButton text="{i18n>PurchaseOrder}" selected="{path:'searchModel>/Is_PO'}" />
+                  </RadioButtonGroup>
+          <!--<CheckBox id="contractChk" text="{i18n>Contract}" selected="{path:'searchModel>/Is_Contract'}" >-->
+          <!--  <customData>-->
+          <!--    <core:CustomData key="label" value="docTypeLbl"/>-->
+          <!--    <core:CustomData key="group" value="poChk"/>-->
+          <!--  </customData>-->
+          <!--</CheckBox>-->
+          <!--<CheckBox id="poChk" text="{i18n>PurchaseOrder}" selected="{path:'searchModel>/Is_PO'}"/>-->
+
+
+          <Label wrapping="true" text="{i18n>DocNumber}" />
+          <Input value="{path: 'searchModel>/ContractNumber'}" valueLiveUpdate="true"
+            placeholder="Enter complete or partial {i18n>DocNumber}"
+            maxLength="{path: '/#Contract/ContractNumber/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+        </f:content>
+      </f:SimpleForm>
+      <Panel headerText="{i18n>AdvancedSearch}" expandable="true" expanded="false" class="sapUiSizeCompact sapUiNoContentMargin sapUiNoContentPadding">
+        <f:SimpleForm
+        editable="true"
+        layout="ColumnLayout"
+        columnsM="2"
+        columnsL="3"
+        labelSpanXL="4"
+        labelSpanL="6"
+        labelSpanM="6"
+        class="sapUiTinyPaddingTop">
+        <f:content >
+          <CheckBox text="{i18n>DraftsSearch}" selected="{path:'searchModel>/IsDraft'}" textAlign="Right"  select="onDraftSelect"/>
+
+          <Label text="{i18n>Vendor}" tooltip="{i18n>VendorTooltip}" class="sapUiTinyPaddingTop"/>
+          <c:Input class="sapUiTinyPaddingTop"
+            value="{parts: [{path: 'searchModel>/VendorNumber'}, {path:'worklistView>/VendorName'}], formatter: '.formatter.valueHelpDisplay'}"
+             showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+             fieldGroupIds="WorklistVH" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <c:customData>
+              <core:CustomData key="dialogName" value="worklistVendorDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{= ${searchModel>/IsDraft} === true ? ${i18n>DraftsFor} : ${i18n>CreatedBy}}"/>
+          <Input value="{parts: [{path: 'searchModel>/CreatedByID'}, {path: 'worklistView>/CreatedByName'}], formatter: '.formatter.valueHelpDisplay'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange" required="{= ${searchModel>/IsDraft} === true}">
+            <customData>
+              <core:CustomData key="dialogName" value="worklistCreatedByDlg"/>
+            </customData>
+          </Input>
+
+          <Label wrapping="true" text="{i18n>CompanyCode}" />
+          <combo:ComboBox selectedKey="{searchModel>/CompanyCode}" change="onCompanyCodeChange"
+            items="{path : 'dropDownModel>/CompanyCode', sorter: {path: 'Key', descending: false}}" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <core:ListItem key="{dropDownModel>Key}"
+              text="{parts: [{path:'dropDownModel>Key'}, {path: 'dropDownModel>Value'}],
+                  formatter: '.formatter.valueHelpDisplay'}"/>
+          </combo:ComboBox>
+
+          <Label wrapping="true" text="{i18n>PurchasingGroup}"/>
+          <Input value="{parts: [{path: 'searchModel>/PurchasingGroup'}, {path: 'worklistView>/PurchasingGroupName'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <customData>
+              <core:CustomData key="dialogName" value="worklistPurchasingGroupDlg"/>
+            </customData>
+          </Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>GLAccount}"/>
+          <c:Input class="sapUiTinyPaddingTop" value="{parts: [{path: 'searchModel>/GLAccount'}, {path:'worklistView>/GLAccountName'}], formatter: '.formatter.valueHelpDisplay'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequestAccountAssignment" change="onSearchHelpValueChange" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <c:customData>
+              <core:CustomData key="dialogName" value="worklistGLDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>Asset}"/>
+          <c:Input class="sapUiTinyPaddingTop" value="{parts: [{path: 'searchModel>/Asset'}, {path:'searchModel>/AssetSubNumber'}, {path:'worklistView>/AssetName'}], formatter: '.formatter.assetValueHelpDisplay'}"
+            showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onValueHelpRequestAccountAssignment" change="onSearchHelpValueChange" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <c:customData>
+              <core:CustomData key="dialogName" value="worklistAssetDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>CostCentre}"/>
+          <c:Input class="sapUiTinyPaddingTop" value="{parts: [{path: 'searchModel>/CostCentre'}, {path:'worklistView>/CostCentreName'}], formatter: '.formatter.valueHelpDisplay'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequestAccountAssignment" change="onSearchHelpValueChange" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <c:customData>
+              <core:CustomData key="dialogName" value="worklistCostDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>WBSElement}"/>
+          <c:Input class="sapUiTinyPaddingTop" value="{parts: [{path: 'searchModel>/WBSElement'}, {path:'worklistView>/WBSElementName'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequestAccountAssignment" change="onSearchHelpValueChange" enabled="{= ${searchModel>/IsDraft} !== true}">
+            <c:customData>
+              <core:CustomData key="dialogName" value="worklistWBSDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>StartDate}" />
+          <c:DatePicker class="sapUiTinyPaddingTop" placeholder="from" displayFormat="dd.MM.yyyy" valueFormat="dd.MM.yyyy"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}"
+              value="{path: 'searchModel>/StartDate_FROM',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+          <c:DatePicker class="sapUiTinyPaddingTop" placeholder="to" displayFormat="dd.MM.yyyy" valueFormat="dd.MM.yyyy"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}"
+              value="{path: 'searchModel>/StartDate_TO',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>EndDate}" />
+          <c:DatePicker class="sapUiTinyPaddingTop" placeholder="from" displayFormat="dd.MM.yyyy" valueFormat="dd.MM.yyyy"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}"
+              value="{path: 'searchModel>/EndDate_FROM',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+          <c:DatePicker class="sapUiTinyPaddingTop" placeholder="to" displayFormat="dd.MM.yyyy" valueFormat="dd.MM.yyyy"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}"
+              value="{path: 'searchModel>/EndDate_TO',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+
+          <Label wrapping="true" text="{i18n>Currency}" />
+          <combo:ComboBox selectedKey="{searchModel>/Currency}" enabled="{= ${searchModel>/IsDraft} !== true}"
+            items="{ path : 'dropDownModel>/Currency', sorter: {path: 'Key', descending: false}}">
+            <core:ListItem key="{dropDownModel>Key}"
+                text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}],
+                  formatter: '.formatter.valueHelpDisplay'}"/>
+          </combo:ComboBox>
+
+          <Label class="sapUiTinyPaddingTop" wrapping="true" text="{i18n>TotalValue}" />
+          <c:Input class="sapUiTinyPaddingTop" placeholder="from"  valueLiveUpdate="true"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}" type="Number"
+              value="{path: 'searchModel>/TotalValue_FROM', type:'sap.ui.model.odata.type.Decimal', formatOptions:{groupingEnabled: false}, constraints:{scale: 'variable'}}" />
+          <!--<Text text="to" width="2px"/>-->
+          <c:Input class="sapUiTinyPaddingTop" placeholder="to"  valueLiveUpdate="true"
+              enabled="{= ${searchModel>/Is_Contract} === true &amp;&amp;  ${searchModel>/IsDraft} !== true}" type="Number"
+            value="{path: 'searchModel>/TotalValue_TO', type:'sap.ui.model.odata.type.Decimal', formatOptions:{groupingEnabled: false}, constraints:{scale: 'variable'}}"/>
+
+        </f:content>
+      </f:SimpleForm>
+      </Panel>
+      <Toolbar class="sapUiSmallMarginBottom sapUiSmallMarginTop noBorderBar sapUiLargeMarginEnd">
+        <ToolbarSpacer/>
+        <Button width="5rem" text="{i18n>btn.search}" press="onSearch"  type="Emphasized"/>
+        <Button width="5rem" text="{i18n>btn.clear}" press="onClear" />
+      </Toolbar>
+
+      <Table
+        alternateRowColors="true"
+        id="contractTable"
+        width="auto"
+        noDataText="{worklistView>/contractTableNoDataText}"
+        growing="true"
+        growingThreshold="10"
+        growingScrollToLoad="false"
+        updateFinished="onContractUpdateFinished"
+        class="sapUiSmallMarginEnd worklistTable"
+        busyIndicatorDelay="0"
+        visible="{= ${searchModel>/Is_Contract} === true}">
+
+        <headerToolbar>
+          <Toolbar>
+            <Title text="{worklistView>/contractTableTitle}"/>
+            <ToolbarSpacer />
+            <Button tooltip="Refresh" icon="sap-icon://refresh" press="onContractRefreshClick" type="Ghost"/>
+            <Button tooltip="Sort Setting" icon="sap-icon://sort" press="onSortContract" type="Ghost" >
+              <customData>
+                <core:CustomData key="table" value="contractTable"/>
+              </customData>
+            </Button>
+          </Toolbar>
+        </headerToolbar>
+
+        <columns>
+          <!--<Column width="4rem">-->
+          <Column width="2rem">
+
+          </Column>
+          <Column width="7rem">
+            <Text text="{i18n>number}"/>
+          </Column>
+
+          <Column>
+            <Text text="{i18n>PurchaseOrder}"/>
+          </Column>
+          <Column width="4rem">
+            <Text text="{i18n>PGrp}" tooltip="{i18n>PGrp.tooltip}"/>
+          </Column>
+          <Column>
+            <Text text="{i18n>CreationDate}"/>
+          </Column>
+          <Column width="20rem">
+            <Text text="{i18n>Vendor}"/>
+          </Column>
+          <Column hAlign="End">
+            <Text text="{i18n>TotalValue}"/>
+          </Column>
+          <Column width="4.5rem">
+            <Text text="{i18n>Currency}"/>
+          </Column>
+          <Column  width="6rem">
+            <Text text="{i18n>Approver}"/>
+          </Column>
+          <Column width="6rem">
+            <Text text="{i18n>Status}"/>
+          </Column>
+          <!--<Column width="3rem">-->
+          <Column width="4.5rem" visible="{= ${disableModel>/DisableFlag} !== true}">
+            <Text text="{i18n>table.col.action}"/>
+          </Column>
+          <!--<Column width="2rem">-->
+
+          <!--</Column>-->
+          <Column visible="true" demandPopin="true" minScreenWidth="5500px" popinDisplay="WithoutHeader">
+            <Text text="{i18n>poTitle}"/>
+          </Column>
+        </columns>
+
+        <items>
+          <c:ColumnListItem
+            type="Navigation"
+            press="onContractPress"
+            id="contractColumnLi">
+            <c:cells>
+              <HBox class="sapUiNoContentPadding sapUiTinyPaddingBeginEnd">
+                <!--<ToggleButton  type="Transparent" icon="sap-icon://pushpin-off" pressed="{= ${IsPinned} === true}" press="onPinPress"/>-->
+                <Button icon="sap-icon://navigation-right-arrow" type="Transparent" visible="{= ${expand} !== true}"
+                  enabled="{= ${IsDraft} !== true &amp;&amp; ${IsSinglePO} !== true}" press="onPoExpand" tooltip="Show Purchase Orders"/>
+                <Button icon="sap-icon://navigation-down-arrow" type="Transparent" visible="{= ${expand} === true}" press="onPoExpand" tooltip="Hide Purchase Orders"/>
+              </HBox>
+              <Text text="{ContractNumber}"/>
+              <Text text="{PurchaseOrder}"/>
+              <Text text="{PurchasingGroup}" tooltip="{PurchasingGroupName}"/>
+              <Text text="{path: 'CreatedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+              <Text text="{VendorName}"/>
+              <Text text="{parts: [{path: 'TotalValue'}, {path:'Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+              <Text text="{Currency}"/>
+              <Text text="{ApproverID}" tooltip="{ApproverName}"/>
+              <ObjectStatus text="{StatusDesc}" state="{path: 'Status', formatter: '.formatter.contractStatus'}" />
+              <HBox>
+                <Button icon="sap-icon://edit" tooltip="Edit Outline Agreement" press="onEditContract" enabled="{parts: [{path: 'Status'}, {path:'ChangedByID'}, {path:'userModel>/UserId'}], formatter: '.formatter.enableEdit'}"/>
+                <Button class="sapUiTinyMarginBegin" press="onCopyContract" icon="sap-icon://copy" tooltip="Copy"/>
+              <!--<ToggleButton icon="sap-icon://pushpin-off" pressed="{= ${IsPinned} === true}" press="onPinPress"/>-->
+              </HBox>
+              <Panel visible="{= ${expand} === true}" expandable="false" expanded="{= ${expand} === true}"
+                class="sapUiSizeCompact sapUiSmallPaddingBeginEnd sapUiNoContentPadding poPanel">
+                <ScrollContainer horizontal="true" vertical="true" width="100%" focusable="true" >
+                  <mvc:XMLView id="ContractPoTable" viewName="fss.ssp.view.ContractPoTableWorklist"/>
+                <!--<Table-->
+
+                <!--  alternateRowColors="true"-->
+                <!--  width="auto"-->
+                <!--  items="{-->
+                <!--    path: 'PurchaseOrders', -->
+                <!--    templateShareable:false,-->
+                <!--    sorter: {-->
+                <!--      path: 'PONumber',-->
+                <!--      descending: true-->
+                <!--    }-->
+                <!--  }"-->
+                <!--  noDataText="{i18n>noPOText}"-->
+                <!--  growing="true"-->
+                <!--  growingScrollToLoad="false"-->
+                <!--  class="sapUiMediumMarginBegin sapUiTinyMarginBottom sapUiNoContentPadding"-->
+                <!--  busyIndicatorDelay="0">-->
+                <!--  <headerToolbar>-->
+                <!--    <Toolbar >-->
+                <!--      <Title text="{i18n>poTitle}"/>-->
+                <!--      <ToolbarSpacer/>-->
+
+                <!--      <HBox>-->
+                <!--        <Button icon="sap-icon://add" press="onAddPo" tooltip="Add PO" />-->
+                <!--      </HBox>-->
+                <!--    </Toolbar>-->
+                <!--  </headerToolbar>-->
+                <!--  <columns>-->
+                <!--    <Column >-->
+                <!--      <Text text="{i18n>number}"/>-->
+                <!--    </Column>-->
+                <!--    <Column>-->
+                <!--      <Text text="{i18n>worklist.InvoicingParty}"/>-->
+                <!--    </Column>-->
+                <!--    <Column >-->
+                <!--      <Text text="{i18n>PGrp}"/>-->
+                <!--    </Column>-->
+                <!--    <Column >-->
+                <!--      <Text text="{i18n>CreationDate}"/>-->
+                <!--    </Column>-->
+                <!--    <Column >-->
+                <!--      <Text text="{i18n>Currency}"/>-->
+                <!--    </Column>-->
+                <!--    <Column >-->
+                <!--      <Text text="{i18n>Status}"/>-->
+                <!--    </Column>-->
+                <!--  </columns>-->
+                <!--  <items>-->
+                <!--    <ColumnListItem-->
+                <!--      type="Navigation"-->
+                <!--      press="onPoPress">-->
+                <!--      <cells>-->
+                <!--        <Text text="{PONumber}"/>-->
+                <!--        <Text text="{InvoicingPartyNumber}"/>-->
+                <!--        <Text text="{PurchasingGroup}"/>-->
+                <!--        <Text text="{path: 'CreatedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>-->
+                <!--        <Text text="{Currency}"/>-->
+                <!--        <ObjectStatus text="{StatusDesc}" state="{path: 'Status', formatter: '.formatter.contractStatus'}" />-->
+                <!--      </cells>-->
+                <!--    </ColumnListItem>-->
+                <!--  </items>-->
+                <!--</Table>-->
+                </ScrollContainer>
+              </Panel>
+            </c:cells>
+          </c:ColumnListItem>
+        </items>
+        <layoutData>
+          <FlexItemData growFactor="1" />
+        </layoutData>
+      </Table>
+      <Table
+        visible="{= ${searchModel>/Is_PO} === true}"
+        id="poTable"
+        width="auto"
+        busyIndicatorDelay="0"
+        noDataText="{worklistView>/poTableNoDataText}"
+        growing="true"
+        growingThreshold="10"
+        growingScrollToLoad="false"
+        updateFinished="onPoUpdateFinished"
+        class="sapUiSmallMarginEnd ">
+
+        <headerToolbar>
+          <Toolbar>
+            <Title text="{worklistView>/poTableTitle}"/>
+            <ToolbarSpacer />
+            <Button tooltip="Refresh" icon="sap-icon://refresh" press="onPoRefreshClick" type="Ghost"/>
+            <Button tooltip="Sort Settings" icon="sap-icon://sort" press="onSortPo"  type="Ghost" >
+              <customData>
+                <core:CustomData key="table" value="poTable"/>
+              </customData>
+            </Button>
+          </Toolbar>
+        </headerToolbar>
+
+        <columns>
+          <Column width="7rem">
+            <Text text="{i18n>number}"/>
+          </Column>
+          <Column width="7rem">
+            <Text text="{i18n>Contract}"/>
+          </Column>
+          <Column width="3rem">
+            <Text text="{i18n>PGrp}" tooltip="{i18n>PGrp.tooltip}"/>
+          </Column>
+          <Column >
+            <Text text="{i18n>CreationDate}"/>
+          </Column>
+          <Column width="15rem">
+            <Text text="{i18n>Vendor}"/>
+          </Column>
+          <Column width="7rem">
+            <Text text="{i18n>worklist.InvoicingParty}" tooltip="{i18n>worklist.InvoicingPartyTooltip}"/>
+          </Column>
+          <Column hAlign="End" width="8rem">
+            <Text text="{i18n>PoTotalValue}"/>
+          </Column>
+          <Column width="4.5rem">
+            <Text text="{i18n>Currency}"/>
+          </Column>
+          <Column width="6rem">
+            <Text text="{i18n>Approver}"/>
+          </Column>
+          <Column width="6rem">
+            <Text text="{i18n>Status}"/>
+          </Column>
+          <Column width="4.5rem" visible="{= ${disableModel>/DisableFlag} !== true}">
+            <Text text="{i18n>table.col.action}"/>
+          </Column>
+        </columns>
+        <items>
+          <ColumnListItem
+            type="Navigation"
+            press="onPoPress"
+            id="poColumnLi">
+            <cells>
+              <Label text="{PONumber}" design="{= ${IsSinglePO} === true ? 'Bold' : 'Standard'}"/>
+              <Link text="{ContractNumber}" press="onContractLinkPress"/>
+              <Text text="{PurchasingGroup}"/>
+              <Text text="{path: 'CreatedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+              <Text text="{VendorName}"/>
+              <Text text="{InvoicingPartyNumber}"/>
+              <Text text="{parts: [{path: 'TotalValue'}, {path:'Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+              <Text text="{Currency}"/>
+              <Text text="{ApproverID}" tooltip="{ApproverName}"/>
+              <ObjectStatus text="{StatusDesc}" state="{path: 'Status', formatter: '.formatter.contractStatus'}" />
+              <HBox>
+                <Button icon="sap-icon://edit" tooltip="Edit Purchase Order" press="onEditPo" enabled="{parts: [{path: 'Status'}, {path:'ChangedByID'}, {path:'userModel>/UserId'}], formatter: '.formatter.enableEdit'}"/>
+                <Button class="sapUiTinyMarginBegin" press="onCopyPo" icon="sap-icon://copy" tooltip="Copy" enabled="{= ${IsCopyable} !== false}"/>
+              </HBox>
+            </cells>
+          </ColumnListItem>
+        </items>
+        <layoutData>
+          <FlexItemData growFactor="1" />
+        </layoutData>
+      </Table>
+      <!--</ScrollContainer>-->
+      <!--</HBox>-->
+    </content>
+    <footer>
+      <Toolbar visible="{= ${componentModel>/inFLP}}" >
+        <ToolbarSpacer/>
+        <Button text="{i18n>btn.PrfWorkList}" tooltip="{i18n>btn.PrfWorkList}" press="onPrfWorklistPress"  enabled="{= ${disableModel>/DisableFlag} !== true}" type="Ghost"/>
+        <Button text="{i18n>btn.create.text}" tooltip="{i18n>btn.create.tooltip}" press="onAddClick"  type="Emphasized" enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+        <Button enabled="false" tooltip="{i18n>btn.more}" icon="sap-icon://overflow" press="onMorePress" />
+      </Toolbar>
+    </footer>
+
+
+  </Page>
+
+</mvc:View>

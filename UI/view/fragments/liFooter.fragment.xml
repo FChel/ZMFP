@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+		<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"
+						visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+		<!--<c:Button visible="{= ${viewModel>/IsAdd} === true}" -->
+		<!--					text="{i18n>btn.draft}" press="onDraftAddConfirm" type="Ghost"/>-->
+		<!--<c:Button visible="{= ${/Status} === 'D' &amp;&amp; ${viewModel>/IsEdit} === true }" -->
+		<!--					text="{i18n>btn.draft}" press="onDraftEditConfirm" type="Ghost"/>-->
+		<c:Button text="OK" press="onAddLIConfirm" type="Emphasized" visible="{=${viewModel>/IsAdd} === true}"/>
+		<c:Button text="OK" press="onEditLIConfirm" type="Emphasized" visible="{=${viewModel>/IsEdit} === true}"/>
+		<Button text="Cancel" press="onAddLICancel"/>
+
+</core:FragmentDefinition>

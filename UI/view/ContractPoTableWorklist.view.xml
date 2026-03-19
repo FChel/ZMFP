@@ -1,0 +1,78 @@
+<mvc:View xmlns:core="sap.ui.core"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="fss.ssp.controller.ContractPoTableWorklist"
+  xmlns:html="http://www.w3.org/1999/xhtml">
+  <Table
+    id="contractPoTable"
+    alternateRowColors="true"
+    width="auto"
+    noDataText="{i18n>noPOText}"
+    growing="true"
+    growingThreshold="10"
+    growingScrollToLoad="false"
+    updateFinished="onUpdateFinished"
+    class="sapUiTinyMargin sapUiNoContentPadding"
+    busyIndicatorDelay="0">
+    <headerToolbar>
+      <Toolbar >
+        <Title id="poTitle" text=""/>
+        <ToolbarSpacer/>
+        <HBox visible="{= ${viewModel>/displayMode} !== true}">
+          <Button icon="sap-icon://add" press="onAddPo" type="Ghost" text="{i18n>add.po.btn}" tooltip="{i18n>poCreateTooltip}"
+              enabled="{= ${disableModel>/DisableFlag} !== true}" visible="{= ${IsSinglePO} !== true}"/>
+        </HBox>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column width="7rem">
+        <Text text="{i18n>number}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>worklist.InvoicingParty}" tooltip="{i18n>worklist.InvoicingPartyTooltip}"/>
+      </Column>
+      <Column width="4rem">
+        <Text text="{i18n>PGrp}" tooltip="{i18n>PGrp.tooltip}"/>
+      </Column>
+      <Column width="7rem">
+        <Text text="{i18n>CreationDate}"/>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>PoTotalValue}"/>
+      </Column>
+      <Column width="5rem">
+        <Text text="{i18n>Currency}"/>
+      </Column>
+      <Column  width="6rem">
+        <Text text="{i18n>Approver}"/>
+      </Column>
+      <Column width="6rem">
+        <Text text="{i18n>Status}"/>
+      </Column>
+      <Column width="4.5rem" visible="{= ${disableModel>/DisableFlag} !== true}">
+        <Text text="{i18n>table.col.action}"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem
+        type="{= ${IsSinglePO} === true ? 'Inactive' : 'Navigation'}"
+        press="onPoPress"
+        id="ContractPoColumnLi">
+        <cells>
+          <Text text="{PONumber}"/>
+          <Text text="{InvoicingPartyNumber}"/>
+          <Text text="{PurchasingGroup}"/>
+          <Text text="{path: 'CreatedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+          <Text text="{parts: [{path: 'TotalValue'}, {path:'Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{Currency}"/>
+          <Text text="{ApproverID}" tooltip="{ApproverName}"/>
+          <ObjectStatus text="{StatusDesc}" state="{path: 'Status', formatter: '.formatter.contractStatus'}" />
+          <HBox>
+            <Button icon="sap-icon://edit" tooltip="Edit" press="onEditPo" enabled="{parts: [{path: 'Status'}, {path:'ChangedByID'}, {path:'userModel>/UserId'}], formatter: '.formatter.enableEdit'}"/>
+            <Button class="sapUiTinyMarginBegin" press="onCopyPo" icon="sap-icon://copy" tooltip="Copy" enabled="{= ${IsCopyable} !== false}"/>
+          </HBox>
+        </cells>
+      </ColumnListItem>
+    </items>
+  </Table>
+</mvc:View>

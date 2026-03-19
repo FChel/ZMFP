@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ActionSheet
+		title="Choose Your Action"
+		placement="Vertical">
+			<Button text="{i18n>add.contractSinglePO}"  press="onAddAction" >
+				<customData>
+					<core:CustomData key="Route" value="createSingle"/>
+				</customData>
+			</Button>
+			<Button text="{i18n>add.contractOnly}" press="onAddAction">
+				<customData>
+					<core:CustomData key="Route" value="createContract"/>
+				</customData>
+			</Button>
+			<Button text="{i18n>add.purchaseOrder}"  press="onAddAction" >
+				<customData>
+					<core:CustomData key="Route" value="createPO"/>
+				</customData>
+			</Button>
+	</ActionSheet>
+</core:FragmentDefinition>

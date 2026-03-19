@@ -1,0 +1,15 @@
+<core:FragmentDefinition 
+	xmlns="sap.m" 
+	xmlns:core="sap.ui.core">
+	<ObjectAttribute title="{i18n>poOutlineAgreement}" text=" {Contract/ContractNumber}" active="true" press="onContractPress" 
+			visible="{path: 'ContractNumber', formatter: '.formatter.isNotEmpty'}" />
+	<ObjectAttribute title="{i18n>poOutlineAgreementTotal}" visible="{path: 'ContractNumber', formatter: '.formatter.isNotEmpty'}"
+			text="{parts: [{path: 'Contract/TotalValue'}, {path:'Contract/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}" />
+	<!--<ObjectAttribute title="{i18n>Currency}" text=" {Currency}" />-->
+	<ObjectAttribute title="{i18n>poOutlineAgreementStart}" visible="{path: 'ContractNumber', formatter: '.formatter.isNotEmpty'}"
+			text="{path: 'Contract/StartDate',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+	<ObjectAttribute title="{i18n>poOutlineAgreementEnd}" visible="{path: 'ContractNumber', formatter: '.formatter.isNotEmpty'}"
+			text="{path: 'Contract/EndDate',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+	<ObjectAttribute title="" text="Change Log" active="{path: 'ChangeLogUrl', formatter: '.formatter.isNotEmpty'}"/>
+					
+</core:FragmentDefinition>

@@ -1,0 +1,55 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog title="{i18n>CreatePhasingTitle} {path: '/PhasingLineNumber', formatter: '.formatter.lineNumberFormatter'}"
+		class="sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true">
+		<c:content>
+			<f:SimpleForm 
+				editable="true"
+				layout="ColumnLayout"
+				title="{i18n>PhasingTitle}"
+				columnsM="1"
+				columnsL="1"
+				columnsXL="1"
+				labelSpanXL="4"
+				labelSpanL="5"
+				labelSpanM="5">
+				<f:content>
+					<Label wrapping="true" text="{i18n>ItemLineNumber}"/>
+					<c:Select required="{= ${viewModel>/IsEdit} !== true}" ignoreDisableReset="true" selectedKey="{/ItemLineNumber}" id="lineNumberSelect" enabled="{= ${viewModel>/IsEdit} !== true}"
+							items="{ path : 'lineItemsModel>/'}">
+					<core:ListItem key="{lineItemsModel>LineNumber}" 
+							text="{parts: [{path: 'lineItemsModel>LineNumber'}, {path:'lineItemsModel>LineDescription'}], 
+									formatter: '.formatter.valueHelpDisplay'}"
+							icon="{path: 'lineItemsModel>Status', formatter: '.formatter.lineItemStatusIcon'}"
+							enabled="{= ${lineItemsModel>Status} !== 'L' &amp;&amp; ${lineItemsModel>Status} !== 'S'}"/>
+					</c:Select>
+		
+					<Label wrapping="true" text="{i18n>DeliveryDate}"/>
+					<DatePicker required="true" displayFormat="dd.MM.yyyy" value="{path:'/DeliveryDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" valueFormat="dd.MM.yyyy"/>
+		
+					<Label wrapping="true" text="{i18n>SchQuantity}"/>
+					<Input required="true" placeholder="Enter {i18n>SchQuantity}"
+							liveChange="onQtyLiveChange"
+							validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError"
+							value="{path: '/SchQuantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{precision: 13, scale: 3, minimum: '0'}}"/>
+				</f:content>
+			</f:SimpleForm>
+		</c:content>
+
+	<c:buttons>
+		<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"
+				visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+		<c:Button text="OK" press="onAddPhasingConfirm" type="Emphasized" visible="{=${viewModel>/IsAdd} === true}"/>
+		<c:Button text="OK" press="onEditPhasingConfirm" type="Emphasized" visible="{=${viewModel>/IsEdit} === true}"/>
+		<Button text="Cancel" press="onAddPhasingCancel"/>
+	</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

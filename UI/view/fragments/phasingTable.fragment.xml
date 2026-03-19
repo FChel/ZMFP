@@ -1,0 +1,107 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	xmlns:core="sap.ui.core"
+	xmlns:tooltip="fss.ssp.controls.tooltip">
+	<Table
+		id="phasingTable"
+		width="auto"
+		items="{ path : 'Phasings', 
+					sorter: {path: 'DeliveryDate', descending: false}, 
+					filters: [
+					{
+						filters : [
+							{ path : 'ItemLineNumber', operator : 'EQ', value1 : 'xxx'},
+							{path : 'IsDeleted', operator : 'NE', value1 : 'true'}
+						], 
+						and: true
+					}]}"
+		noDataText="{i18n>PhasingsNoDataText}"
+		class="sapUiTinyMargin worklistTable"
+		updateFinished="onTableUpdateFinished">
+		<headerToolbar>
+			<Toolbar >
+				<Title text="{viewModel>/phasingTableTitle}"/>
+				<ToolbarSpacer/>
+				<Select	id="phasingLineNumberSelect" width="18rem" 
+					selectedKey="{viewModel>/SelectedLine}" change="onLineItemChange">
+					<core:ListItem id="phasingSelectItem" key="{LineNumber}" 
+							text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], 
+								formatter: '.formatter.valueHelpDisplay'}"
+							icon="{path: 'Status', formatter: '.formatter.lineItemStatusIcon'}"/>
+				</Select>
+				<ToolbarSpacer/>
+				<HBox visible="{= ${viewModel>/displayMode} !== true}">
+					<Button	icon="sap-icon://upload" text="{i18n>btn.Upload}" press="onUpload" enabled="{= ${viewModel>/enablePhasingAction} === true}" >
+						<tooltip>
+							<tooltip:CustomTooltip>
+								<FormattedText class="sapUiSmallMargin" htmlText="{i18n>btn.Upload.tooltip}"/>
+							</tooltip:CustomTooltip>
+						</tooltip>
+					</Button>
+					<Button	icon="sap-icon://download" text="{i18n>btn.Download}" press="onDownload" >
+						<tooltip>
+							<tooltip:CustomTooltip>
+								<FormattedText class="sapUiSmallMargin" htmlText="{i18n>btn.Upload.tooltip}"/>
+							</tooltip:CustomTooltip>
+						</tooltip>
+					</Button>	
+					<Button icon="sap-icon://add" type="Emphasized" tooltip="{i18n>btn.AddPhasing.tooltip}" text="{i18n>btn.AddPhasing}"  press="onAddPhasing" enabled="{= ${viewModel>/enablePhasingAction} === true}"/>
+				</HBox>
+			</Toolbar>
+		</headerToolbar>
+		<columns>
+			<Column width="5rem" hAlign="End">
+				<Text text="{i18n>ItemLineNumber}"/>
+			</Column>
+			<!--<Column width="18rem">-->
+			<!--	<Text text="{i18n>ItemLineDescription}"/>-->
+			<!--</Column>-->
+			<Column width="5rem" hAlign="End">
+				<Text text="{i18n>Phasing}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>DeliveryDate}"/>
+			</Column>
+			<Column hAlign="End">
+				<Text text="{i18n>SchQuantity}"/>
+				<footer>
+					<Text text="{path: 'viewModel>/schTotal', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				</footer>
+			</Column>
+			<Column hAlign="End">
+				<Text text="{i18n>DeliveredQty}"/>
+				<footer>
+					<Text text="{path: 'viewModel>/dvdTotal', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				</footer>
+			</Column>
+			<Column hAlign="End">
+				<Text text="{i18n>RemainingQty}"/>
+				<footer>
+					<Text text="{path: 'viewModel>/remTotal', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				</footer>
+			</Column>
+			<Column width="7rem" visible="{= ${viewModel>/displayMode} !== true}">
+				<Text text="{i18n>table.col.action}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="phasingListItem" type="Navigation" press="onPhasingPress" >
+				<Text text="{path: 'ItemLineNumber', formatter: '.formatter.lineNumberFormatter'}"/>
+				<!--<Text text="{LineDescription}"/>-->
+				<Text text="{path: 'PhasingLineNumber', formatter: '.formatter.lineNumberFormatter'}"/>
+				<Text text="{path: 'DeliveryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+				<Text text="{path: 'SchQuantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}}"/>
+				<Text text="{path: 'DvdQuantity', formatter: '.formatter.qtyRemainingFormatter'}"/>
+				<Text text="{parts: ['SchQuantity', 'DvdQuantity'], formatter: '.formatter.qtyRemainingFormatter'}"/>
+				
+				<HBox visible="{= ${viewModel>/displayMode} !== true}">
+					<Button icon="sap-icon://copy" tooltip="{i18n>btn.CopyLineItem}" press="onCopyLI" class="sapUiTinyMarginEnd"
+									enabled="{= ${viewModel>/enablePhasingAction} === true}" visible="{= ${viewModel>/displayMode} !== true}"/>
+					<Button icon="sap-icon://delete" tooltip="{i18n>btn.DeleteLineItem}" press="onDeleteLI" class="sapUiTinyMarginEnd" 
+									enabled="{= ${viewModel>/enablePhasingAction} === true &amp;&amp; ${viewModel>/enableDelete} !== false &amp;&amp; parseFloat(${DvdQuantity} || 0) === 0}" visible="{= ${viewModel>/displayMode} !== true}"/>
+				</HBox>		
+			</ColumnListItem>
+		</items>
+	</Table>
+</core:FragmentDefinition>

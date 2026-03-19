@@ -1,0 +1,81 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+
+	<MessageStrip
+		text="{i18n>ICTApproverText}"
+		type="Warning"
+		showIcon="true"
+		showCloseButton="false"
+		visible="{= ${AdminDetails/IsICTSoftwareHardware} === true}"
+		class="sapUiSizeCompact sapUiSmallMarginBeginEnd sapUiSmallMarginTop"/>
+	<f:SimpleForm 
+		editable="true"
+		layout="ColumnLayout"
+		title="Approvals"
+		columnsM="2"
+		columnsL="2"
+		columnsXL="3"
+		labelSpanXL="4"
+		labelSpanL="5"
+		labelSpanM="5">
+		<f:content>
+			<Label required="true" wrapping="true" text="{i18n>SelfApproval}" tooltip="{i18n>SelfApprovalTooltip}"/>
+			<c:RadioButtonGroup required="true" columns="2" select="onSelfApprovalSelect"
+                            selectedIndex="{
+                                path: 'IsSelfApproval',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio'
+                            }"
+                            >
+                <RadioButton text="Yes"/>
+                <RadioButton text="No" />
+            </c:RadioButtonGroup>
+        </f:content>
+    </f:SimpleForm>
+	<f:SimpleForm 
+		editable="true"
+		layout="ColumnLayout"
+		columnsM="2"
+		columnsL="2"
+		columnsXL="3"
+		labelSpanXL="4"
+		labelSpanL="5"
+		labelSpanM="5">
+		<f:content>
+			<Label wrapping="true" text="{i18n>DelegateID}" tooltip="{i18n>DelegateIDTooltip}"/>
+			<c:Input required="{= ${IsSelfApproval} === false}" value="{parts: [{path: 'DelegateID'}, {path: 'viewModel>/vhDisplay/DelegateName'}], formatter: '.formatter.valueHelpDisplay'}"
+					 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange" enabled="{= ${IsSelfApproval} === false}"
+					 fieldGroupIds="CreateContractVH">
+				<c:customData>
+					<core:CustomData key="dialogName" value="createDelegateDlg"/>
+				</c:customData>
+			</c:Input>
+			
+			<Label  wrapping="true" text="{i18n>ValueForMoney}" tooltip="{i18n>ValueForMoneyTooltip}"/>
+			<c:TextArea value="{ValueForMoney}" rows="4" 
+					maxLength="{path: 'mainModel>/#Contract/ValueForMoney/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+			
+	
+			<!--<Label wrapping="true" text="{i18n>ApproverID}" tooltip="{i18n>ApproverIDTooltip}"/>-->
+			<!--<c:Input required="{= ${IsSection23} === true}" enabled="{= ${IsSection23} === true}"-->
+			<!--		value="{parts: [{path: 'ApproverID'}], formatter: '.formatter.valueHelpDisplay'}"-->
+			<!--		showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">-->
+			<!--	<c:customData>-->
+			<!--		<core:CustomData key="dialogName" value="createDAODlg"/>-->
+			<!--	</c:customData>-->
+			<!--</c:Input>-->
+			
+			<Label text="{i18n>ApprovalComment}" tooltip="{i18n>ApprovalCommentTooltip}"/>
+			<TextArea value="{CommentForApprover}" rows="4"
+					maxLength="{path: 'mainModel>/#Contract/CommentForApprover/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+			
+			<Label text="{i18n>RejectComment}" tooltip="{i18n>RejectCommentTooltip}"/>
+			<TextArea value="{RejectComments}" rows="4" visible="{= ${Status} === '99'}" editable="false"
+					maxLength="{path: 'mainModel>/#Contract/RejectComments/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+		</f:content>
+	</f:SimpleForm>
+
+</core:FragmentDefinition>

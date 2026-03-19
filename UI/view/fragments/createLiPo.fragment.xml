@@ -1,0 +1,372 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:c="fss.ssp.controls"
+  xmlns:combo="fss.ssp.controls.ComboBox"
+  xmlns:tooltip="fss.ssp.controls.tooltip">
+  <c:Dialog title="{i18n>CreateLITitle} {path: '/LineNumber', formatter: '.formatter.lineNumberFormatter'}"
+    class="sapUiSizeCompact"
+    draggable="true"
+    resizable="true"
+    type="Message"
+    beforeOpen="onLIBeforeOpen"
+    contentWidth="{path: 'device>/system', formatter: '.formatter.liDialogWidth'}">
+    <c:content>
+      <f:SimpleForm
+        editable="true"
+        layout="ResponsiveGridLayout"
+        columnsM="1"
+        columnsL="1"
+        columnsXL="1"
+        labelSpanXL="4"
+        labelSpanL="4"
+        labelSpanM="4"
+        class="noInnerTitleForm">
+        <Label wrapping="true" text="{i18n>OA.LineItem}"/>
+        <c:ComboBox id="contractLiSelect" required="{path: 'ContractModel>/ContractLIs', formatter: '.formatter.isNotEmpty'}"
+          change="onContractLiSelectionChanged" filterSecondaryValues="true" showSecondaryValues="true"
+          selectedKey="{/ParentLineNumber}"
+          enabled="{path: 'ParentNumber', formatter: '.formatter.isEmpty'}"
+          items="{ path : 'ContractModel>/ContractLIs'}">
+        <!--<c:Select required="{path: 'ContractModel>/ContractLIs', formatter: '.formatter.isNotEmpty'}" -->
+        <!--  change="onContractLiSelectionChanged" -->
+        <!--  selectedKey="{/ParentLineNumber}"-->
+        <!--  items="{ path : 'ContractModel>/ContractLIs', filters: [-->
+        <!--        {-->
+        <!--          filters : [-->
+        <!--            { path : 'Status', operator : 'NE', value1: 'L'}, -->
+        <!--            { path : 'Status', operator : 'NE', value1: 'S'}-->
+        <!--          ], -->
+        <!--          and: true-->
+        <!--        }]}">-->
+          <core:ListItem key="{ContractModel>LineNumber}"
+            icon="{path: 'ContractModel>Status', formatter: '.formatter.lineItemStatusIcon'}"
+            text="{parts: [{path: 'ContractModel>LineNumber'}, {path:'ContractModel>LineDescription'}],
+              formatter: '.formatter.valueHelpDisplay'}"
+            additionalText="{ContractModel>Currency}"/>
+          <c:layoutData>
+            <l:GridData span="XL4 L4 M4 S6"/>
+          </c:layoutData>
+        </c:ComboBox>
+      </f:SimpleForm>
+
+      <f:SimpleForm
+        editable="true"
+        layout="ColumnLayout"
+        columnsM="2"
+        columnsL="2"
+        columnsXL="2"
+        labelSpanXL="3"
+        labelSpanL="5"
+        labelSpanM="2">
+        <f:toolbar>
+          <Toolbar>
+            <Title text="{i18n>li.details.title}"/>
+            <ToolbarSpacer/>
+            <core:Icon src="sap-icon://locked" tooltip="Locked" visible="{= ${/Status} === 'S'}"/>
+            <core:Icon src="sap-icon://delete" tooltip="Deleted" color="Negative" visible="{= ${/Status} === 'L'}"/>
+            <core:Icon src="sap-icon://request" tooltip="Draft" color="Critical" visible="{= ${/Status} === 'D'}"/>
+          </Toolbar>
+        </f:toolbar>
+        <f:content>
+          <Label wrapping="true" text="{i18n>LineDescription}"/>
+          <c:Input required="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+            placeholder="Enter {i18n>LineDescription}"
+            enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+            value="{/LineDescription}"
+            maxLength="{path: 'mainModel>/#LineItem/LineDescription/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+          <Label wrapping="true" text="{i18n>MaterialGroup}"/>
+          <c:Input required="true"
+              editable="false" fieldGroupIds="AccountAssignmentVH"
+               value="{parts: [{path: '/MaterialGroup'}, {path:'DisplayModel>/MaterialGroupDescription'} ], formatter: '.formatter.valueHelpDisplay'}"
+               showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">
+            <c:customData>
+              <core:CustomData key="dialogName" value="createLIMaterialDlg"/>
+            </c:customData>
+          </c:Input>
+
+          <Label wrapping="true" text="{i18n>OrderUnit}" tooltip="{i18n>OrderUnit.tooltip}"/>
+          <c:ComboBox required="false"
+            enabled="false"
+            selectedKey="{/OrderUnit}" change="validateComboBoxChange"
+            items="{ path : 'dropDownModel>/OrderUnits', sorter: [{path: 'Group', descending: false, group: true}, {path: 'Key', descending: false}]}" >
+            <core:Item key="{dropDownModel>Key}"
+                text="{parts: [{path:'dropDownModel>Key'}, {path: 'dropDownModel>Value'}],
+                    formatter: '.formatter.valueHelpDisplay'}"/>
+          </c:ComboBox>
+
+          <Label wrapping="true" text="{i18n>UnitQty}" tooltip="{i18n>UnitQty.tooltip}" />
+          <c:Input required="{= ${viewModel>/enableQtyDate} !== false &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"
+              placeholder="Enter {i18n>UnitQty}"
+              tooltip="{i18n>UnitQty.tooltip}"
+              liveChange="onQtyLiveChange"
+              editable="{= ${viewModel>/enableQtyDate} !== false &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"
+              validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError"
+              value="{path:'/UnitQty', type:'sap.ui.model.odata.type.Decimal', formatOptions:{decimals: 3, groupingEnabled: true}, constraints:{precision: 13, scale: 3}}"/>
+
+          <Label wrapping="true" text="{i18n>UnitPrice}" tooltip="{i18n>UnitPrice.tooltip}"/>
+          <c:Input required="false" editable="false" validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError"
+              value="{parts: [{path: '/UnitPrice'}, {path:'/Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}, constraints:{minimum: 0}}"
+              placeholder="Enter {i18n>UnitPrice}"/>
+
+          <Label wrapping="true" text="{i18n>TaxCode}"/>
+          <c:ComboBox selectedKey="{/TaxCode}" change="validateComboBoxChange"
+              enabled="false"
+              items="{ path : 'dropDownModel>/TaxCodes', sorter: {path: 'Key', descending: false}}">
+            <core:ListItem key="{dropDownModel>Key}"
+                text="{parts: [{path:'dropDownModel>Key'}, {path: 'dropDownModel>Value'}],
+                    formatter: '.formatter.valueHelpDisplay'}"/>
+          </c:ComboBox>
+
+          <Label wrapping="true" text="{i18n>DeliveryDate}" tooltip="{i18n>DeliveryDate.tooltip}"/>
+          <c:DatePicker required="{= ${viewModel>/enableQtyDate} !== false &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"
+              displayFormat="dd.MM.yyyy" valueFormat="dd.MM.yyyy"
+              value="{path: '/DeliveryDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"
+              editable="{= ${viewModel>/enableQtyDate} !== false &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"/>
+
+          <Label wrapping="true" text="{i18n>ZeroLine}"/>
+          <c:CheckBox selected="{path:'/IsZeroLine'}"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+              editable="false"/>
+
+          <Label wrapping="true" text="{i18n>ReturnsItem}"/>
+          <c:CheckBox selected="{path:'/IsReturn'}"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+              editable="false"/>
+
+          <Label wrapping="true" text="{i18n>DeliveryComplete}"/>
+          <c:CheckBox selected="{path:'/IsDeliveryComplete'}"
+              editable="{= ${/IsPrepayment} !== 'Y' &amp;&amp; ${path: '/ParentNumber', formatter: '.formatter.isNotEmpty'}}"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"/>
+
+          <Label wrapping="true" text="{i18n>FinalInvoice}"/>
+          <c:CheckBox selected="{path:'/IsFinalInvoice'}"
+              editable="false"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"/>
+
+          <Label text=""/>
+          <Button text="{i18n>li.text.btn}" press="onAddLiTextClick"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}">
+            <customData>
+              <core:CustomData key="keepInDisplay" value="true"/>
+            </customData>
+          </Button>
+        </f:content>
+      </f:SimpleForm>
+
+    <f:SimpleForm
+      editable="true"
+      layout="ColumnLayout"
+      columnsM="2"
+      columnsL="2"
+      columnsXL="2"
+      labelSpanXL="9"
+      labelSpanL="5"
+      labelSpanM="2">
+      <f:toolbar>
+        <Toolbar id="TB1">
+          <Title text="{i18n>li.AccountAssignment.title}" />
+          <Link text="{i18n>coa.app.title}" press="onCOAPress"/>
+          <ToolbarSpacer/>
+          <Button text="{i18n>btn.CopyPrevious}" tooltip="{i18n>btn.CopyPrevious.tooltip}" press="onAccountAssignmentCopy"
+              type="Ghost" visible="{= ${viewModel>/EnableCopy} === true &amp;&amp; ${viewModel>/hasConsumption} !== true}"
+              enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"/>
+        </Toolbar>
+      </f:toolbar>
+      <f:content>
+        <Label wrapping="true" text="{i18n>AssignmentType}"/>
+        <c:ComboBox selectedKey="{/AssignmentTypeCode}" change="onAssignmentTypeChange"
+          required="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+          enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+          editable="{= ${viewModel>/hasConsumption} !== true}"
+            items="{ path : 'dropDownModel>/AssignmentType', sorter: {path: 'Key', descending: false}}">
+            <core:ListItem key="{dropDownModel>Key}" enabled="{= ${dropDownModel>disabled} !== true}"
+                text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}],
+                    formatter: '.formatter.valueHelpDisplay'}"/>
+        </c:ComboBox>
+
+        <Label wrapping="true" text="Distribution"/>
+        <combo:ComboBox selectedKey="{/Distribution}" change="onDistributionChange"
+          required="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+          enabled="{path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}"
+          items="{ path : 'dropDownModel>/DistributionTypes', sorter: {path: 'Key', descending: false}}"
+          editable="{= ${viewModel>/hasConsumption} !== true}">
+          <core:ListItem key="{dropDownModel>Key}" text="{dropDownModel>Value}"/>
+        </combo:ComboBox>
+
+        <Label wrapping="true" text="Partial Invoice Indicator"/>
+        <combo:ComboBox selectedKey="{/PartialInvoiceInd}" change="onPartialInvoiceIndChange"
+          items="{ path : 'dropDownModel>/PartialInvoices', sorter: {path: 'Key', descending: false}}"
+          editable="{= ${viewModel>/hasConsumption} !== true}"
+          enabled="{= ${/Distribution} > 0}" required="{= ${/Distribution} > 0}">
+          <core:ListItem key="{dropDownModel>Key}" text="{dropDownModel>Value}"/>
+        </combo:ComboBox>
+
+
+
+        <Label wrapping="true" text="{i18n>Asset}"/>
+        <c:Input required="{= ${/Distribution} === '0' &amp;&amp; ${/AssignmentTypeCode} === 'A'}"
+             value="{parts: [{path: 'AssignmentModel>/Asset'}, {path:'AssignmentModel>/AssetSubNumber'}, {path:'AssignmentModel>/AssetDesc'}], formatter: '.formatter.assetValueHelpDisplay'}"
+             showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+             enabled="{= ${/Distribution} === '0' &amp;&amp; ${/AssignmentTypeCode} === 'A'}" editable="{= ${viewModel>/hasConsumption} !== true}"
+             >
+          <c:customData>
+            <core:CustomData key="dialogName" value="createLIAssetDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label wrapping="true" text="{i18n>GLAccount}"/>
+        <c:Input required="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X')}"
+             value="{parts: [{path: 'AssignmentModel>/GLAccount'}, {path:'AssignmentModel>/GLAccountDesc'}], formatter: '.formatter.valueHelpDisplay'}"
+             showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+             enabled="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X')}"
+             >
+          <c:customData>
+            <core:CustomData key="dialogName" value="createLIGLDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label wrapping="true" text="{i18n>CostCentre}"/>
+        <c:Input required="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X')}"
+             value="{parts: [{path: 'AssignmentModel>/CostCentre'}, {path:'AssignmentModel>/CostCentreDesc'}], formatter: '.formatter.valueHelpDisplay'}"
+             showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+             enabled="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X')}"
+             >
+          <c:customData>
+            <core:CustomData key="dialogName" value="createLICostDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label wrapping="true" text="{i18n>InternalOrder}"/>
+        <c:Input value="{parts: [{path: 'AssignmentModel>/InternalOrder'}, {path:'AssignmentModel>/InternalOrderDesc'}], formatter: '.formatter.valueHelpDisplay'}"
+            enabled="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}"
+            required="{= ${/Distribution} === '0' &amp;&amp; ${/AssignmentTypeCode} === 'F'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+          >
+          <c:customData>
+            <core:CustomData key="dialogName" value="createLIInternalDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label wrapping="true" text="{i18n>WBSElement}"/>
+        <c:Input value="{parts: [{path: 'AssignmentModel>/WBSElement'}, {path:'AssignmentModel>/WBSElementDesc'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"
+            enabled="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}"
+            required="{= ${/Distribution} === '0' &amp;&amp; (${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+          >
+          <c:customData>
+            <core:CustomData key="dialogName" value="createLIWBSDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label wrapping="true" text="{i18n>MilitaryOperation}" tooltip="{i18n>MilitaryOperation.tooltip}"/>
+        <CheckBox selected="{path:'viewModel>/IsMilitaryOperation'}" select="onMilitaryOperation"
+            enabled="{= ${/Distribution} === '0' &amp;&amp; ${/AssignmentTypeCode} !== 'U' &amp;&amp; ${/AssignmentTypeCode} !== 'X'}"/>
+
+        <Label wrapping="true" text="{i18n>Fund}" tooltip="{i18n>Fund.tooltip}"/>
+        <c:ComboBox change="validateComboBoxChange" selectedKey="{AssignmentModel>/Fund}" placeholder="{i18n>Fund.placeholder}"
+          busy="{= ${viewModel>/busyFund} === true}" busyIndicatorDelay="0"
+          enabled="{= ${/Distribution} === '0' &amp;&amp; ${/AssignmentTypeCode} !== 'U' &amp;&amp; ${/AssignmentTypeCode} !== 'X' &amp;&amp; ${viewModel>/IsMilitaryOperation} === true }"
+          items="{ path : 'fundModel>/', sorter: {path: 'Key', descending: false}}" fieldGroupIds="NonMandatoryStatus">
+          <core:ListItem key="{fundModel>Key}"
+              text="{parts: [{path: 'fundModel>Key'}, {path:'fundModel>Value'}],
+                  formatter: '.formatter.valueHelpDisplay'}"/>
+        </c:ComboBox>
+
+        <Label wrapping="true" text="{i18n>ESP}"/>
+        <combo:ComboBox selectedKey="{/ESP}" change="validateComboBoxChange"
+          required="{= ${/AssignmentTypeCode} !== 'A' &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"
+          editable="{= ${/AssignmentTypeCode} !== 'A' &amp;&amp; ${path: '/ParentLineNumber', formatter: '.formatter.isNotEmpty'}}"
+          items="{ path : 'dropDownModel>/ESPs', sorter: {path: 'Key', descending: false}}">
+          <core:ListItem key="{dropDownModel>Key}"
+              text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}],
+                  formatter: '.formatter.valueHelpDisplay'}"/>
+        </combo:ComboBox>
+      </f:content>
+    </f:SimpleForm>
+
+    <f:SimpleForm
+      editable="true"
+      layout="ColumnLayout"
+      title="{i18n>li.Prepayment.title}"
+      columnsM="2"
+      columnsL="2"
+      columnsXL="2"
+      labelSpanXL="3"
+      labelSpanL="5"
+      labelSpanM="2">
+      <f:content>
+        <Label wrapping="true" text="{i18n>Prepayment}">
+          <tooltip>
+            <tooltip:CustomTooltip >
+              <FormattedText class="sapUiSmallMargin" htmlText="{i18n>Prepayment.tooltip}"/>
+            </tooltip:CustomTooltip>
+          </tooltip>
+        </Label>
+        <c:RadioButtonGroup required="true" columns="2"
+            selectedIndex="{
+              path: '/IsPrepayment',
+              type: 'fss.ssp.CustomTypes.YesNoRadio',
+              constraints:{value0: 'Y', value1: 'N'}
+            }"
+            enabled="{= ${/IsNonDeletable} !== true &amp;&amp; ${/IsDeliveryComplete} !== true &amp;&amp; ${/IsFinalInvoice} !== true}">
+          <c:tooltip>
+            <tooltip:CustomTooltip >
+              <FormattedText class="sapUiSmallMargin" htmlText="{i18n>Prepayment.tooltip}"/>
+            </tooltip:CustomTooltip>
+            </c:tooltip>
+          <RadioButton text="Yes" />
+          <RadioButton text="No" />
+        </c:RadioButtonGroup>
+        <!--<CheckBox selected="{path:'/IsPrepayment'}" editable="{= ${/IsNonDeletable} !== true &amp;&amp; ${/IsDeliveryComplete} !== true &amp;&amp; ${/IsFinalInvoice} !== true}"/>-->
+
+        <Label wrapping="true" text="{i18n>StraightLine}" tooltip="{i18n>StraightLine.tooltip}"/>
+        <!--<c:CheckBox enabled="{=${/IsPrepayment} === true}" editable="{= ${/IsNonDeletable} !== true}" selected="{path:'/IsStraightLine'}"/>-->
+        <c:RadioButtonGroup columns="2"
+            selectedIndex="{
+              path: '/IsStraightLine',
+              type: 'fss.ssp.CustomTypes.YesNoRadio',
+              constraints:{value0: 'Y', value1: 'N'}
+            }"
+            required="{= ${/IsPrepayment} === 'Y'}"
+            enabled="{= ${/IsPrepayment} === 'Y'}"
+            tooltip="{i18n>StraightLine.tooltip}">
+          <RadioButton text="Yes" />
+          <RadioButton text="No" />
+        </c:RadioButtonGroup>
+
+        <Label wrapping="true" text="{i18n>Capital}" tooltip="{i18n>Capital.tooltip}"/>
+        <c:RadioButtonGroup columns="2"
+            selectedIndex="{
+              path: '/IsCapital',
+              type: 'fss.ssp.CustomTypes.YesNoRadio',
+              constraints:{value0: 'Capital', value1: 'Non-Capital'}
+            }"
+            tooltip="{i18n>Capital.tooltip}"
+            required="{= ${/IsPrepayment} === 'Y'}"
+            enabled="{= ${/IsPrepayment} === 'Y'}">
+          <RadioButton text="Capital" />
+          <RadioButton text="Non-Capital" />
+        </c:RadioButtonGroup>
+
+        <Label wrapping="true" text="{i18n>PrepaymentCompletedDate}" tooltip="{i18n>PrepaymentCompletedDate.tooltip}"/>
+        <c:DatePicker required="{=${/IsPrepayment} === 'Y'}" displayFormat="dd.MM.yyyy" value="{path: '/PrepaymentCompletedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"
+          enabled="{= ${/IsPrepayment} === 'Y' }" editable="{= ${/IsNonDeletable} !== true}" valueFormat="dd.MM.yyyy" tooltip="{i18n>PrepaymentCompletedDate.tooltip}"/>
+
+      </f:content>
+    </f:SimpleForm>
+    </c:content>
+    <c:buttons>
+      <core:Fragment fragmentName="fss.ssp.view.fragments.liFooter" type="XML" />
+      <!--<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"-->
+      <!--      visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>-->
+      <!--<Button text="OK" press="onAddLIConfirm" type="Emphasized" visible="{=${viewModel>/IsAdd} === true}"/>-->
+      <!--<Button text="OK" press="onEditLIConfirm" type="Emphasized" visible="{=${viewModel>/IsEdit} === true}"/>-->
+      <!--<Button text="Cancel" press="onAddLICancel"/>-->
+    </c:buttons>
+  </c:Dialog>
+</core:FragmentDefinition>

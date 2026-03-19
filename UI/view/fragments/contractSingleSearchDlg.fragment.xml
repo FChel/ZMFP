@@ -1,0 +1,29 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog
+		title="{i18n>dlg.contractSingleSearch.title}"
+		class="sapUiContentPadding sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true"
+		contentWidth="{= ${viewModel>/isSingle} === true ? '35rem' : '25rem'}">
+		<c:content>
+			
+			<Label text="{i18n>Contract}" required="true" tooltip="{i18n>ContractSearchTooltip}"/>
+			<Input required="true" value="{parts: [{path: 'viewModel>/contractNumber'}], formatter: '.formatter.valueHelpDisplay'}"
+					 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange" 
+					 maxLength="{path: 'mainModel>/#Contract/ContractNumber/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+					 placeholder="{i18n>dlg.contractSearch.placeholder}">
+				<customData>
+					<core:CustomData key="dialogName" value="contractSingleSearchDlg"/>
+				</customData>
+			</Input>
+		</c:content>
+		<c:buttons>
+        	<Button text="OK" enabled="{path: 'viewModel>/contractNumber', formatter: '.formatter.isNotEmpty'}" press="onContractSearchConfirm" type="Emphasized"/>
+			<Button text="Cancel" press="onContractSearchCancel"/>
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

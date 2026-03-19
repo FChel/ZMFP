@@ -1,0 +1,26 @@
+<mvc:View xmlns:core="sap.ui.core" 
+		xmlns:mvc="sap.ui.core.mvc" 
+		xmlns="sap.m" 
+		controllerName="fss.ssp.controller.CreateContract"
+		xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page
+        enableScrolling="true"
+		busy="{viewModel>/busy}"
+		busyIndicatorDelay="{viewModel>/delay}"
+		class="sapUiSizeCompact"
+		showHeader="{= !${componentModel>/inFLP}}">
+		<customHeader>
+            <core:Fragment fragmentName="fss.ssp.view.fragments.createHeader" type="XML" />
+		</customHeader>
+		<content>
+			<mvc:XMLView id="CreateView" viewName="fss.ssp.view.ContractContent"></mvc:XMLView>
+		</content>
+		<footer>
+            <Toolbar>
+                <content>
+					<core:Fragment fragmentName="fss.ssp.view.fragments.createFooter" type="XML" />
+                </content>
+            </Toolbar>
+        </footer>
+	</Page>
+</mvc:View>

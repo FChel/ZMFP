@@ -1,0 +1,65 @@
+<mvc:View xmlns:core="sap.ui.core" 
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns="sap.m" 
+	controllerName="fss.ssp.controller.CreatePhasing"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<core:Fragment fragmentName="fss.ssp.view.fragments.phasingTable" type="XML" />
+	<!--<Table-->
+	<!--	id="phasingTable"-->
+	<!--	width="auto"-->
+	<!--	items="{ path : 'Phasings', -->
+	<!--				sorter: {path: 'DeliveryDate', descending: false}, -->
+	<!--				filters: [-->
+	<!--				{-->
+	<!--					filters : [-->
+	<!--						{ path : 'ItemLineNumber', operator : 'EQ', value1 : 'xxx', and: true}-->
+	<!--					], -->
+	<!--					and: true-->
+	<!--				}]}"-->
+	<!--	noDataText="{i18n>PhasingsNoDataText}"-->
+	<!--	class="sapUiTinyMargin worklistTable"-->
+	<!--	updateFinished="onTableUpdateFinished">-->
+	<!--	<headerToolbar>-->
+	<!--		<Toolbar >-->
+	<!--			<Title text="{viewModel>/phasingTableTitle}"/>-->
+	<!--			<ToolbarSpacer/>-->
+	<!--			<Select	id="phasingLineNumberSelect" width="18rem" -->
+	<!--				items="{path: 'ContractLIs', events: { change: '.onLiDataChangePhasing' }}" -->
+	<!--				selectedKey="{viewModel>/SelectedLine}" change="onLineItemChange">-->
+	<!--				<core:ListItem key="{LineNumber}" text="{path: 'LineNumber', formatter: '.formatter.lineNumberFormatter'} - {LineDescription}"/>-->
+	<!--			</Select>-->
+	<!--			<ToolbarSpacer/>-->
+	<!--			<HBox visible="{= ${viewModel>/displayMode} !== true}">-->
+	<!--				<Button icon="sap-icon://add" tooltip="{i18n>btn.AddPhasing}" press="onAddPhasing"  enabled="{= ${viewModel>/enablePhasingAction} === true}"/>-->
+	<!--			</HBox>-->
+	<!--		</Toolbar>-->
+	<!--	</headerToolbar>-->
+	<!--	<columns>-->
+	<!--		<Column width="3.5rem">-->
+	<!--			<Text text="{i18n>LineNumber}"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="25rem">-->
+	<!--			<Text text="{i18n>ItemLineDescription}"/>-->
+	<!--		</Column>-->
+	<!--		<Column>-->
+	<!--			<Text text="{i18n>DeliveryDate}"/>-->
+	<!--		</Column>-->
+	<!--		<Column>-->
+	<!--			<Text text="{i18n>SchQuantity}"/>-->
+	<!--		</Column>-->
+	<!--		<Column width="3.5rem" visible="{= ${viewModel>/displayMode} !== true}">-->
+	<!--			<Text text="Action"/>-->
+	<!--		</Column>-->
+	<!--	</columns>-->
+	<!--	<items>-->
+	<!--		<ColumnListItem id="phasingListItem" type="Navigation" press="onPhasingPress" >-->
+	<!--			<Text text="{path: 'PhasingLineNumber', formatter: '.formatter.lineNumberFormatter'}"/>-->
+	<!--			<Text text="{LineDescription}"/>-->
+	<!--			<Text text="{path: 'DeliveryDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />-->
+	<!--			<Text text="{path: 'SchQuantity', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: false}, constraints:{scale: 'variable'}}"/>-->
+	<!--			<Button icon="sap-icon://delete" tooltip="{i18n>btn.DeleteLineItem}" press="onDeleteLI" -->
+	<!--								enabled="{= ${viewModel>/enablePhasingAction} === true &amp;&amp; ${viewModel>/enableDelete} !== false}" visible="{= ${viewModel>/displayMode} !== true}"/>-->
+	<!--		</ColumnListItem>-->
+	<!--	</items>-->
+	<!--</Table>-->
+</mvc:View>

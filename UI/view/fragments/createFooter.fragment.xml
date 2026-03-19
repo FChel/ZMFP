@@ -1,0 +1,18 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:c="fss.ssp.controls">
+    <Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" tooltip="btn.error"
+                  visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+        <c:Button id="validateBtn" text="{i18n>btn.validate}" press="onValidatePress" type="Ghost" enabled="{= ${disableModel>/DisableFlag} !== true &amp;&amp; ${IsEditDisabled} !== true}"/>
+        <ToolbarSpacer/>
+        <Text text="" tooltip=""/>
+        <ToolbarSpacer/>
+        <c:Button id="DraftBtn" visible="{= ${IsDraft} === true}" text="{i18n>btn.draft}" press="onDraftPress" type="Ghost" enabled="{= ${disableModel>/DisableFlag} !== true &amp;&amp; ${IsEditDisabled} !== true}"/>
+        <c:Button id="submitBtn" text="{i18n>btn.submit}" press="onSubmitPress" type="Emphasized"
+            enabled="{= ${viewModel>/enableSubmit} === true &amp;&amp; ${disableModel>/DisableFlag} !== true &amp;&amp; ${IsEditDisabled} !== true &amp;&amp; (${viewModel>/approvalMandatory} !== true || (${ApprovalDetails/DelegateID} !== null &amp;&amp;
+${ApprovalDetails/DelegateID} !== undefined))}"/>
+        <Button visible="{= ${componentModel>/inFLP}}" enabled="{= ${IsDraft} === true}" tooltip="{i18n>btn.more}" icon="sap-icon://overflow" press="onMorePress" />
+</core:FragmentDefinition>

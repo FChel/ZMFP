@@ -1,0 +1,246 @@
+<core:FragmentDefinition 
+	xmlns="sap.m" 
+	xmlns:core="sap.ui.core" 
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:c="fss.ssp.controls"
+	xmlns:combo="fss.ssp.controls.ComboBox">
+	<!--<f:SimpleForm -->
+	<!--	editable="true"-->
+	<!--	layout="ResponsiveGridLayout"-->
+	<!--	columnsM="1"-->
+	<!--	columnsL="1"-->
+	<!--	columnsXL="1"-->
+	<!--	labelSpanXL="4"-->
+	<!--	labelSpanL="4"-->
+	<!--	labelSpanM="4"-->
+	<!--	class="noInnerTitleForm noBorderBar">-->
+	<!--	<f:toolbar>-->
+	<!--		<Toolbar class="noBorderBar">-->
+	<!--			<Title level="H1" text="{i18n>AddressDeliveryType}" class="sapUiMediumMarginEnd"/>-->
+				
+	<!--			<ToolbarSpacer/>-->
+	<!--			<Label wrapping="true" text="Line"/>-->
+	<!--			<c:Select id="addressLiContractSelect" width="{path: 'device>/system', formatter: '.formatter.liDropDownWidth'}" visible="{= ${viewModel>/isContract} === true}" change="onAddressLiChange"-->
+	<!--				items="{ path : 'ContractLIs', events: { change: '.onLiDataChangeAddress' }}">-->
+	<!--				<core:ListItem key="{LineNumber}" -->
+	<!--					text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+	<!--						formatter: '.formatter.valueHelpDisplay'}"/>-->
+	<!--				<c:layoutData>-->
+	<!--					<l:GridData span="XL4 L4 M4 S6"/>-->
+	<!--				</c:layoutData>-->
+	<!--			</c:Select>-->
+	<!--			<c:Select id="addressLiPoSelect" width="30%" visible="{= ${viewModel>/isPO} === true}" change="onAddressLiChange"-->
+	<!--				items="{ path : 'PurchaseOrderLIs', events: { change: '.onLiDataChangeAddress' }}">-->
+	<!--				<core:ListItem key="{LineNumber}" -->
+	<!--					text="{parts: [{path: 'LineNumber'}, {path:'LineDescription'}], -->
+	<!--						formatter: '.formatter.valueHelpDisplay'}"/>-->
+	<!--				<c:layoutData>-->
+	<!--					<l:GridData span="XL4 L4 M4 S6"/>-->
+	<!--				</c:layoutData>-->
+	<!--			</c:Select>-->
+	<!--			<CheckBox id="addressSameCheck" text="{i18n>SameAddress}" selected="{IsSameAddressForAll}" select="onSameAddressCheckPress" />-->
+	<!--			<ToolbarSpacer />-->
+	<!--		</Toolbar>-->
+	<!--	</f:toolbar>-->
+ <!--   </f:SimpleForm>-->
+    <f:SimpleForm
+		title="{i18n>POContactTitle}"
+		editable="true"
+        layout="ColumnLayout"
+			labelSpanXL="4"
+			labelSpanL="4"
+			labelSpanM="6"
+			labelSpanS="12"
+			columnsXL="2"
+			columnsL="2"
+			columnsM="2"
+		class="sapUiSizeCompact">
+		<f:content>
+			<!--<core:Title text="{i18n>POContactTitle}" />-->
+			<Label text="{i18n>EmpID}" />
+			<Input value="{parts: [{path: 'ContactDetails/POContactID'}], formatter: '.formatter.valueHelpDisplay'}"
+					 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onContactSearchHelpValueChange"
+					 maxLength="{path: 'searchHelpModel>/#User/UserId/@maxLength', formatter: '.formatter.lineNumberFormatter'}">
+				<customData>
+					<core:CustomData key="dialogName" value="createPOContactEmpDlg"/>
+				</customData>
+			</Input>
+			
+			<Label text="{i18n>Name}" />
+			<Input required="true" maxLength="{path: 'mainModel>/#ContactDetails/POContactName/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+					value="{ContactDetails/POContactName}" placeholder="{i18n>Name.placeholder}"/>
+
+			<Label text="{i18n>Email}" />
+			<Input required="true" type="Email" maxLength="{path: 'mainModel>/#ContactDetails/POContactEmail/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+					value="{path : 'ContactDetails/POContactEmail', type:'fss.ssp.CustomTypes.Email'}" placeholder="{i18n>Email.placeholder}" />
+			
+			<Label text="{i18n>PhoneNumber}" />
+			<Input required="true" maxLength="{path: 'mainModel>/#ContactDetails/POContactPhone/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+					value="{path: 'ContactDetails/POContactPhone', type:'fss.ssp.CustomTypes.PhoneNumber'}" placeholder="{i18n>PhoneNumber.placeholder}"/>
+			
+		</f:content>
+	</f:SimpleForm>
+	
+	
+	<VBox id="addressBox">
+		<f:SimpleForm
+			id="deliveryAddressForm1"
+			layout="ColumnLayout"
+			editable="true"
+			labelSpanXL="4"
+			labelSpanL="4"
+			labelSpanM="6"
+			labelSpanS="12"
+			columnsXL="2"
+			columnsL="2"
+			columnsM="2">
+			<f:toolbar>
+				<Toolbar >
+					<Title level="H1" text="{i18n>DeliveryAddress.title}" class="sapUiMediumMarginEnd"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:content>
+				<Label text="{i18n>AddressDeliveryType}"/>
+				<combo:ComboBox selectedKey="{DeliveryAddresses/DeliveryType}" change="validateComboBoxChange" required="true"
+						items="{path : 'dropDownModel>/AddressTypes'}">
+					<core:ListItem key="{dropDownModel>Key}" 
+							text="{path:'dropDownModel>Value'}"/>
+				</combo:ComboBox>
+				
+				<Label wrapping="true" text="{i18n>InvoiceContactEmail}" tooltip="{i18n>InvoiceContactEmailTooltip}"/>
+				<c:Input value="{path : 'DeliveryAddresses/InvoiceContactEmail', type:'fss.ssp.CustomTypes.Email'}" type="Email" 
+						maxLength="{path: 'mainModel>/#DeliveryAddress/InvoiceContactEmail/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress' || ${DeliveryAddresses/DeliveryType} === 'Pickup'  || ${DeliveryAddresses/DeliveryType} === 'RomanCode'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress' || ${DeliveryAddresses/DeliveryType} === 'Pickup' || (${viewModel>/editMode} === true &amp;&amp; ${IsDraft} !== true)}"
+						placeholder="{i18n>InvoiceContactEmail.placeholder}"/>
+			</f:content>
+		</f:SimpleForm>
+		<f:SimpleForm
+			id="deliveryAddressForm2"
+			layout="ResponsiveGridLayout"
+			editable="true"
+			labelSpanXL="4"
+			labelSpanL="4"
+			labelSpanM="6"
+			labelSpanS="12"
+			columnsXL="2"
+			columnsL="2"
+			columnsM="2"
+			class="sapUiTinyPaddingTop">
+			<f:content>
+				<!--<core:Title text="{i18n>AddressRoman}" />-->
+				<core:Title text="{i18n>Address}" />
+				<Label text="{i18n>AddressRomanCode}" />
+				<c:Input value="{parts: [{path: 'DeliveryAddresses/RomanAddressCode'}], formatter: '.formatter.valueHelpDisplay'}"
+						showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onRomanAddressSearchHelpValueChange"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'RomanCode'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'RomanCode'}"
+						fieldGroupIds="CreateContractVH,AddressFields,RomanCode"
+						
+						maxLength="{path: 'searchHelpModel>/#RomanAddress/Number/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						ignoreDisableChangeFire="true">
+					<c:customData>
+						<core:CustomData key="dialogName" value="createRomanAddressDlg"/>
+					</c:customData>
+				</c:Input>
+				
+				<!--<core:Title text="{i18n>Address}" />-->
+				
+				<Label text="{i18n>AddressName}" />
+				<c:Input value="{DeliveryAddresses/NewAddressName}" 
+						maxLength="{path: 'mainModel>/#DeliveryAddress/NewAddressName/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						fieldGroupIds="AddressFields,NewAddress"
+						placeholder="Enter {i18n>AddressName}"/>
+	
+				<Label text="{i18n>AddressStreet}" />
+				<c:Input value="{DeliveryAddresses/NewAddressStreet}" 
+						maxLength="{path: 'mainModel>/#DeliveryAddress/NewAddressStreet/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						fieldGroupIds="AddressFields,NewAddress"
+						placeholder="Enter {i18n>AddressStreet}"/>
+				
+				<Label text="{i18n>AddressCity}/{i18n>AddressPostcode}" />
+				<c:Input value="{DeliveryAddresses/NewAddressCity}"
+						maxLength="{path: 'mainModel>/#DeliveryAddress/NewAddressCity/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						fieldGroupIds="AddressFields,NewAddress"
+						placeholder="Enter {i18n>AddressCity}">
+					
+				</c:Input>
+				
+				<c:Input value="{DeliveryAddresses/NewAddressPostcode}" maxLength="7"
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						fieldGroupIds="AddressFields,NewAddress"
+						placeholder="Enter {i18n>AddressPostcode}">
+					<c:layoutData>
+						<l:GridData span="XL2 L3 M4 S4" />
+					</c:layoutData>
+				</c:Input>
+				
+				<Label text="{i18n>AddressCountry}" />
+				<combo:ComboBox selectedKey="{DeliveryAddresses/NewAddressCountry}" 
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress'}"
+						items="{path : 'dropDownModel>/Country', sorter: {path: 'Key', descending: false}}"
+						change="validateComboBoxChange" 
+						fieldGroupIds="AddressFields,NewAddress">
+					<core:ListItem key="{dropDownModel>Key}" 
+							text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+									formatter: '.formatter.valueHelpDisplay'}"/>
+				</combo:ComboBox>
+				
+				<Label text="{i18n>AddressRegion}" />
+				<combo:ComboBox selectedKey="{DeliveryAddresses/NewAddressRegion}" change="validateComboBoxChange" 
+						required="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress' &amp;&amp; ${DeliveryAddresses/NewAddressCountry} === 'AU'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress' &amp;&amp; ${DeliveryAddresses/NewAddressCountry} === 'AU'}"
+						items="{path : 'dropDownModel>/Region', sorter: {path: 'Key', descending: false}}"
+						fieldGroupIds="AddressFields,NewAddress">
+					<core:ListItem key="{dropDownModel>Key}" 
+							text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+									formatter: '.formatter.valueHelpDisplay'}"/>
+				</combo:ComboBox>
+				
+				<!--<core:Title text="{i18n>PickupLocation}" />-->
+				<Label text="{i18n>PickupLocation}" />
+				<c:ExpandableTextArea value="{DeliveryAddresses/PickupLocation}" rows="3"
+				required="{= ${DeliveryAddresses/DeliveryType} === 'Pickup'}"
+						placeholder="{i18n>PickupLocation.placeholder}"
+						maxLength="{path: 'mainModel>/#DeliveryAddress/PickupLocation/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						/>
+				
+				<core:Title text="" />
+				<Label text="{i18n>SpecialInstructions}" />
+				<c:ExpandableTextArea value="{DeliveryAddresses/SpecialInstructions}" rows="8" 
+						placeholder="{i18n>SpecialInstructions.placeholder}"
+						maxLength="{path: 'mainModel>/#DeliveryAddress/SpecialInstructions/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+						enabled="{= ${DeliveryAddresses/DeliveryType} === 'NewAddress' || ${DeliveryAddresses/DeliveryType} === 'Pickup' || ${DeliveryAddresses/DeliveryType} === 'RomanCode'}"/>
+			</f:content>
+		</f:SimpleForm>
+		
+		<!--<f:SimpleForm-->
+		<!--	id="deliveryAddressForm2"-->
+		<!--	editable="true"-->
+	 <!--       layout="ColumnLayout"-->
+		<!--	labelSpanXL="4"-->
+		<!--	labelSpanL="5"-->
+		<!--	labelSpanM="5"-->
+		<!--	labelSpanS="12"-->
+		<!--	columnsXL="2"-->
+		<!--	columnsL="2"-->
+		<!--	columnsM="2"-->
+		<!--	class="sapUiSizeCompact">-->
+		<!--	<f:content>-->
+				
+				
+				
+		<!--	</f:content>-->
+		<!--</f:SimpleForm>-->
+	</VBox>
+	
+</core:FragmentDefinition>

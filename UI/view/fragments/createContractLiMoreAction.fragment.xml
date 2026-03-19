@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+  <ActionSheet
+    title="Choose Your Action"
+    placement="HorizontalPreferredLeft">
+      <Button text="Copy" press="onCopyLI" icon="sap-icon://copy" tooltip="Copy"/>
+      <Button text="Lock" press="onLockLi" icon="sap-icon://locked" tooltip="Lock"
+          enabled="{= ${path: 'ParentNumber', formatter: '.formatter.isNotEmpty'}}" visible="{= ${Status} !== 'S' &amp;&amp; ${Status} !== 'D'}"/>
+      <Button text="Unlock" press="onLockLi" icon="sap-icon://unlocked" tooltip="Unlock" visible="{= ${Status} === 'S' &amp;&amp; ${Status} !== 'D'}"/>
+      <Button text="Delete" press="onDeleteLI" icon="sap-icon://delete" tooltip="Delete" enabled="{= ${IsNonDeletable} !== true}" visible="{= ${Status} !== 'L'}"/>
+      <Button text="Undelete" press="onUndeleteLi" icon="sap-icon://undo" tooltip="Undelete" enabled="{= ${viewModel>/isPO} === true || ${IsNonUnDeletable} !== true}" visible="{= ${Status} === 'L'}"/>
+      <Button text="Close" press="onCloseLi" icon="sap-icon://BusinessSuiteInAppSymbols/icon-decrease" tooltip="{i18n>close.btn.tooltip}" enabled="{= ${IsCloseable} === true}"/>
+      <Button text="Transfer" press="onTransferLi" icon="sap-icon://BusinessSuiteInAppSymbols/icon-increase-indent" tooltip="{i18n>transfer.btn.tooltip}" enabled="{= ${IsCloseable} === true}"/>
+      <Button text="Re-Open" press="onReopenLi" icon="sap-icon://undo" tooltip="{i18n>reopen.btn.tooltip}" enabled="{= ${IsFinalInvoice} === true }" />
+  </ActionSheet>
+</core:FragmentDefinition>

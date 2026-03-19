@@ -1,0 +1,129 @@
+<mvc:View xmlns:core="sap.ui.core"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="fss.ssp.controller.ContractPoTable"
+  xmlns:html="http://www.w3.org/1999/xhtml">
+  <Toolbar class="sapUiTinyMargin">
+    <Title class="sapUiTinyMarginBegin" text="{i18n>contract.Summary.header}" level="H1" titleStyle="H3" />
+  </Toolbar>
+  <HBox width="100%" alignItems="Start" class="headerForm sapUiTinyMargin sapUiMediumMarginBottom">
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>contract.Summary.total}:"/>
+      <Text class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/ContractTotalValue'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+    </HBox>
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>contract.Summary.ordered}:"/>
+      <Text class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/ContractTotalOrdered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+    </HBox>
+    <HBox width="100%">
+      <Label textAlign="End" text="{i18n>contract.Summary.unassigned}:"/>
+      <Text  class="sapUiTinyMarginBeginEnd" text="{parts: [{path: 'ConsumptionSummary/ContractUnassignedValue'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+    </HBox>
+  </HBox>
+
+  <Table
+    id="contractPoTable"
+    items="{path: 'PoTabModel>/'}"
+    alternateRowColors="true"
+    width="auto"
+    noDataText="{i18n>noPOText}"
+    growing="true"
+    growingThreshold="10"
+    growingScrollToLoad="false"
+    updateFinished="onUpdateFinished"
+    class="sapUiTinyMargin sapUiNoContentPadding sapUiSizeCompact"
+    busyIndicatorDelay="0"
+    busy="{viewModel>/poTableBusy}">
+    <headerToolbar>
+      <Toolbar >
+        <Title id="poTitle" text="{poViewModel>/poTableTitle}"/>
+        <ToolbarSpacer/>
+        <HBox>
+          <Button class="sapUiTinyMarginEnd" press="onOaReport" text="{i18n>btn.OaToPoReport}" type="Ghost" tooltip="{i18n>btn.OaToPoReport}" visible="{= ${IsSinglePO} !== true &amp;&amp; ${sspIndicatorModel>/isSsp} === true}"/>
+          <Button icon="sap-icon://add" press="onAddPo" type="Emphasized" text="{i18n>add.po.btn}" tooltip="{i18n>poCreateTooltip}"
+              enabled="{= ${disableModel>/DisableFlag} !== true}" visible="{= ${IsSinglePO} !== true &amp;&amp; ${sspIndicatorModel>/isSsp} === true}"/>
+        </HBox>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column >
+        <Text text="{i18n>number}"/>
+      </Column>
+      <Column >
+        <Text text="{i18n>PGrp}" tooltip="{i18n>PGrp.tooltip}"/>
+      </Column>
+      <Column >
+        <Text text="{i18n>CreationDate}"/>
+        <footer>
+          <Text visible="{= ${poViewModel>/Currency} === ${Currency}}" text="{i18n>po.total.title}"/>
+        </footer>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.Summary.ordered}"/>
+        <footer>
+          <Text visible="{= ${poViewModel>/Currency} === ${Currency}}"
+              text="{parts: [{path: 'ConsumptionSummary/TotalOrdered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+        </footer>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.Summary.delivered}"/>
+        <footer>
+          <Text visible="{= ${poViewModel>/Currency} === ${Currency}}"
+              text="{parts: [{path: 'ConsumptionSummary/TotalDelivered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+        </footer>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.Summary.invoiced}"/>
+        <footer>
+          <Text visible="{= ${poViewModel>/Currency} === ${Currency}}"
+              text="{parts: [{path: 'ConsumptionSummary/TotalInvoiced'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+        </footer>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.Summary.toBeDelivered}"/>
+        <footer>
+          <Text visible="{= ${poViewModel>/Currency} === ${Currency}}"
+              text="{parts: [{path: 'ConsumptionSummary/ToBeDelivered'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+        </footer>
+      </Column>
+      <Column hAlign="End">
+        <Text text="{i18n>Consumption.Summary.toBeInvoiced}"/>
+        <footer>
+          <Text  visible="{= ${poViewModel>/Currency} === ${Currency}}"
+              text="{parts: [{path: 'ConsumptionSummary/ToBeInvoiced'}, {path:'ConsumptionSummary/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+        </footer>
+      </Column>
+      <Column >
+        <Text text="{i18n>Currency}"/>
+        <footer>
+          <Text text="{ConsumptionSummary/Currency}" visible="{= ${poViewModel>/Currency} === ${Currency}}"/>
+        </footer>
+      </Column>
+      <Column width="4.5rem" visible="{= ${disableModel>/DisableFlag} !== true}">
+        <Text text="Action"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem
+        type="{= ${IsSinglePO} === true ? 'Inactive' : 'Navigation'}"
+        press="onPoPress"
+        id="ContractPoColumnLi">
+        <cells>
+          <Text text="{PoTabModel>ParentNumber}"/>
+          <Text text="{PoTabModel>PurchasingGroup}"/>
+          <Text text="{path: 'PoTabModel>CreatedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"/>
+          <Text text="{parts: [{path: 'PoTabModel>TotalOrdered'}, {path:'PoTabModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{parts: [{path: 'PoTabModel>TotalDelivered'}, {path:'PoTabModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{parts: [{path: 'PoTabModel>TotalInvoiced'}, {path:'PoTabModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{parts: [{path: 'PoTabModel>ToBeDelivered'}, {path:'PoTabModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{parts: [{path: 'PoTabModel>ToBeInvoiced'}, {path:'PoTabModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+          <Text text="{PoTabModel>Currency}"/>
+          <HBox>
+            <Button icon="sap-icon://edit" tooltip="Edit" press="onEditPo"/>
+            <Button class="sapUiTinyMarginBegin" press="onCopyPo" icon="sap-icon://copy" tooltip="Copy" enabled="{ path: 'ConsumptionSummary/ContractUnassignedValue',formatter: '.formatter.isNotZero'}"/>
+          </HBox>
+        </cells>
+      </ColumnListItem>
+    </items>
+  </Table>
+</mvc:View>

@@ -1,0 +1,153 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog title="{i18n>createAssignmentTitle}"
+		class="sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true"
+		beforeOpen="onLIBeforeOpen"
+		contentWidth="{path: 'device>/system', formatter: '.formatter.liDialogWidth'}">
+		<c:content>
+			<f:SimpleForm 
+				editable="true"
+				layout="ColumnLayout"
+				columnsM="2"
+				columnsL="2"
+				columnsXL="2"
+				labelSpanXL="9"
+				labelSpanL="5"
+				labelSpanM="2">
+				<f:toolbar>
+					<Toolbar id="TB1">
+						<Title text="{i18n>li.AccountAssignment.title}"	/>
+						<Link text="{i18n>coa.app.title}" press="onCOAPress"/>
+						<ToolbarSpacer/>
+					</Toolbar>
+				</f:toolbar>
+				<f:content>
+					<!--<Label wrapping="true" text="{i18n>AssignmentType}"/>-->
+					<!--<c:ComboBox selectedKey="{/AssignmentTypeCode}" required="true" change="onAssignmentTypeChange"-->
+					<!--	visible="{= ${viewModel>/isPO} === true || ${DocumentModel>IsSinglePO} === true}"-->
+					<!--	editable="{= ${viewModel>/hasConsumption} !== true}"-->
+					<!--	items="{ path : 'dropDownModel>/AssignmentType', sorter: {path: 'Key', descending: false}}">-->
+					<!--	<core:ListItem key="{dropDownModel>Key}" enabled="{= ${dropDownModel>disabled} !== true}"-->
+					<!--			text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], -->
+					<!--					formatter: '.formatter.valueHelpDisplay'}"/>-->
+					<!--</c:ComboBox>-->
+					<!--<Label wrapping="true" text="{i18n>AssignmentType}"/>-->
+					<!--<c:ComboBox selectedKey="{/AssignmentTypeCode}" required="true" change="onAssignmentTypeChange"-->
+					<!--	visible="{= ${viewModel>/isPO} !== true &amp;&amp; ${DocumentModel>IsSinglePO} !== true}"-->
+					<!--	editable="{= ${viewModel>/hasConsumption} !== true}"-->
+					<!--	items="{ path : 'dropDownModel>/AssignmentTypeContract', sorter: {path: 'Key', descending: false}}">-->
+					<!--	<core:ListItem key="{dropDownModel>Key}" enabled="{= ${dropDownModel>disabled} !== true}"-->
+					<!--			text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], -->
+					<!--					formatter: '.formatter.valueHelpDisplay'}"/>-->
+					<!--</c:ComboBox>-->
+					<Label wrapping="true" text="{i18n>ItemLineNumber}"/>
+					<Input value="{parts: [{path: '/LineNumber'}, {path:'/LineDescription'}], formatter: '.formatter.valueHelpDisplay'}" editable="false" />
+					
+					<Label wrapping="true" text="{i18n>Asset}"/>
+					<c:Input required="{= ${/AssignmentTypeCode} === 'A'}" 
+							 value="{parts: [{path: 'AssignmentModel>/Asset'}, {path:'AssignmentModel>/AssetSubNumber'}, {path:'AssignmentModel>/AssetDesc'}], formatter: '.formatter.assetValueHelpDisplay'}"
+							 showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 enabled="{= ${/AssignmentTypeCode} === 'A'}"  >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIAssetDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>GLAccount}"/>
+					<c:Input required="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X')}" 
+							 value="{parts: [{path: 'AssignmentModel>/GLAccount'}, {path:'AssignmentModel>/GLAccountDesc'}], formatter: '.formatter.valueHelpDisplay'}"
+							 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 enabled="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X')}" 
+							 >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIGLDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>CostCentre}"/>
+					<c:Input required="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X')}" 
+							 value="{parts: [{path: 'AssignmentModel>/CostCentre'}, {path:'AssignmentModel>/CostCentreDesc'}], formatter: '.formatter.valueHelpDisplay'}"
+							 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 enabled="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X')}"
+							 >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLICostDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>InternalOrder}"/>
+					<c:Input value="{parts: [{path: 'AssignmentModel>/InternalOrder'}, {path:'AssignmentModel>/InternalOrderDesc'}], formatter: '.formatter.valueHelpDisplay'}" 
+							enabled="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}"
+							required="{= ${/Distribution} !== '0' &amp;&amp; ${/AssignmentTypeCode} === 'F'}" 
+							showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							>
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIInternalDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>WBSElement}"/>
+					<c:Input value="{parts: [{path: 'AssignmentModel>/WBSElement'}, {path:'AssignmentModel>/WBSElementDesc'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}" 
+							enabled="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}"
+							required="{= ${/Distribution} !== '0' &amp;&amp; (${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T')}" 
+							showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							>
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIWBSDlg"/>
+						</c:customData>
+					</c:Input>
+					
+					<Label wrapping="true" text="{i18n>MilitaryOperation}" tooltip="{i18n>MilitaryOperation.tooltip}"/>
+					<CheckBox selected="{path:'viewModel>/IsMilitaryOperation'}" select="onMilitaryOperation"
+						enabled="{= ${/Distribution} !== '0' &amp;&amp; ${/AssignmentTypeCode} !== 'U' &amp;&amp; ${/AssignmentTypeCode} !== 'X'}"/>
+					
+					<Label wrapping="true" text="{i18n>Fund}" tooltip="{i18n>Fund.tooltip}"/>
+					<c:ComboBox	change="validateComboBoxChange" selectedKey="{AssignmentModel>/Fund}" placeholder="{i18n>Fund.placeholder}"
+						busy="{= ${viewModel>/busyFund} === true}" busyIndicatorDelay="0"
+						enabled="{= ${/Distribution} !== '0' &amp;&amp; ${/AssignmentTypeCode} !== 'U' &amp;&amp; ${/AssignmentTypeCode} !== 'X' &amp;&amp; ${viewModel>/IsMilitaryOperation} === true }"
+						items="{ path : 'fundModel>/', sorter: {path: 'Key', descending: false}}" fieldGroupIds="NonMandatoryStatus">
+						<core:ListItem key="{fundModel>Key}" 
+								text="{parts: [{path: 'fundModel>Key'}, {path:'fundModel>Value'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</c:ComboBox>
+					
+					<Label wrapping="true" text="{i18n>AssignmentQuantity}" />
+					<Input required="{= ${/Distribution} === '1'}" visible="{= ${/Distribution} === '1'}"
+							validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError" 
+							value="{path:'AssignmentModel>/Quantity', type:'sap.ui.model.odata.type.Decimal', formatOptions:{decimals: 3, groupingEnabled: true}, constraints:{precision: 13, scale: 3, minimum: '0'}}"
+							placeholder="Enter {i18n>AssignmentQuantity}" liveChange="onQtyLiveChange"/>
+					
+					<Label wrapping="true" text="{i18n>AssignmentPercentage}" />
+					<Input required="{= ${/Distribution} === '2'}" visible="{= ${/Distribution} === '2'}"
+							validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError" 
+							value="{path:'AssignmentModel>/Percentage', type:'sap.ui.model.odata.type.Decimal', formatOptions:{decimals: 1, groupingEnabled: true}, constraints:{precision: 4, scale: 1, minimum: '0', maximum: '99.9'}}"
+							placeholder="Enter {i18n>AssignmentPercentage}" liveChange="onQtyLiveChange"/>
+							
+					<Label wrapping="true" text="{i18n>AssignmentAmount}" />
+					<c:Input required="{= ${/Distribution} === '3'}" visible="{= ${/Distribution} === '3'}"
+							validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError" 
+							value="{parts: [{path: 'AssignmentModel>/Amount'}, {path:'/Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}, constraints:{minimum: 0, maximum: 9999999999999}}"
+							placeholder="Enter {i18n>AssignmentAmount}" liveChange="onAmountLiveChange"/>
+							
+					
+				</f:content>
+			</f:SimpleForm>
+		</c:content>
+
+	<c:buttons>
+		<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"
+				visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+		<c:Button text="OK" press="onAddAssignmentConfirm" type="Emphasized" visible="{=${viewModel>/IsAdd} === true}"/>
+		<c:Button text="OK" press="onEditAssignmentConfirm" type="Emphasized" visible="{=${viewModel>/IsEdit} === true}"/>
+		<Button text="Cancel" press="onAddAssignmentCancel"/>
+	</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

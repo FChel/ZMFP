@@ -1,0 +1,24 @@
+<core:FragmentDefinition
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog title="PRF Dialog" 
+		class="sapUiSizeCompact" 
+		contentHeight="100%" 
+		contentWidth="80%" 
+		afterOpen="onAfterPrfOpen"
+		draggable="true"
+		resizable="true">
+        <c:content>
+			<html:iframe
+				beforeExit="onBeforeExit"
+				id="prfIFrame"
+				importance="high">
+			</html:iframe>
+        </c:content>
+        <c:buttons>
+			<Button text="Cancel" press="onPrfCancel"/>
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

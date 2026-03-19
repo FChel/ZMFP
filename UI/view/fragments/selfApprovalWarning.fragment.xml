@@ -1,0 +1,20 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog
+		title="{i18n>dlg.selfApproval.title}"
+		class="sapUiContentPadding sapUiSizeCompact"
+		type= "Message"
+		state="Warning"
+		draggable="true"
+		resizable="true">
+		<c:content>
+			<FormattedText htmlText="{i18n>dlg.selfApproval.text}"/>
+		</c:content>
+		<c:buttons>
+			<Button text="Ok" press="onSelfApproveConfirm" type="Emphasized"/>
+			<Button text="Cancel" press="onSelfApproveCancel" />
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

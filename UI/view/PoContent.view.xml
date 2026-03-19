@@ -1,0 +1,96 @@
+<mvc:View xmlns:core="sap.ui.core"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="fss.ssp.controller.PoContent"
+  xmlns:html="http://www.w3.org/1999/xhtml">
+  <MessageStrip
+        text="{disableModel>/DisableText}"
+        visible="{= ${disableModel>/DisableFlag} === true}"
+        type="Warning"
+        showIcon="true"
+        enableFormattedText="true"
+        showCloseButton="false"
+        class="sapUiSizeCompact sapUiTinyMargin"/>
+  <MessageStrip
+        text="{= ${IsEditDisabled} === true ? ${i18n>error.docMigrated} : ${i18n>warning.docMigrated}}"
+        visible="{= ${disableModel>/DisableFlag} !== true &amp;&amp; ${IsMigrated} === true}"
+        type="{= ${IsEditDisabled} === true ? 'Error' : 'Warning'}"
+        showIcon="true"
+        enableFormattedText="true"
+        showCloseButton="false"
+        class="sapUiSizeCompact sapUiTinyMargin"/>
+  <ObjectHeader
+    visible="{= ${sspIndicatorModel>/isSsp} === true}"
+    title="Document: {PONumber}"
+    number="{parts: [{path: 'viewModel>/totalInc'}, {path:'Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}}"
+    numberUnit="{Currency}"
+    responsive="true"
+    class="sapUiSizeCompact zTinyPadding rightTextAlignStatus">
+    <attributes>
+      <ObjectAttribute title="{i18n>poOutlineAgreement}" text="{ContractModel>/ContractNumber}"
+          active="{= ${viewModel>/displayMode} === true || ${viewModel>/editMode} === true || ${viewModel>/createMode} === true}" press="onContractPress"
+          visible="{path: 'ContractNumber', formatter: '.formatter.isNotEmpty'}" />
+      <ObjectAttribute title="{i18n>poOutlineAgreementTotal}" visible="{path: 'ContractModel>/ContractNumber', formatter: '.formatter.isNotEmpty'}"
+        text="{parts: [{path: 'ContractModel>/TotalValue'}, {path:'ContractModel>/Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: true}}" />
+      <!--<ObjectAttribute title="{i18n>Currency}" text=" {Currency}" />-->
+      <ObjectAttribute class="centreTextAlign" title="{i18n>poOutlineAgreementStart}" visible="{path: 'ContractModel>/ContractNumber', formatter: '.formatter.isNotEmpty'}"
+          text="{path: 'ContractModel>/StartDate',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+      <ObjectAttribute class="centreTextAlign" title="{i18n>poOutlineAgreementEnd}" visible="{path: 'ContractModel>/ContractNumber', formatter: '.formatter.isNotEmpty'}"
+          text="{path: 'ContractModel>/EndDate',type: 'sap.ui.model.type.Date',formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+      <!--<ObjectAttribute class="rightTextAlign hyperlinkAttribue" title="" text="{i18n>changeLog}" active="{path: 'ChangeLogUrl', formatter: '.formatter.isNotEmpty'}" press="onChangeLogPress" />-->
+      <!--<ObjectAttribute title="{i18n>UpdatedName}" text=" {ChangedByName}" />-->
+    </attributes>
+    <statuses>
+      <ObjectStatus
+        title="{i18n>Status}"
+        text="{parts: [{path: 'StatusDescLong'}, {path:'StatusDesc'}], formatter: '.formatter.contractStatusText'}"
+        state="{path: 'Status', formatter: '.formatter.contractStatus'}" />
+    </statuses>
+  </ObjectHeader>
+  <IconTabBar
+    id="iconTabBar"
+    expandable="false"
+    class="sapUiSizeCompact sapUiNoMargin sapUiNoContentPadding"
+    select="onTabSelect">
+    <items>
+      <IconTabFilter id="detailsTab" key="detailsTab" icon="sap-icon://list" tooltip="{i18n>tab.Details}" text="{i18n>tab.Details}">
+        <core:Fragment fragmentName="fss.ssp.view.fragments.createDetailsPo" type="XML" />
+      </IconTabFilter>
+      <IconTabSeparator icon="sap-icon://open-command-field"/>
+      <IconTabFilter id="lineItemTab" key="lineItemTab" icon="sap-icon://group-2" tooltip="{i18n>tab.LineItems}" text="{i18n>tab.LineItems}">
+        <core:Fragment fragmentName="fss.ssp.view.fragments.createLineItemPo" type="XML" />
+      </IconTabFilter>
+      <IconTabSeparator icon="sap-icon://open-command-field"/>
+      <IconTabFilter id="assignmentTab" key="assignmentTab" icon="sap-icon://expense-report" tooltip="{i18n>tab.Assignments}" text="{i18n>tab.Assignments.tooltip}">
+        <mvc:XMLView id="CreateAssignmentView" viewName="fss.ssp.view.CreatePoAssignment"/>
+      </IconTabFilter>
+      <IconTabSeparator icon="sap-icon://open-command-field"/>
+      <IconTabFilter id="contactTab" key="contactTab" icon="sap-icon://business-card" tooltip="{i18n>tab.Contact}" text="{i18n>tab.Contact}">
+        <!--<core:Fragment fragmentName="fss.ssp.view.fragments.createContact" type="XML" />-->
+        <mvc:XMLView id="CreateContactView" viewName="fss.ssp.view.CreateContact"/>
+      </IconTabFilter>
+      <IconTabSeparator icon="sap-icon://open-command-field" />
+      <IconTabFilter id="attachmentsTab" key="attachmentsTab" icon="sap-icon://attachment" tooltip="{i18n>tab.Attachments}" text="{i18n>tab.Attachments}">
+        <core:Fragment fragmentName="fss.ssp.view.fragments.createAttachments" type="XML" />
+      </IconTabFilter>
+      <IconTabSeparator icon="sap-icon://open-command-field" />
+      <IconTabFilter id="approvalsTab" key="approvalsTab" icon="sap-icon://accounting-document-verification" tooltip="{i18n>tab.Approvals}" text="{i18n>tab.Approvals}">
+        <core:Fragment fragmentName="fss.ssp.view.fragments.createApprovals" type="XML" />
+      </IconTabFilter>
+      <IconTabSeparator icon="" >
+        <customData>
+          <core:CustomData key="keepInDisplay" value="true"/>
+        </customData>
+      </IconTabSeparator>
+      <IconTabFilter id="consumptionTab" key="consumptionTab" icon="sap-icon://cart" tooltip="{i18n>tab.Consumption}"
+                text="{i18n>tab.Consumption}" enabled="{= ${IsDraft} !== true &amp;&amp; ${viewModel>/createMode} !== true}">
+        <mvc:XMLView id="ConsumptionView" viewName="fss.ssp.view.Consumption"></mvc:XMLView>
+      </IconTabFilter>
+      <IconTabFilter id="changeTab" key="changeTab" icon="sap-icon://history" tooltip="{i18n>tab.ChangeLog}"
+            text="{i18n>tab.ChangeLog}" enabled="{= ${IsDraft} !== true}">
+        <mvc:XMLView id="changeLogView" viewName="fss.ssp.view.ChangeLog"></mvc:XMLView>
+      </IconTabFilter>
+
+    </items>
+  </IconTabBar>
+</mvc:View>

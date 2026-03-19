@@ -1,0 +1,140 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:c="fss.ssp.controls">
+
+  <MessageStrip
+    text="{i18n>ICTApproverText}"
+    type="Information"
+    showIcon="true"
+    showCloseButton="false"
+    visible="{= ${AdminDetails/IsICTSoftwareHardware} === 'Y'}"
+    class="sapUiSizeCompact sapUiSmallMarginBeginEnd sapUiSmallMarginTop"/>
+  <f:SimpleForm
+    editable="true"
+    layout="ColumnLayout"
+    title="Approvals"
+    columnsM="2"
+    columnsL="2"
+    columnsXL="3"
+    labelSpanXL="4"
+    labelSpanL="5"
+    labelSpanM="5">
+    <f:content>
+      <!--<Label required="true" wrapping="true" text="{i18n>IsSection23}" tooltip="{i18n>IsSection23Tooltip}"/>-->
+      <!--<c:RadioButtonGroup required="true" columns="2"-->
+   <!--                         selectedIndex="{-->
+   <!--                             path: 'IsSection23',-->
+   <!--                             type: 'fss.ssp.CustomTypes.YesNoRadio'-->
+   <!--                         }">-->
+   <!--             <RadioButton text="Yes" />-->
+   <!--             <RadioButton text="No" />-->
+   <!--         </c:RadioButtonGroup>-->
+
+      <Label wrapping="true" text="{i18n>DelegateID}" tooltip="{i18n>DelegateIDTooltip}"/>
+      <Input required="{= ${viewModel>/approvalMandatory} !== false}" value="{parts: [{path: 'viewModel>/vhDisplay/DelegateEID'}, {path: 'viewModel>/vhDisplay/DelegateName'}], formatter: '.formatter.valueHelpDisplay'}"
+           showValueHelp="true" valueHelpRequest="onValueHelpRequestDelegate" change="onSearchHelpValueChangeDelegate" liveChange="onDelegateLiveChange"
+           fieldGroupIds="CreateContractVH" id="delegateIDInput">
+        <customData>
+          <core:CustomData key="dialogName" value="createDelegateDlg"/>
+        </customData>
+      </Input>
+
+      <Label  wrapping="true" text="{i18n>ValueForMoney}" />
+      <c:ExpandableTextArea value="{ApprovalDetails/ValueForMoney}" rows="4" placeholder="{i18n>ValueForMoney.placeholder}"
+          maxLength="{path: 'mainModel>/#ApprovalDetails/ValueForMoney/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+      <Label id="FPMApprovedLbl" required="true" wrapping="true" text="{i18n>FPMApproved}" tooltip="{i18n>FPMApproved.tooltip}"/>
+      <CheckBox visible="{= ${viewModel>/IsPrepayment} === true &amp;&amp; ${IsPrePaymentExempt} !== true &amp;&amp;
+          ${parts: [{path: 'TotalValue'}, {path:'ExchangeRate'}, {path: 'Currency'}], formatter: '.formatter.totalValueAud'} > 100000000}"
+          selected="{ApprovalDetails/IsFPMApproved}" tooltip="{i18n>FPMApproved.tooltip}">
+        <customData>
+          <core:CustomData key="label" value="FPMApprovedLbl"/>
+        </customData>
+      </CheckBox>
+
+      <Label id="AAIComplianceLbl" wrapping="true" required="true" text="{i18n>AAICompliance}" tooltip="{i18n>AAICompliance.tooltip}"/>
+      <CheckBox visible="{= ${viewModel>/IsPrepayment} === true &amp;&amp; ${IsPrePaymentExempt} !== true &amp;&amp;
+          ${parts: [{path: 'TotalValue'}, {path:'ExchangeRate'}, {path: 'Currency'}], formatter: '.formatter.totalValueAud'} > 100000000}"
+          selected="{ApprovalDetails/IsAAICompliance}" tooltip="{i18n>AAICompliance.tooltip}">
+        <customData>
+          <core:CustomData key="label" value="AAIComplianceLbl"/>
+        </customData>
+      </CheckBox>
+
+      <Label id="ASFinApprovedLbl" wrapping="true" required="true" text="{i18n>ASFinApproved}" tooltip="{i18n>ASFinApproved.tooltip}"/>
+      <CheckBox visible="{= ${viewModel>/isUnderPrepayThreshold} === true}"
+          selected="{ApprovalDetails/IsASFinApproved}" tooltip="{i18n>ASFinApproved.tooltip}">
+        <customData>
+          <core:CustomData key="label" value="ASFinApprovedLbl"/>
+        </customData>
+      </CheckBox>
+      <!--<Label wrapping="true" text="{i18n>ApproverID}" tooltip="{i18n>ApproverIDTooltip}"/>-->
+      <!--<c:Input required="{= ${IsSection23} === true}" enabled="{= ${IsSection23} === true}"-->
+      <!--    value="{parts: [{path: 'ApproverID'}], formatter: '.formatter.valueHelpDisplay'}"-->
+      <!--    showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">-->
+      <!--  <c:customData>-->
+      <!--    <core:CustomData key="dialogName" value="createDAODlg"/>-->
+      <!--  </c:customData>-->
+      <!--</c:Input>-->
+
+      <Label text="{i18n>CommentForApprover}" tooltip="{i18n>CommentForApproverTooltip}"/>
+      <c:ExpandableTextArea value="{ApprovalDetails/CommentForApprover}" rows="6" placeholder="{i18n>CommentForApprover.placeholder}"
+          maxLength="{path: 'mainModel>/#ApprovalDetails/CommentForApprover/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+          showExceededText="true">
+        <!--<c:customData>-->
+        <!--  <core:CustomData key="validate" value="true"/>-->
+        <!--</c:customData>-->
+      </c:ExpandableTextArea>
+
+      <Label text="{i18n>RejectComments}" tooltip="{i18n>RejectCommentsTooltip}"/>
+      <c:ExpandableTextArea value="{ApprovalDetails/RejectComments}" rows="4" visible="{= ${Status} === '99'}" editable="false"
+          maxLength="{path: 'mainModel>/#ApprovalDetails/RejectComments/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+      <Label wrapping="true" text=""/>
+      <Text text=""/>
+    </f:content>
+  </f:SimpleForm>
+
+
+  <Table
+    id="approvalsTable"
+    width="auto"
+    items="{ path : 'Approvals',
+          sorter: {path: 'ApprovalDate', descending: true}
+          }"
+    noDataText="{i18n>approvalsNoDataText}"
+    class="sapUiTinyMargin worklistTable"
+    updateFinished="onTableUpdateFinished">
+    <headerToolbar>
+      <Toolbar >
+        <Title text="{i18n>approvalsTableTitle}"/>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column width="50%">
+        <Text text="{i18n>approvals.approvedBy}"/>
+      </Column>
+      <Column >
+        <Text text="{i18n>approvals.action}"/>
+      </Column>
+      <Column >
+        <Text text="{i18n>approvals.approvedDate}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>approvals.approvedTime}"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem >
+        <Text text="{parts: [{path: 'ApproverID'}, {path:'ApproverName'}], formatter: '.formatter.valueHelpDisplay'}"/>
+        <Text text="{Action}"/>
+        <Text text="{path: 'ApprovalDate', type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}" />
+        <Text text="{path: 'ApprovalTime', type: 'sap.ui.model.odata.type.Time', formatOptions: { pattern: 'HH:mm:ss'}}" />
+      </ColumnListItem>
+    </items>
+  </Table>
+
+</core:FragmentDefinition>

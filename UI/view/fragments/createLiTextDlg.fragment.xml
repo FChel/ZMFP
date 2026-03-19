@@ -1,0 +1,66 @@
+<core:FragmentDefinition
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls"
+	>
+	<c:Dialog title="{i18n>liText.header}"  
+		class="sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true">
+        <c:content>
+            <f:SimpleForm 
+				editable="true"
+				layout="ColumnLayout"
+				columnsM="1"
+				columnsL="1"
+				columnsXL="1"
+				labelSpanXL="4"
+				labelSpanL="5"
+				labelSpanM="5">
+				<f:content>
+					<Label wrapping="true" text="{i18n>ItemText}"/>
+					<c:ExpandableTextArea value="{/ItemText}"  
+						placeholder="Enter {i18n>ItemText} {i18n>li.text.PO.placeholderTail}"
+						maxLength="{path: 'mainModel>/#LineItem/ItemText/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+						
+					<Label wrapping="true" text="{i18n>InfoRecordPoText}"/>
+					<c:ExpandableTextArea value="{/InfoRecordPoText}"  
+						placeholder="Enter {i18n>InfoRecordPoText} {i18n>li.text.PO.placeholderTail}"
+						maxLength="{path: 'mainModel>/#LineItem/InfoRecordPoText/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+						
+					<Label wrapping="true" text="{i18n>MaterialPoText}"/>
+					<c:ExpandableTextArea value="{/MaterialPoText}"
+						placeholder="Enter {i18n>MaterialPoText} {i18n>li.text.PO.placeholderTail}"
+						maxLength="{path: 'mainModel>/#LineItem/MaterialPoText/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+					
+					<Label wrapping="true" text="{i18n>InfoRecordNote}"/>
+					<c:ExpandableTextArea value="{/InfoRecordNote}"  
+						placeholder="Enter {i18n>InfoRecordNote} {i18n>li.text.placeholderTail}"
+						maxLength="{path: 'mainModel>/#LineItem/InfoRecordNote/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+					
+					<Label wrapping="true" text="{i18n>InfoNote}"/>
+					<c:ExpandableTextArea value="{/InfoNote}" visible="{= ${viewModel>/isPO} === true || ${DocumentModel>IsSinglePO} === true}" 
+						placeholder="Enter {i18n>InfoNote} {i18n>li.text.placeholderTail}"
+						maxLength="{path: 'mainModel>/#LineItem/InfoNote/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+						
+					<Label wrapping="true" text="{i18n>VendorMaterial}"/>
+					<Input value="{/VendorMaterial}" 
+						placeholder="{i18n>VendorMaterial.placeholder}"
+						maxLength="{path: 'mainModel>/#LineItem/VendorMaterial/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+						
+					<Label wrapping="true" text="{i18n>TrackingNo}"/>
+					<Input value="{/TrackingNo}"
+						placeholder="{i18n>TrackingNo.placeholder}"
+						maxLength="{path: 'mainModel>/#LineItem/TrackingNo/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+				</f:content>
+			</f:SimpleForm>
+        </c:content>
+		<c:buttons>
+			<Button text="OK" press="onAddLiTextConfirm" type="Emphasized" visible="{=${viewModel>/displayMode} !== true}"/>
+			<Button text="Cancel" press="onAddLiTextCancel"/>
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		confirm="onSortDialogConfirm"
+		class="sapUiSizeCompact" sortDescending="true">
+		<sortItems>
+			<ViewSettingsItem text="{i18n>number}" key="ContractNumber" selected="true" />
+			<ViewSettingsItem text="{i18n>PGrp}" key="PurchasingGroup" />
+			<ViewSettingsItem text="{i18n>CreationDate}" key="CreatedDate" />
+			<ViewSettingsItem text="{i18n>Vendor}" key="VendorName" />
+			<ViewSettingsItem text="{i18n>TotalValue}" key="TotalValue" />
+			<ViewSettingsItem text="{i18n>Currency}" key="Currency" />
+			<ViewSettingsItem text="{i18n>Status}" key="StatusDesc" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

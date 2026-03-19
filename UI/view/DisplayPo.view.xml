@@ -1,0 +1,29 @@
+<mvc:View
+	controllerName="fss.ssp.controller.DisplayPo"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns:semantic="sap.m.semantic">
+
+	<Page
+        enableScrolling="true"
+		busy="{viewModel>/busy}"
+		busyIndicatorDelay="{viewModel>/delay}"
+		class="sapUiSizeCompact"
+		showHeader="{= !${componentModel>/inFLP}}">
+		<customHeader>
+            <core:Fragment fragmentName="fss.ssp.view.fragments.displayHeader" type="XML" />
+		</customHeader>
+		<content>
+			<mvc:XMLView id="CreateView" viewName="fss.ssp.view.PoContent"></mvc:XMLView>
+		</content>
+		<footer>
+            <Toolbar>
+                <content>
+					<core:Fragment fragmentName="fss.ssp.view.fragments.displayFooter" type="XML" />
+                </content>
+            </Toolbar>
+        </footer>
+	</Page>
+
+</mvc:View>

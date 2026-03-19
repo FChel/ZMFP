@@ -1,0 +1,43 @@
+<core:FragmentDefinition
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+	
+	<f:SimpleForm 
+		editable="true"
+		title="{i18n>headerText.Header}"
+		layout="ColumnLayout"
+		columnsM="2"
+		columnsL="2"
+		columnsXL="3"
+		labelSpanXL="4"
+		labelSpanL="5"
+		labelSpanM="5">
+		<f:content>	
+			<Label wrapping="true" text="{i18n>RomanComment}" />
+			<c:ExpandableTextArea value="{RomanComment}"  placeholder="{i18n>RomanComment.placeholder}" visible="{= ${viewModel>/isPO} !== true}"
+					maxLength="{path: 'mainModel>/#Contract/RomanComment/@maxLength', formatter: '.formatter.lineNumberFormatter'}" rows="3"/>
+			<Label wrapping="true" text="{i18n>RomanComment}" />
+			<c:ExpandableTextArea value="{RomanComment}"  placeholder="{i18n>RomanComment.placeholder}" visible="{= ${viewModel>/isPO} === true}"
+					maxLength="{path: 'mainModel>/#PurchaseOrder/RomanComment/@maxLength', formatter: '.formatter.lineNumberFormatter'}" rows="3"/>
+		
+			<Label wrapping="true" text="{i18n>ContractRiders}"/>
+			<c:ExpandableTextArea value="{HeaderTexts/ContractRiders}" placeholder="{i18n>ContractRiders.placeholder}"
+					maxLength="{path: 'mainModel>/#HeaderTexts/ContractRiders/@maxLength', formatter: '.formatter.lineNumberFormatter'}" rows="3"/>
+			
+			<Label wrapping="true" text="{i18n>HeaderNote}"/>
+			<c:ExpandableTextArea value="{HeaderTexts/HeaderNote}" placeholder="{i18n>HeaderNote.placeholder}" rows="6"
+					maxLength="{path: 'mainModel>/#HeaderTexts/HeaderNote/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+			
+			<!--<Label wrapping="true" text="{i18n>YourReference}" />-->
+			<!--<Input value="{YourReference}" placeholder="Enter {i18n>YourReference.placeholder}" visible="{= ${viewModel>/isPO} !== true}"-->
+			<!--		maxLength="{path: 'mainModel>/#Contract/YourReference/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>-->
+					
+			<Label wrapping="true" text="{i18n>YourReference}" />
+			<Input value="{YourReference}" placeholder="Enter {i18n>YourReference.placeholder}" visible="{= ${viewModel>/isPO} === true}"
+					maxLength="{path: 'mainModel>/#PurchaseOrder/YourReference/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+		</f:content>
+	</f:SimpleForm>
+</core:FragmentDefinition>

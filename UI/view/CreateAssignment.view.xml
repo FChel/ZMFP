@@ -1,0 +1,6 @@
+<mvc:View 
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	controllerName="fss.ssp.controller.CreateAssignment">
+		<core:Fragment fragmentName="fss.ssp.view.fragments.assignmentTable" type="XML" />
+</mvc:View>

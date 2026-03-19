@@ -1,0 +1,106 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+  xmlns:core="sap.ui.core">
+  <Table
+    id="liTable"
+    width="auto"
+    noDataText="{i18n>liTableNoDataText}"
+    class="sapUiTinyMargin worklistTable"
+    mode="None"
+    updateFinished="onTableUpdateFinished"
+    cd:required="true">
+    <headerToolbar>
+      <Toolbar >
+        <Title text="{viewModel>/liTableTitle}"/>
+        <ToolbarSpacer/>
+        <Label design="Bold" text="{i18n>TotalEx}: "/>
+        <Label design="Bold" text="{parts: [{path: 'viewModel>/totalEx'}, {path:'Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: true}, constraints:{minimum: 0}}"/>
+        <!--<ToolbarSpacer/>-->
+        <Label design="Bold" text="{i18n>TotalInc}: " class="sapUiLargeMarginBegin"/>
+        <Label design="Bold" text="{parts: [{path: 'viewModel>/totalInc'}, {path:'Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: true}, constraints:{minimum: 0}}"/>
+
+        <ToolbarSpacer/>
+        <HBox visible="{= ${viewModel>/displayMode} !== true}">
+          <!--<Button icon="sap-icon://copy" tooltip="{i18n>btn.CopyLineItem}" press="onCopyLI"  enabled="{= ${viewModel>/enableLiAction} === true}"/>-->
+          <!--<Button icon="sap-icon://edit" tooltip="{i18n>btn.EditLineItem}" press="onEditLI" enabled="{= ${viewModel>/enableLiAction} === true}"/>-->
+          <!--<Button icon="sap-icon://delete" tooltip="{i18n>btn.DeleteLineItem}" press="onDeleteLI" enabled="{= ${viewModel>/enableLiDelete} === true}"/>-->
+          <Button icon="sap-icon://add" type="Emphasized" text="{i18n>btn.AddLineItem}" tooltip="{i18n>btn.AddLineItem.tooltip}" press="onAddLI" />
+        </HBox>
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column width="2.5rem" hAlign="End">
+        <Text text="{i18n>LineNumber}"/>
+      </Column>
+      <Column width="16rem">
+        <Text text="{i18n>LineDescription}"/>
+      </Column>
+      <Column width="3rem">
+        <Text text="{i18n>TaxCode}"/>
+      </Column>
+      <Column width="9rem" hAlign="End">
+        <Text text="{i18n>UnitQty}"/>
+      </Column>
+      <Column width="4rem" >
+        <Text text="{i18n>Currency}"/>
+      </Column>
+      <Column width="7rem" hAlign="End">
+        <Text text="{i18n>UnitPrice.table}"/>
+      </Column>
+      <Column width="8rem" hAlign="End">
+        <Text text="{i18n>NetPrice}"/>
+      </Column>
+      <Column width="7rem" visible="{= ${viewModel>/isPO} !== true &amp;&amp; ${IsSinglePO} !== true}"  hAlign="End">
+        <Text text="{Currency}" />
+      </Column>
+      <Column width="4.3rem" visible="{= ${viewModel>/isPO} === true || ${IsSinglePO} === true}">
+        <Text text="{i18n>DeliveryComplete}"/>
+      </Column>
+      <Column width="3.5rem" visible="{= ${viewModel>/isPO} === true || ${IsSinglePO} === true}">
+        <Text text="{i18n>FinalInvoice}"/>
+      </Column>
+      <Column width="3.5rem" visible="{= ${viewModel>/isPO} === true || ${IsSinglePO} === true}">
+        <Text text="{i18n>Prepayment.table.col}"/>
+      </Column>
+      <Column width="2.5rem" >
+        <Text text=""/>
+      </Column>
+      <Column width="3.5rem" visible="{= ${viewModel>/displayMode} !== true}">
+        <Text text="{i18n>table.col.action}"/>
+      </Column>
+    </columns>
+    <items>
+      <ColumnListItem id="liListItem" type="Navigation" press="onLIPress" >
+        <Text text="{path: 'LineNumber', formatter: '.formatter.lineNumberFormatter'}"/>
+        <Text text="{LineDescription}"/>
+        <Text text="{TaxCode}"/>
+        <HBox justifyContent="End">
+          <Text textAlign="End" width="7.5rem" text="{path: 'UnitQty', type:'sap.ui.model.odata.type.Decimal',
+                  formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}} "/>
+          <Text class="sapUiTinyMarginBegin" width="2rem" text="{OrderUnit}"/>
+        </HBox>
+        <!--<FormattedText htmlText="{parts: [{path: 'UnitQty'}, {path:'OrderUnit'}], formatter: '.formatter.unitFormatter'}"/>-->
+        <!--{path: 'UnitQty', type:'sap.ui.model.odata.type.Decimal', formatOptions: {decimals: 3, groupingEnabled: true}, constraints:{scale: 'variable'}} -->
+        <!--            {path: 'OrderUnit', formatter:'.formatter.unitFormatter'}"/>-->
+        <Text text="{Currency}"/>
+        <Text text="{parts: [{path: 'UnitPrice'}, {path:'Currency'}], type:'fss.ssp.CustomTypes.CustomCurrency', formatOptions:{showMeasure: false}, constraints:{minimum: 0}}"/>
+        <Text text="{parts: [{path: 'NetPrice'}, {path:'Currency'}, {path: 'UnitPrice'}, {path:'UnitQty'}],
+            formatter: '.formatter.netPriceFormatter'}"/>
+        <Text text="{parts: [{path: 'NetPriceDocCurr'}, {path:'/Currency'}], formatter: '.formatter.currencyValue'}"/>
+        <CheckBox selected="{IsDeliveryComplete}" editable="false"/>
+        <CheckBox selected="{IsFinalInvoice}" editable="false"/>
+        <CheckBox selected="{= ${IsPrepayment} === 'Y'}" editable="false"/>
+        <HBox>
+          <core:Icon src="sap-icon://locked" tooltip="Locked" visible="{= ${Status} === 'S'}"/>
+          <core:Icon src="sap-icon://delete" tooltip="Deleted" color="Negative" visible="{= ${Status} === 'L'}"/>
+          <core:Icon src="sap-icon://request" tooltip="Draft" color="Critical" visible="{= ${Status} === 'D'}"/>
+          <core:Icon tooltip="" visible="{= ${Status} === ''}"/>
+          <!--<Button enabled="false" type="Reject" icon="sap-icon://locked" tooltip="Lock Line Item" visible="{= ${Status} === '1'}"/>-->
+          <!--<Button text="Delete" press="onLockPress" icon="sap-icon://delete" tooltip="Lock Line Item" visible="{= ${Status} === '2'}"/>-->
+        </HBox>
+        <Button visible="{= ${viewModel>/displayMode} !== true}" icon="sap-icon://overflow" tooltip="Actions" press="onMore"/>
+      </ColumnListItem>
+    </items>
+  </Table>
+</core:FragmentDefinition>

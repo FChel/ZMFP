@@ -1,0 +1,20 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m">
+	<Bar class="sapMTBStandard">
+		<contentLeft>
+			<Button icon="sap-icon://nav-back" press="onNavBack" tooltip="{i18n>btn.back.tooltip}" enabled="{= ${viewModel>/disableBackBtn} !== true}"/>
+			<Button icon="sap-icon://home" press="onHomePress" tooltip="{i18n>btn.home.tooltip}"/>
+		</contentLeft>
+		<contentMiddle>
+			<Title level="H1" text="{viewModel>/title}"/>
+		</contentMiddle>
+		<contentRight>
+			<Button icon="sap-icon://sys-help" press="onHelpPress" tooltip="{i18n>btn.help.tooltip}"/>
+			<Button text="{userModel>/FullName}" press="onUserPress"  icon="sap-icon://customer" />
+			<Button enabled="{= ${IsDraft} === true}" tooltip="{i18n>btn.more}" icon="sap-icon://overflow" press="onMorePress" />
+		</contentRight>				
+	</Bar>
+</core:FragmentDefinition>

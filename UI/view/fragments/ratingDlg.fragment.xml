@@ -1,0 +1,27 @@
+<core:FragmentDefinition
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog 
+		title="Success" 
+		class="sapUiSizeCompact"
+		type="Message"
+		state="Success"
+		busyIndicatorDelay="0">
+        <c:content>
+            <VBox>
+            	<Label text="{displayModel>/message}"/>
+            	<Label text="{displayModel>/messagePrf}" visible="{= ${path: 'displayModel>/messagePrf', formatter: '.formatter.isNotEmpty'}}"/>
+            	<Label text=""/>
+            	<Label text="{i18n>ratingLabel}"/>
+            	<RatingIndicator maxValue="5" visualMode="Full" value="{/Rating}" />
+            	<Label text="{i18n>feedbackLabel}"/>
+            	<TextArea value="{/Comments}" width= "100%" placeholder= "Add {i18n>feedbackLabel}" rows="3"/>
+            </VBox>
+        </c:content>
+        <c:buttons>
+			<c:Button text="OK" press="onRatingOkPressed" type="Emphasized"/>
+		</c:buttons>
+        
+    </c:Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,78 @@
+<mvc:View xmlns:core="sap.ui.core"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  xmlns:f="sap.ui.layout.form"
+  controllerName="fss.ssp.controller.ChangeLog"
+  xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+  xmlns:html="http://www.w3.org/1999/xhtml"
+  xmlns:c="fss.ssp.controls">
+
+  <Table
+    id="changeTable"
+    width="auto"
+    items="{path : 'ChangeLogs',
+          sorter: {path: 'ChangeDate', descending: true}
+          }"
+    noDataText="{i18n>ChangeLog.noData}"
+    class="sapUiTinyMargin"
+    busyIndicatorDelay="0"
+    growingThreshold="100"
+    growing="true">
+    <headerToolbar>
+      <Toolbar >
+        <Title text="{i18n>ChangeLog.tableHeader}"/>
+        <ToolbarSpacer/>
+
+        <!--<Button tooltip="{i18n>btn.export.tooltip}" icon="sap-icon://excel-attachment" text="{i18n>btn.export}" press="onExportClick" type="Emphasized"/>-->
+                <Button tooltip="{i18n>btn.sort.tooltip}" icon="sap-icon://sort" press="onSortClick" type="Ghost"/>
+                <Button tooltip="{i18n>btn.filter.tooltip}" icon="sap-icon://filter"
+                    press="onFilterClick" type="Ghost" cd:dlgName="changeLog" cd:tabelName="changeTable"/>
+
+      </Toolbar>
+    </headerToolbar>
+    <columns>
+      <Column >
+        <Text text="{i18n>ChangeLog.type}"/>
+      </Column>
+      <Column width="5rem">
+        <Text text="{i18n>ChangeLog.lineItem}"/>
+      </Column>
+      <Column width="5rem">
+        <Text text="{i18n>ChangeLog.action}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>ChangeLog.fieldName}"/>
+      </Column>
+      <Column width="7rem">
+        <Text text="{i18n>ChangeLog.user}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>ChangeLog.originalValue}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>ChangeLog.newValue}"/>
+      </Column>
+      <Column>
+        <Text text="{i18n>ChangeLog.changeDate}"/>
+      </Column>
+    </columns>
+
+    <items>
+      <ColumnListItem id="changeItem">
+        <!--<Text text="{= ${TableName} === 'EKKO' ? 'Header' : 'Line Item' }"/>-->
+        <Text text="{TableName}"/>
+        <Text text="{path: 'LineItem', formatter: '.formatter.lineNumberFormatter'}"/>
+        <Text text="{= ${ChangeInd} === true ? ${i18n>ChangeLog.action.entered} : ${i18n>ChangeLog.action.changed}}" />
+        <Text text="{FieldText}"/>
+        <Text text="{UserId}" tooltip="{UserName}"/>
+        <Text text="{OldValue}"/>
+        <Text text="{NewValue}"/>
+        <HBox>
+          <Text text="{path: 'ChangeDate', type: 'sap.ui.model.type.Date', formatOptions: { pattern: 'dd.MM.yyyy'}}" class="sapUiTinyMarginEnd"/>
+          <Text text="{path: 'ChangeTime', type: 'sap.ui.model.odata.type.Time', formatOptions: { pattern: 'HH:mm:ss'}}"/>
+        </HBox>
+      </ColumnListItem>
+    </items>
+  </Table>
+
+</mvc:View>

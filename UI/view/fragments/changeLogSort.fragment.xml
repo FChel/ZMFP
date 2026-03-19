@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		confirm="onSortDialogConfirm"
+		class="sapUiSizeCompact" sortDescending="true">
+		<sortItems>
+			<!--<ViewSettingsItem text="{i18n>ChangeLog.type}" key="TableName" selected="true" />-->
+			<ViewSettingsItem text="{i18n>ChangeLog.lineItem}" key="LineItem"/>
+			<ViewSettingsItem text="{i18n>ChangeLog.fieldName}" key="FieldText" />
+			<ViewSettingsItem text="{i18n>ChangeLog.user}" key="UserId" />
+			<ViewSettingsItem text="{i18n>ChangeLog.originalValue}" key="OldValue" />
+			<ViewSettingsItem text="{i18n>ChangeLog.newValue}" key="NewValue" />
+			<ViewSettingsItem text="{i18n>ChangeLog.changeDate}" key="ChangeDate" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

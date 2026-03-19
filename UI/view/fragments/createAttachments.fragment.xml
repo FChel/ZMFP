@@ -1,0 +1,127 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:c="fss.ssp.controls"
+  xmlns:cd="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1">
+
+  <List id="attachmentMsgList"
+    visible="{= ${path: 'ContractNumber', formatter: '.formatter.isEmpty'} === true || ${viewModel>/isContract} === true }"
+    headerText="Required Attachments"
+    class="sapUiSmallMarginBottom"
+    showUnread="true">
+    <items>
+      <CustomListItem
+        visible="{=${AdminDetails/IsContractorConsultant} === 'Y' }">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.sesApproval}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${path: 'ContractNumber', formatter: '.formatter.isNotEmpty'} !== true || ${viewModel>/isContract} === true }">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.section23No}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${ApprovalDetails/IsSection23} === true}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.section23Yes}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${viewModel>/assetUnknown} === true &amp;&amp; ${IsContractOnly} !== true }">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.assetUnknown}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${viewModel>/IsPrepayment} === true &amp;&amp; ${IsPrePaymentExempt} !== true &amp;&amp;
+          ${parts: [{path: 'TotalValue'}, {path:'ExchangeRate'}, {path: 'Currency'}], formatter: '.formatter.totalValueAud'} > 100000000}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.prepayment100m}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${viewModel>/isUnderPrepayThreshold} === true}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.prepayment100k}" required="true"/>
+      </CustomListItem>
+    </items>
+  </List>
+  <List id="attachmentMsgListPo"
+    visible="{= ${viewModel>/isPO} === true &amp;&amp; ${path: 'ContractNumber', formatter: '.formatter.isNotEmpty'} === true}"
+    headerText="Required Attachments"
+    class="sapUiSmallMarginBottom"
+    showUnread="true">
+    <items>
+      <CustomListItem visible="{=${viewModel>/assetUnknown} === true}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.assetUnknown}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${viewModel>/IsPrepayment} === true &amp;&amp; ${IsPrePaymentExempt} !== true &amp;&amp;
+          ${parts: [{path: 'TotalValue'}, {path:'ExchangeRate'}, {path: 'Currency'}], formatter: '.formatter.totalValueAud'} > 100000000}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.prepayment100m}" required="true"/>
+      </CustomListItem>
+      <CustomListItem
+        visible="{= ${viewModel>/isUnderPrepayThreshold} === true}">
+        <Label class="sapUiSmallMarginBegin sapUiTinyMarginTopBottom" design="Bold" text="{i18n>Attachments.prepayment100k}" required="true"/>
+      </CustomListItem>
+    </items>
+  </List>
+
+
+  <c:UploadCollection
+    id="uploadCollection"
+    items="{path: 'Attachments',
+      templateShareable: false}"
+    cd:required="{= ${path: 'ContractNumber', formatter: '.formatter.isEmpty'} === true || ${viewModel>/isContract} === true }"
+    maximumFilenameLength="240"
+    maximumFileSize="20"
+    multiple="true"
+    sameFilenameAllowed="true"
+    fileType="{dropDownModel>/fileTypes}"
+    instantUpload="false"
+    uploadEnabled="{= ${viewModel>/displayMode} !== true}"
+    noDataDescription="Drop files or use the &quot;+ Add Attachment&quot; button for pending upload"
+    change="onUploadChange"
+    uploadTerminated="onuplUadTerminated"
+    fileDeleted="onFileDeleted"
+    filenameLengthExceed="onFilenameLengthExceed"
+    fileSizeExceed="onFileSizeExceed"
+    typeMissmatch="onTypeMissmatch"
+    uploadComplete="onUploadComplete"
+    beforeUploadStarts="onBeforeUploadStarts" >
+    <c:toolbar>
+        <OverflowToolbar id="myId">
+          <Title id="attachmentTitle" text="Attachments"/>
+          <ToolbarSpacer />
+          <Button
+            id="downloadButton"
+            icon="sap-icon://download"
+            tooltip="Download"
+            press="onDownloadItem"
+            enabled="false"
+            visible="false"
+            type="Transparent" />
+
+          <UploadCollectionToolbarPlaceholder/>
+        </OverflowToolbar>
+      </c:toolbar>
+    <c:items>
+      <!--<UploadCollectionItem-->
+      <!--  documentId="{AttachmentGuid}"-->
+      <!--  fileName="{FileName}"-->
+      <!--  url="{SourceURI}"-->
+      <!--  visibleEdit="false"-->
+      <!--  visibleDelete="false">-->
+        <!--<attributes>-->
+        <!--  <ObjectAttribute active="true" text="Download"/>-->
+        <!--</attributes>-->
+      <!--</UploadCollectionItem>-->
+      <UploadCollectionItem
+        press="onFilePress"
+        documentId="{AttachmentGuid}"
+        fileName="{FileName}"
+        url="{SourceURI}"
+        visibleEdit="false"
+        visibleDelete="{= ${/IsDraft} === true &amp;&amp; ${viewModel>/displayMode} !== true}"
+        deletePress="onFileDeleted">
+
+        <statuses>
+          <!--<ObjectStatus active="true" icon="sap-icon://detail-view" text="View" press="onFileView"/>-->
+        </statuses>
+      </UploadCollectionItem>
+    </c:items>
+  </c:UploadCollection>
+</core:FragmentDefinition>

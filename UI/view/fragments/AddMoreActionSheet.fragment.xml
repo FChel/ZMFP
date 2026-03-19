@@ -1,0 +1,27 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+  <ActionSheet
+    title="Choose Your Action"
+    placement="Vertical">
+      <!--<Button text="{i18n>btn.validate}" press="onValidatePress" tooltip="{i18n>btn.validate.tooltip}" />-->
+      <Button visible="{= ${viewModel>/displayMode} === true &amp;&amp; ${viewModel>/isContract} === true}" type="Ghost"
+          enabled="{= ${IsCopyable} !== false &amp;&amp; ${disableModel>/DisableFlag} !== true}" press="onCopyContract" text="Copy" tooltip="Copy"/>
+      <Button visible="{= ${viewModel>/displayMode} === true &amp;&amp; ${viewModel>/isPO} === true}" type="Ghost"
+          enabled="{= ${IsCopyable} !== false &amp;&amp; ${disableModel>/DisableFlag} !== true}" press="onCopyPo" text="Copy" tooltip="Copy"/>
+      <Button text="{i18n>btn.sendAsPdf}" tooltip="{i18n>btn.sendAsPdf.tooltip}" press="onSendPdf" type="Ghost"
+        visible="{= (${IsSinglePO} === true || ${viewModel>/isPO} === true) &amp;&amp; ${viewModel>/displayMode} === true}"
+        enabled="{= (${IsSinglePO} === true || ${viewModel>/isPO} === true) &amp;&amp; ${Status} === '40'}" />
+      <Button text="{i18n>btn.closeDoc}" tooltip="{i18n>btn.closeDoc.tooltip}" press="onCloseDoc" type="Ghost"
+        visible="{= (${IsSinglePO} === true || ${viewModel>/isPO} === true) &amp;&amp; ${viewModel>/displayMode} === true}"
+        enabled="{= ${IsCloseable} === true &amp;&amp; ${disableModel>/DisableFlag} !== true}" />
+      <Button text="{i18n>btn.unassign}" tooltip="{i18n>btn.unassign.tooltip}" press="onUnassignDoc" type="Ghost"
+        visible="{= ${viewModel>/displayMode} === true}" enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+      <Button text="{i18n>btn.assign}" visible="{= ${viewModel>/editMode} === true || ${viewModel>/createMode} === true}" press="onAssignPress" tooltip="{i18n>btn.assign.tooltip}" enabled="{= ${IsDraft} === true &amp;&amp; ${disableModel>/DisableFlag} !==
+true}" />
+
+      <Button text="{i18n>btn.delete}" visible="{= ${viewModel>/editMode} === true || ${viewModel>/createMode} === true}" press="onDeletePress" tooltip="{i18n>btn.delete.tooltip}" enabled="{= ${IsDraft} === true &amp;&amp; ${disableModel>/DisableFlag} !==
+true}"/>
+
+  </ActionSheet>
+</core:FragmentDefinition>

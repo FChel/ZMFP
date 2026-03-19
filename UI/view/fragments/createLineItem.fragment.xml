@@ -1,0 +1,14 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:c="fss.ssp.controls"
+	xmlns:combo="fss.ssp.controls.ComboBox">
+	
+	<mvc:XMLView id="CreateLIView" viewName="fss.ssp.view.CreateContractLI"></mvc:XMLView>
+
+	<mvc:XMLView id="CreatePhasingView" viewName="fss.ssp.view.CreatePhasing" visible="{= ${IsSinglePO} === true || ${viewModel>/isPO} === true}"></mvc:XMLView>
+
+</core:FragmentDefinition>

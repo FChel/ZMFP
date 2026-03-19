@@ -1,0 +1,232 @@
+<core:FragmentDefinition
+	xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc" 
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:c="fss.ssp.controls"
+	xmlns:combo="fss.ssp.controls.ComboBox">
+	<Dialog title="{i18n>CreateLITitle}" 
+		class="sapUiSizeCompact"
+		draggable="true"
+		resizable="true"
+		type="Message"
+		contentWidth="{path: 'device>/system', formatter: '.formatter.liDialogWidth'}">
+		<content>
+			<f:SimpleForm 
+				visible="{= ${viewModel>/isPO} === true}"
+				editable="true"
+				layout="ResponsiveGridLayout"
+				columnsM="1"
+				columnsL="1"
+				columnsXL="1"
+				labelSpanXL="4"
+				labelSpanL="4"
+				labelSpanM="4"
+				class="noInnerTitleForm">
+				<Label wrapping="true" text="{i18n>OA.LineItem}"/>
+				<c:Select selectedKey="{/ParentLineNumber}" required="{path: 'ContractModel>/ContractLIs', formatter: '.formatter.isNotEmpty'}"
+					items="{ path : 'ContractModel>/ContractLIs'}">
+					<core:ListItem key="{ContractModel>LineNumber}" 
+						text="{parts: [{path: 'ContractModel>LineNumber'}, {path:'ContractModel>LineDescription'}], 
+							formatter: '.formatter.valueHelpDisplay'}"/>
+					<c:layoutData>
+						<l:GridData span="XL4 L4 M4 S6"/>
+					</c:layoutData>
+				</c:Select>
+			</f:SimpleForm>
+				
+			<f:SimpleForm 
+				editable="true"
+				layout="ColumnLayout"
+				title="{i18n>li.details.title}"
+				columnsM="2"
+				columnsL="2"
+				columnsXL="2"
+				labelSpanXL="3"
+				labelSpanL="5"
+				labelSpanM="2">
+
+				<f:content>
+					<!--<Label wrapping="true" text="{i18n>MaterialGroup}"/>-->
+					<!--<ComboBox required="true" selectedKey="{/MaterialGroup}" change="validateComboBoxChange"-->
+					<!--	items="{ path : 'dropDownModel>/MaterialGroups', sorter: {path: 'Key', descending: false}}">-->
+					<!--	<core:ListItem key="{dropDownModel>Key}" -->
+					<!--			text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], -->
+					<!--					formatter: '.formatter.valueHelpDisplay'}"/>-->
+					<!--</ComboBox>-->
+
+					<Label wrapping="true" text="{i18n>LineDescription}"/>
+					<Input required="true" value="{/LineDescription}" maxLength="{path: 'mainModel>/#LineItem/LineDescription/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+					<Label wrapping="true" text="{i18n>OrderUnit}"/>
+					<combo:ComboBox required="true" selectedKey="{/OrderUnit}" change="validateComboBoxChange"
+						items="{ path : 'dropDownModel>/OrderUnits', sorter: [{path: 'Group', descending: false, group: true}, {path: 'Value', descending: false}]}" tooltip="{i18n>OrderUnit.tooltip}">
+						<core:Item key="{dropDownModel>Key}" 
+								text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</combo:ComboBox>
+
+					<Label wrapping="true" text="{i18n>UnitQty}" tooltip="{i18n>UnitQty.tooltip}" />
+					<Input required="true" value="{path:'/UnitQty', type:'sap.ui.model.odata.type.Decimal', formatOptions:{decimals: 3, groupingEnabled: false}, constraints:{scale: 'variable'}}" type="Number"/>
+
+					<Label wrapping="true" text="{i18n>UnitPrice}" tooltip="{i18n>UnitPrice.tooltip}"/>
+					<Input required="true" editable="false" validationError="amountValidationError" parseError="amountValidationError" formatError="amountValidationError" 
+							value="{parts: [{path: '/UnitPrice'}, {path:'DocumentModel>Currency'}], type:'sap.ui.model.type.Currency', formatOptions:{showMeasure: false}}"/>
+
+					<!--<Label wrapping="true" text="{i18n>Currency}" />-->
+					<!--<ComboBox required="true" change="validateComboBoxChange" filterSecondaryValues="true"-->
+					<!--	selectedKey="{/Currency}" showSecondaryValues="true" visible="{IsSinglePO}"-->
+					<!--	items="{ path : 'dropDownModel>/Currency', sorter: {path: 'Key', descending: false}}">-->
+					<!--	<core:ListItem key="{dropDownModel>Key}" text="{dropDownModel>Value}" additionalText= "{dropDownModel>Key}" />-->
+					<!--</ComboBox>-->
+
+					<Label wrapping="true" text="{i18n>TaxCode}"/>
+					<ComboBox required="true" selectedKey="{/TaxCode}" change="validateComboBoxChange"
+						items="{ path : 'dropDownModel>/TaxCodes', sorter: {path: 'Key', descending: false}}">
+						<core:ListItem key="{dropDownModel>Key}" 
+								text="{parts: [{path: 'dropDownModel>Value'}, {path:'dropDownModel>Key'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</ComboBox>
+
+					<Label wrapping="true" text="{i18n>DeliveryDate}" tooltip="{i18n>DeliveryDateTooltip}"/>
+					<DatePicker required="true" displayFormat="dd.MM.yyyy" value="{path: '/DeliveryDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"
+							valueFormat="dd.MM.yyyy"	visible="true" tooltip="{i18n>DeliveryDate.tooltip}"/>
+				</f:content>
+			</f:SimpleForm>
+		
+		<f:SimpleForm 
+				editable="true"
+				layout="ColumnLayout"
+				columnsM="2"
+				columnsL="2"
+				columnsXL="2"
+				labelSpanXL="9"
+				labelSpanL="5"
+				labelSpanM="2">
+				<f:toolbar>
+					<Toolbar id="TB1">
+						<Title text="{i18n>li.AccountAssignment.title}"	/>
+						<Button text="{i18n>btn.CopyPrevious}" tooltip="{i18n>btn.CopyPrevious.tooltip}" press="onAccountAssignmentCopy" icon="sap-icon://copy" 
+								type="Emphasized" visible="{viewModel>/EnableCopy}"/>
+					</Toolbar>
+				</f:toolbar>
+				<f:content>
+					<Label wrapping="true" text="{i18n>AssignmentType}"/>
+					<c:Select selectedKey="{/AssignmentTypeCode}" required="true"
+						items="{ path : 'dropDownModel>/AssignmentType', sorter: {path: 'Key', descending: false}}">
+						<core:ListItem key="{dropDownModel>Key}" 
+								text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</c:Select>
+					
+					<Label wrapping="true" text="{i18n>Asset}"/>
+					<c:Input required="{= ${/AssignmentTypeCode} === 'A'}" value="{parts: [{path: '/Asset'}, {path:'/AssetSubNumber'}], formatter: '.formatter.assetValueHelpDisplay'}"
+							 showValueHelp="true" valueHelpOnly="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 maxLength="{path: 'searchHelpModel>/#RefData/Key/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+							 enabled="{= ${/AssignmentTypeCode} === 'A'}" >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIAssetDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>GLAccount}"/>
+					<c:Input required="{= ${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X'}" 
+							 value="{parts: [{path: '/GLAccount'}], formatter: '.formatter.valueHelpDisplay'}"
+							 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 maxLength="{path: 'searchHelpModel>/#RefData/Key/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+							 enabled="{= ${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'X'}" >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIGLDlg"/>
+						</c:customData>
+					</c:Input>
+	 <!--			 <Button icon="sap-icon://sys-help" press="onHelpPress" tooltip="{i18n>btn.help.tooltip}">-->
+	 <!--			 	<layoutData>-->
+			<!--	<f:ColumnElementData cellsSmall="1" cellsLarge="1"/>-->
+			<!--</layoutData>-->
+	 <!--			 </Button>-->
+
+					<Label wrapping="true" text="{i18n>CostCentre}"/>
+					<c:Input required="{= ${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X'}" 
+							 value="{parts: [{path: '/CostCentre'}], formatter: '.formatter.valueHelpDisplay'}"
+							 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+							 maxLength="{path: 'searchHelpModel>/#RefData/Key/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+							 enabled="{= ${/AssignmentTypeCode} === 'K' || ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'T' || ${/AssignmentTypeCode} === 'X'}" >
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLICostDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>InternalOrder}"/>
+					<c:Input value="{parts: [{path: '/InternalOrder'}], formatter: '.formatter.valueHelpDisplay'}" 
+							enabled="{= ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T'}"
+							required="{= ${/AssignmentTypeCode} === 'F'}" 
+							maxLength="{path: 'searchHelpModel>/#RefData/Key/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+							showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIInternalDlg"/>
+						</c:customData>
+					</c:Input>
+
+					<Label wrapping="true" text="{i18n>WBSElement}"/>
+					<c:Input value="{parts: [{path: '/WBSElement'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}" 
+							enabled="{= ${/AssignmentTypeCode} === 'F' || ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T'}"
+							required="{= ${/AssignmentTypeCode} === 'P' || ${/AssignmentTypeCode} === 'T'}" 
+							maxLength="{path: 'searchHelpModel>/#RefData/Key/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+							showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">
+						<c:customData>
+							<core:CustomData key="dialogName" value="createLIWBSDlg"/>
+						</c:customData>
+					</c:Input>
+					
+					<Label wrapping="true" text="{i18n>Fund}"/>
+					<ComboBox	change="validateComboBoxChange" selectedKey="{/Fund}" 
+						items="{ path : 'dropDownModel>/Funds', sorter: {path: 'Key', descending: false}}" fieldGroupIds="NonMandatoryStatus">
+						<core:ListItem key="{dropDownModel>Key}" 
+								text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</ComboBox>
+					
+					<Label wrapping="true" text="{i18n>ESP}"/>
+					<c:Select selectedKey="{/ESP}" required="true"
+						items="{ path : 'dropDownModel>/ESPs', sorter: {path: 'Key', descending: false}}">
+						<core:ListItem key="{dropDownModel>Key}" 
+								text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], 
+										formatter: '.formatter.valueHelpDisplay'}"/>
+					</c:Select>
+				</f:content>
+			</f:SimpleForm>
+
+			<f:SimpleForm 
+			editable="true"
+			layout="ColumnLayout"
+			title="{i18n>li.Prepayment.title}"
+			columnsM="2"
+			columnsL="2"
+			columnsXL="2"
+			labelSpanXL="3"
+			labelSpanL="5"
+			labelSpanM="2">
+			<f:content>
+				<Label wrapping="true" text="{i18n>Prepayment}"/>
+				<CheckBox selected="{path:'/IsPrepayment'}"/>
+						
+				<Label wrapping="true" text="{i18n>PrepaymentCompletedDate}"/>
+				<c:DatePicker required="{=${/IsPrepayment} === true}" displayFormat="dd.MM.yyyy" value="{path: '/PrepaymentCompletedDate',type: 'sap.ui.model.type.Date', formatOptions: {pattern:'dd.MM.yyyy', strictParsing:true, UTC: true}}"
+					enabled="{=${/IsPrepayment} === true}" valueFormat="dd.MM.yyyy" tooltip="{i18n>PrepaymentCompletedDate}"/>
+				
+				<Label wrapping="true" text="{i18n>StraightLine}"/>
+				<c:CheckBox enabled="{=${/IsPrepayment} === true}" selected="{path:'/IsStraightLine'}"/>
+					
+			</f:content>
+		</f:SimpleForm>
+		</content>
+		<buttons>
+			<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"
+						visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+			<Button text="Add" press="onAddLIConfirm" type="Emphasized" visible="{=${viewModel>/IsAdd} === true}"/>
+			<Button text="Ok" press="onEditLIConfirm" type="Emphasized" visible="{=${viewModel>/IsEdit} === true}"/>
+			<Button text="Cancel" press="onAddLICancel"/>
+		</buttons>
+	</Dialog>
+</core:FragmentDefinition>

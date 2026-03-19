@@ -1,0 +1,285 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:c="fss.ssp.controls"
+  xmlns:tooltip="fss.ssp.controls.tooltip">
+
+  <f:SimpleForm
+      editable="true"
+      layout="ColumnLayout"
+      title="{i18n>EndorsementTitle}"
+      columnsM="2"
+      columnsL="2"
+      columnsXL="3"
+      labelSpanXL="5"
+      labelSpanL="6"
+      labelSpanM="6">
+      <f:content>
+        <Label required="true" wrapping="true" text="{i18n>EndorsementToProceed}" tooltip="{i18n>EndorsementToProceedTooltip}"/>
+        <c:RadioButtonGroup required="true" columns="2" id="etpRadio"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsEndorsedToProceed',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+                <Label wrapping="true" text="{i18n>ETPJustification}" tooltip="{i18n>ETPJustificationTooltip}"/>
+        <c:ExpandableTextArea value="{AdminDetails/ETPJustification}" enabled="{= ${AdminDetails/IsEndorsedToProceed} === 'N'}"
+            placeholder="{i18n>ETPJustificationPlaceholder}"
+            required="{= ${AdminDetails/IsEndorsedToProceed} === 'N'}"
+            maxLength="{path: 'mainModel>/#AdminDetails/ETPJustification/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+                <Label wrapping="true" text="{i18n>MyProcurementID}" />
+        <Input value="{YourReference}" placeholder="Enter {i18n>MyProcurementID.placeholder}"
+            maxLength="{path: 'mainModel>/#Contract/YourReference/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+        <Label wrapping="true" text="{i18n>QuotesSought}" tooltip="{i18n>QuotesSoughtTooltip}"/>
+        <StepInput value="{AdminDetails/QuoteInvitationCount}" min="0" max="10000" required="true" textAlign="Center">
+          <layoutData>
+            <f:ColumnElementData cellsLarge="3"/>
+          </layoutData>
+        </StepInput>
+
+        <Label wrapping="true" text="{i18n>QuotesReceived}" tooltip="{i18n>QuotesReceivedTooltip}"/>
+        <StepInput value="{AdminDetails/QuoteReceivedCount}" min="0" max="10000" required="true" textAlign="Center">
+          <layoutData>
+            <f:ColumnElementData cellsLarge="3"/>
+          </layoutData>
+        </StepInput>
+
+                <Label required="true" wrapping="true" text="{i18n>SP020}" tooltip="{i18n>SP020Tooltip}"/>
+        <c:RadioButtonGroup visible="false" required="true" columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsSp020',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+      </f:content>
+  </f:SimpleForm>
+
+  <f:SimpleForm
+      editable="true"
+      layout="ColumnLayout"
+      title="{i18n>AdminTitle}"
+      columnsM="2"
+      columnsL="2"
+      columnsXL="3"
+      labelSpanXL="5"
+      labelSpanL="6"
+      labelSpanM="6"
+      >
+      <f:content id="formContent">
+        <Label id="purchaseTypeLbl" text="{i18n>PurchaseType}" tooltip="{i18n>PurchaseTypeTooltip}" required="true"/>
+        <CheckBox id="goodsChk" text="{i18n>Goods}" selected="{path:'AdminDetails/IsGoods'}" >
+          <customData>
+            <core:CustomData key="label" value="purchaseTypeLbl"/>
+            <core:CustomData key="group" value="servicesChk"/>
+          </customData>
+        </CheckBox>
+        <CheckBox id="servicesChk" text="{i18n>Services}" selected="{path:'AdminDetails/IsServices'}"/>
+
+        <!--<Label  wrapping="true" text="{i18n>IncludesPrepayment}" tooltip="{i18n>PrepaymentTooltip}"  required="true"/>-->
+        <!--<c:RadioButtonGroup required="true" columns="2"-->
+    <!--                        selectedIndex="{-->
+    <!--                            path: 'AdminDetails/IsPrepayment',-->
+    <!--                            type: 'fss.ssp.CustomTypes.YesNoRadio',-->
+    <!--                            constraints:{value0: 'Y', value1: 'N'}-->
+    <!--                        }">-->
+    <!--                <RadioButton text="Yes" />-->
+    <!--                <RadioButton text="No" />-->
+    <!--            </c:RadioButtonGroup>-->
+
+        <Label  wrapping="true" text="{i18n>OutcomesOrTime}" tooltip="{i18n>OutcomesOrTimeTooltip}" />
+        <c:RadioButtonGroup required="{= ${AdminDetails/IsServices} === true}" columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/OutcomesOrTime',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'OC', value1: 'TM'}
+                            }"
+                            enabled="{= ${AdminDetails/IsServices} === true}">
+                    <RadioButton text="{i18n>Outcomes}" />
+                    <RadioButton text="{i18n>TimeMaterial}" />
+                </c:RadioButtonGroup>
+
+        <Label  wrapping="true" text="{i18n>ICTPurchase}" tooltip="{i18n>ICTPurchaseTooltip}"  required="true"/>
+        <c:RadioButtonGroup required="true" columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsICTSoftwareHardware',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+        <Label id="ICTPurchaseTypeLbl" text="{i18n>ICTPurchaseType}" tooltip="{i18n>ICTPurchaseTypeTooltip}" required="{= ${AdminDetails/IsICTSoftwareHardware} === 'Y'}"/>
+        <c:CheckBox id="hardwareChk" text="Hardware" selected="{AdminDetails/IsHardware}" enabled="{= ${AdminDetails/IsICTSoftwareHardware} === 'Y'}"/>
+        <c:CheckBox text="Software" selected="{AdminDetails/IsSoftware}" enabled="{= ${AdminDetails/IsICTSoftwareHardware} === 'Y'}" >
+          <c:customData>
+            <core:CustomData key="label" value="ICTPurchaseTypeLbl"/>
+            <core:CustomData key="group" value="hardwareChk"/>
+          </c:customData>
+        </c:CheckBox>
+
+        <!-- <Label />
+        <Text /> -->
+
+        <Label wrapping="true" id="isServiceLbl" text="{i18n>ServiceProviderType}" >
+          <tooltip>
+            <tooltip:CustomTooltip>
+              <FormattedText class="sapUiSmallMarginEnd" htmlText="{i18n>ServiceProviderTypeTooltipHtml}"/>
+            </tooltip:CustomTooltip>
+          </tooltip>
+        </Label>
+        <c:RadioButtonGroup columns="2"
+              required="{= ${AdminDetails/IsServices}}"
+
+                            selectedIndex="{
+                                path: 'AdminDetails/IsContractorConsultant',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }"
+                            enabled="{= ${AdminDetails/IsServices} === true}">
+          <c:tooltip>
+            <tooltip:CustomTooltip>
+              <FormattedText class="sapUiSmallMarginEnd" htmlText="{i18n>ServiceProviderTypeTooltipHtml}"/>
+            </tooltip:CustomTooltip>
+          </c:tooltip>
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+        <Label text="{i18n>SESApprover}" tooltip="{i18n>SESApproverTooltip}"/>
+        <c:Input required="{= ${AdminDetails/IsContractorConsultant} === 'Y' }"
+            enabled="{= ${AdminDetails/IsContractorConsultant} === 'Y' }"
+            value="{parts: [{path: 'AdminDetails/SESApproverID'}, {path:'viewModel>/vhDisplay/SESApproverName'}], formatter: '.formatter.valueHelpDisplay'}"
+            showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+            fieldGroupIds="CreateContractVH">
+          <c:customData>
+            <core:CustomData key="dialogName" value="createSESDlg"/>
+          </c:customData>
+        </c:Input>
+
+        <Label  wrapping="true" text="{i18n>DailyRate}" tooltip="{i18n>DailyRateTooltip}"/>
+        <c:RadioButtonGroup required="{= ${AdminDetails/IsContractorConsultant} === 'Y' }"
+              columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsRateAbove4500',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }"
+                            enabled="{= ${AdminDetails/IsContractorConsultant} === 'Y' }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+        <Label  wrapping="true" text="{i18n>SecretaryAdvised}" tooltip="{i18n>SecretaryAdvisedTooltip}"/>
+        <c:RadioButtonGroup required="{= ${AdminDetails/IsRateAbove4500} === 'Y'}"
+              columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsSecretaryAdvised',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }"
+                            enabled="{= ${AdminDetails/IsRateAbove4500} === 'Y'}">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+      </f:content>
+    </f:SimpleForm>
+
+    <f:SimpleForm
+      editable="true"
+      layout="ColumnLayout"
+      title="{i18n>ComplianceTitle}"
+      columnsM="2"
+      columnsL="2"
+      columnsXL="3"
+      labelSpanXL="5"
+      labelSpanL="6"
+      labelSpanM="6">
+      <f:content>
+        <Label required="true" wrapping="true" text="{i18n>IndigenousIdentified}" tooltip="{i18n>IndigenousIdentifiedTooltip}"/>
+        <c:RadioButtonGroup required="true" columns="2"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsIndigenousIdentified',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+        <Label  wrapping="true" text="{i18n>IndigenousApproched}" tooltip="{i18n>IndigenousApprochedTooltip}"/>
+        <c:RadioButtonGroup required="{= ${AdminDetails/IsIndigenousIdentified} === 'Y'}" columns="2"
+              enabled="{= ${AdminDetails/IsIndigenousIdentified} === 'Y'}"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsIndigenousQuote',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                </c:RadioButtonGroup>
+
+        <Label wrapping="true" text="{i18n>IndigenousNoApprochReason}" />
+        <c:ExpandableTextArea required="{= ${AdminDetails/IsIndigenousQuote} === 'N'}" enabled="{= ${AdminDetails/IsIndigenousQuote} === 'N'}"
+            placeholder="{i18n>IndigenousNoApprochReason.placeholder}" value="{AdminDetails/IndigenousNoApprochReason}"
+            maxLength="{path: 'mainModel>/#AdminDetails/IndigenousNoApprochReason/@maxLength', formatter: '.formatter.lineNumberFormatter'}"/>
+
+        <Label  wrapping="true" text="{i18n>IndigenousOutcome}" tooltip="{i18n>IndigenousOutcomeTooltip}"/>
+        <c:RadioButtonGroup required="{= ${AdminDetails/IsIndigenousQuote} === 'Y'}" columns="3" enabled="{= ${AdminDetails/IsIndigenousQuote} === 'Y'}"
+                            selectedIndex="{
+                                path: 'AdminDetails/IndigenousOutcome',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'S', value1: 'U'}
+                            }">
+                    <RadioButton text="Successful" />
+                    <RadioButton text="Unsuccessful" />
+                </c:RadioButtonGroup>
+
+        <Label required="true" wrapping="true" text="{i18n>IndigenousSubcontractors}" tooltip="{i18n>IndigenousSubcontractorsTooltip}"/>
+        <c:RadioButtonGroup required="true" columns="3"
+                            selectedIndex="{
+                                path: 'AdminDetails/IsIndigenousSubcontractor',
+                                type: 'fss.ssp.CustomTypes.YesNoRadio',
+                                constraints:{value0: 'Y', value1: 'N', value2: 'U'}
+                            }">
+                    <RadioButton text="Yes" />
+                    <RadioButton text="No" />
+                    <RadioButton text="Unknown" />
+                </c:RadioButtonGroup>
+                <Label wrapping="true" text="{i18n>IndigenousSubcontractorsList}"/>
+    <!--            <c:MultiInput id="subcontractorMulti" required="{= ${AdminDetails/IsIndigenousSubcontractor} === 'X'}" -->
+    <!--                enabled="{= ${AdminDetails/IsIndigenousSubcontractor} === 'Y'}"-->
+    <!--                value="" showValueHelp="true" valueHelpRequest="onAddSubContractors" -->
+    <!--                tokens="{path: 'IndigenousSubcontractors'}" tokenUpdate="onSubcontractorTokenUpdate">-->
+        <!--    <c:tokens>-->
+        <!--      <Token key="{ContractorABN}" text="{ContractorName}" tooltip="ABN: {ContractorABN}"/>-->
+        <!--    </c:tokens>-->
+
+        <!--</c:MultiInput>-->
+        <c:MultiInput id="subcontractorMulti" required="{= ${AdminDetails/IsIndigenousSubcontractor} === 'Y'}"
+                    enabled="{= ${AdminDetails/IsIndigenousSubcontractor} === 'Y'}" liveChange="onSubcontractorLiveChange"
+                    value="" showValueHelp="true" valueHelpRequest="onAddSubContractors"
+                    tokens="{path: 'IndigenousSubcontractors'}" tokenUpdate="onSubcontractorTokenUpdate"
+                    placeholder="{i18n>IndigenousSubcontractorsList.placeholder}">
+            <c:tokens>
+              <Token editable="true" press="onSubcontractorPress" key="{Sequence}" text="{parts: [{path: 'ContractorABN'}, {path:'ContractorName'}], formatter: '.formatter.subcontractorDisplay'}"/>
+            </c:tokens>
+
+        </c:MultiInput>
+
+      </f:content>
+    </f:SimpleForm>
+
+</core:FragmentDefinition>

@@ -1,0 +1,33 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog
+		title="{i18n>dlg.assign.title}"
+		class="sapUiContentPadding sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true">
+		<c:content>
+			<MessageStrip
+				text="{i18n>dlg.assign.warning}"
+				type="Information"
+				showIcon="true"
+				showCloseButton="false"
+				class="sapUiSizeCompact sapUiSmallMarginBottom"/>
+			<Label text="Assignee" required="true"/>
+			<Input required="true" value="{parts: [{path: '/DraftAssigneeID'}, {path: '/DraftAssigneeName'}], formatter: '.formatter.valueHelpDisplay'}"
+					 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange">
+				<customData>
+					<core:CustomData key="dialogName" value="draftAssignDlg"/>
+				</customData>
+			</Input>
+		</c:content>
+		<c:buttons>
+			<Button id="errorBtn" type="Reject" text="{= ${ErrorModel>/errors}.length}" icon="sap-icon://error" class="errorbtnInDialog"
+					visible= "{= ${ErrorModel>/errors}.length > 0 }" press="onErrorBtnPress"/>
+			<Button text="OK" press="onAssignConfirm" type="Emphasized"/>
+			<Button text="Cancel" press="onAssignCancel"/>
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

@@ -1,0 +1,20 @@
+<core:FragmentDefinition
+  xmlns="sap.m"
+  xmlns:core="sap.ui.core">
+  <ActionSheet
+    title="Choose Your Action"
+    placement="Vertical">
+      <Button text="{i18n>btn.displayPRF}" press="onPrfActionPress" tooltip="{i18n>btn.displayPRF.tooltip}" enabled="{path: 'PRFURLDisplay', formatter: '.formatter.isNotEmpty'}">
+        <customData>
+          <core:CustomData key="dataElement" value="PRFURLDisplay"/>
+        </customData>
+      </Button>
+      <Button text="{i18n>btn.editPRF}" press="onPrfActionPress" tooltip="{i18n>btn.editPRF.tooltip}" enabled="{= ${disableModel>/DisableFlag} !== true &amp;&amp; ${path: 'PRFURLEdit', formatter: '.formatter.isNotEmpty'}}">
+        <customData>
+          <core:CustomData key="dataElement" value="PRFURLEdit"/>
+        </customData>
+      </Button>
+      <Button text="{i18n>btn.PrfWorkList}" press="onPrfWorklistPress" tooltip="{i18n>btn.PrfWorkList.tooltip}" enabled="{= ${disableModel>/DisableFlag} !== true}"/>
+
+  </ActionSheet>
+</core:FragmentDefinition>

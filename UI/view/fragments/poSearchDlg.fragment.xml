@@ -1,0 +1,28 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core"
+	xmlns:c="fss.ssp.controls">
+	<c:Dialog
+		title="{i18n>dlg.poSearch.title}"
+		class="sapUiContentPadding sapUiSizeCompact"
+		type="Message"
+		draggable="true"
+		resizable="true">
+		<c:content>
+			
+			<Label text="{i18n>PurchaseOrder}" required="true" tooltip="{i18n>PoSearchTooltip}"/>
+			<Input required="true" value="{parts: [{path: 'viewModel>/poNumber'}], formatter: '.formatter.valueHelpDisplay'}"
+					 showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange" 
+					 maxLength="{path: 'mainModel>/#PurchaseOrder/PONumber/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+					 placeholder="{i18n>dlg.poSearch.placeholder}">
+				<customData>
+					<core:CustomData key="dialogName" value="poSearchDlg"/>
+				</customData>
+			</Input>
+		</c:content>
+		<c:buttons>
+        	<Button text="OK" enabled="{path: 'viewModel>/poNumber', formatter: '.formatter.isNotEmpty'}" press="onPoSearchConfirm" type="Emphasized"/>
+			<Button text="Cancel" press="onPoSearchCancel"/>
+		</c:buttons>
+	</c:Dialog>
+</core:FragmentDefinition>

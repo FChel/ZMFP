@@ -1,0 +1,120 @@
+<core:FragmentDefinition
+  xmlns:l="sap.ui.layout"
+  xmlns:f="sap.ui.layout.form"
+  xmlns:core="sap.ui.core"
+  xmlns="sap.m"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns:c="fss.ssp.controls"
+  xmlns:combo="fss.ssp.controls.ComboBox">
+  <f:SimpleForm
+    editable="true"
+    layout="ColumnLayout"
+    title="{i18n>POHeader}"
+    columnsM="2"
+    columnsL="2"
+    columnsXL="3"
+    labelSpanXL="4"
+    labelSpanL="5"
+    labelSpanM="5">
+    <f:content>
+      <Label wrapping="true" text="{i18n>CompanyCode}" />
+      <combo:ComboBox  selectedKey="{CompanyCode}" editable="false"
+        items="{path : 'dropDownModel>/CompanyCode', sorter: {path: 'Key', descending: false}}">
+        <core:ListItem key="{dropDownModel>Key}"
+          text="{parts: [{path:'dropDownModel>Key'}, {path: 'dropDownModel>Value'}],
+              formatter: '.formatter.valueHelpDisplay'}"/>
+      </combo:ComboBox >
+
+      <Label wrapping="true" text="{i18n>PurchasingGroup}"/>
+      <Input required="true" value="{parts: [{path: 'PurchasingGroup'}, {path: 'viewModel>/vhDisplay/PurchasingGroupName'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"
+        showValueHelp="true" valueHelpRequest="onValueHelpRequest" change="onSearchHelpValueChange"
+        fieldGroupIds="CreateContractVH">
+        <customData>
+          <core:CustomData key="dialogName" value="purchasingGroupDlg"/>
+        </customData>
+      </Input>
+
+      <Label text="{i18n>Vendor}" tooltip="{i18n>VendorTooltip}"/>
+      <c:Input value="{parts: [{path: 'VendorNumber'}, {path:'VendorName'}], formatter: '.formatter.valueHelpDisplay'}"
+        editable="false" showValueHelp="true" change="onSearchHelpValueChange" >
+        <c:customData>
+          <core:CustomData key="dialogName" value="createVendorDlg"/>
+        </c:customData>
+      </c:Input>
+
+      <Label wrapping="true" text="{i18n>InvoicingParty}" tooltip="{i18n>InvoicingPartyTooltip}"/>
+      <combo:ComboBox selectedKey="{InvoicingPartyNumber}" id="invPartySelect"
+          change="validateComboBoxChange" busyIndicatorDelay="0">
+        <core:ListItem id="invPartyItem" key="{searchHelpModel>LIFNR}"
+          text="{parts: [{path: 'searchHelpModel>LIFNR'}, {path:'searchHelpModel>City'}, {path:'searchHelpModel>NAME1'}], formatter: '.formatter.invoicingPartyDisplay'}"/>
+      </combo:ComboBox >
+
+      <Label wrapping="true" text="{i18n>StandingOfferNumber}" tooltip="{i18n>StandingOfferNumberTooltip}"/>
+      <c:Input value="{parts: [{path: 'SON'}, {path:'viewModel>/SONDescription'}], formatter: '.formatter.valueHelpDisplay'}"
+          editable="false" id="sonInput" busyIndicatorDelay="0"/>
+
+      <!--<combo:ComboBox  selectedKey="{SON}" id="sonSelect" change="validateComboBoxChange" busyIndicatorDelay="0" editable="false">-->
+      <!--  <core:ListItem id="sonItem" key="{searchHelpModel>Key}" -->
+      <!--    text="{parts: [{path:'searchHelpModel>Key'}, {path: 'searchHelpModel>Description'}], formatter: '.formatter.valueHelpDisplay'}"/>-->
+      <!--</combo:ComboBox >-->
+
+      <!--<Label wrapping="true" text="{i18n>Currency}" />-->
+      <!--<Label />-->
+      <!--<Text />-->
+      <!--<Label />-->
+      <!--<Text visible="{= ${device>/browser/name} !== 'ie'}"/>-->
+
+      <Label wrapping="true" text="{i18n>Currency}/{i18n>ExchangeRate}" tooltip="{= ${IsSinglePO} !== true ? ${i18n>CurrencyTooltip} : ''}"/>
+      <combo:ComboBox  required="false" editable="false" selectedKey="{Currency}"
+        items="{ path : 'dropDownModel>/Currency', sorter: {path: 'Key', descending: false}}">
+        <core:ListItem key="{dropDownModel>Key}"
+            text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}],
+              formatter: '.formatter.valueHelpDisplay'}"/>
+      </combo:ComboBox >
+      <c:Input required="false" editable="false" tooltip="{i18n>ExchangeRate.tooltip}"
+          value="{path:'ExchangeRate', type:'sap.ui.model.odata.type.Decimal', formatOptions:{decimals: 5, groupingEnabled: true}, constraints:{precision: 9, scale: 5, minimum: '0'}}"/>
+
+
+      <Label wrapping="true" text="{i18n>TotalValueAud}" tooltip="{i18n>TotalValueAudTooltip}"/>
+      <Input editable="false" value="{parts: [{path: 'TotalValue'}, {path:'ExchangeRate'}, {path: 'Currency'}], formatter: '.formatter.totalValueAudFormatter'}"/>
+
+
+      <Label wrapping="true" text="{i18n>PaymentTerms}" tooltip="{i18n>PaymentTermsTooltip}"/>
+      <combo:ComboBox selectedKey="{PaymentTerms}" change="onPayTermsChanged" required="true"
+          items="{path : 'dropDownModel>/PaymentTerms'}" tooltip="{i18n>PaymentTermsTooltip}">
+        <core:ListItem key="{dropDownModel>Key}"
+            text="{parts: [{path: 'dropDownModel>Key'}, {path:'dropDownModel>Value'}], formatter: '.formatter.valueHelpDisplayKeepZeros'}"/>
+      </combo:ComboBox>
+
+      <Label wrapping="true" text="{i18n>PaymentTermsJustification}" tooltip="{i18n>PaymentTermsJustificationTooltip}"/>
+      <combo:ComboBox  selectedKey="{PaymentTermsJustification}"
+        tooltip="{i18n>PaymentTermsJustificationTooltip}"
+        enabled="{= ${PaymentTerms} !== '0020' &amp;&amp; ${PaymentTerms} !== '0005' &amp;&amp; ${PaymentTerms} !== ''}"
+        items="{path : 'dropDownModel>/PaymentTermsJustifications', sorter: {path: 'Key', descending: false}}"
+        required="{= ${PaymentTerms} !== '0020' &amp;&amp; ${PaymentTerms} !== '0005' &amp;&amp; ${PaymentTerms} !== ''}">
+        <core:ListItem key="{dropDownModel>Key}"
+            text="{dropDownModel>Value}"/>
+      </combo:ComboBox >
+
+      <Label wrapping="true" text="{i18n>JustificationDescription}" />
+      <c:ExpandableTextArea value="{JustificationDescription}"  placeholder="Enter {i18n>JustificationDescription}" rows="2"
+          maxLength="{path: 'mainModel>/#PurchaseOrder/JustificationDescription/@maxLength', formatter: '.formatter.lineNumberFormatter'}"
+          enabled="{= ${PaymentTerms} !== '0020' &amp;&amp; ${PaymentTerms} !== '0005' &amp;&amp; ${PaymentTerms} !== ''}"
+          required="{= ${PaymentTerms} !== '0020' &amp;&amp; ${PaymentTerms} !== '0005' &amp;&amp; ${PaymentTerms} !== ''}"/>
+      <!--<c:ExpandableTextArea value="{PaymentTermsJustification}" enabled="{= ${PaymentTerms} !== ${ContractModel>/PaymentTerms} &amp;&amp; ${PaymentTerms} !== ''}" -->
+      <!--    maxLength="{path: 'mainModel>/#PurchaseOrder/PaymentTermsJustification/@maxLength', formatter: '.formatter.lineNumberFormatter'}"-->
+      <!--    required="{= ${PaymentTerms} !== ${ContractModel>/PaymentTerms} &amp;&amp; ${PaymentTerms} !== ''}"-->
+      <!--    placeholder="{i18n>PaymentTermsJustificationPO.placeholder}"/>-->
+
+      <Label wrapping="true" text="{i18n>headerText.AlternateTC}"/>
+      <CheckBox selected="{path:'HeaderTexts/AlternateTC'}"/>
+      <!--<Label wrapping="true" text="{i18n>RomanComment}" />-->
+      <!--<c:ExpandableTextArea value="{RomanComment}" placeholder="{i18n>RomanComment.placeholder}"/>-->
+
+      <!--<Label />-->
+      <!--<Text visible="{= ${device>/browser/name} === 'ie'}"/>-->
+    </f:content>
+  </f:SimpleForm>
+  <core:Fragment fragmentName="fss.ssp.view.fragments.createHeaderText" type="XML" />
+
+</core:FragmentDefinition>
