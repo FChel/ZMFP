@@ -1,0 +1,3675 @@
+class ZCL_MFP_DOCUMENT definition
+  public
+  create public .
+
+public section.
+
+  interfaces ZIF_MYFI_DOCUMENT .
+
+  data GS_DEEP_ENTITY type STRING .
+  data GT_DOC_MAPPING type ZMFP_FIELD_MAPPING_TTY .
+  data GT_EXTENSIONOUT type BAPIPAREX_TP .
+  data GV_CHANGE_INDICATOR type CDCHNGINDH .
+  data GV_DOC_TYPE type ZMFP_CATEGORY .
+  data GV_DRAFT_INDICATOR type BOOLE_D .
+  data GV_INVPARTY_NAME type NAME1 .
+  data GV_PUR_GRP_NAME type EKNAM .
+  data GV_VENDOR_NAME type NAME1 .
+  data GV_MM_STATUS type FRGKE .
+  data GT_RETURN type BAPIRET2_T .
+  data GV_ERRORS type BOOLE_D .
+  data GV_DELEGATE_OK type BOOLE_D .
+  data GV_DOC_POSTED_OK type BOOLE_D .
+  data GV_IS_LEGACY type BOOLE_D .
+  data GV_PO_REL_IND type FRGKE .
+  data GV_MULTI_CURRENCY type BOOLE_D .
+
+  methods MESSAGE_HANDLER
+    importing
+      !IT_RETURN type BAPIRET2_T
+    returning
+      value(RT_RETURN) type BAPIRET2_T .
+  methods ASSIGN_DOCUMENT
+    importing
+      value(IV_ASSIGNEE) type UNAME optional .
+  methods CHECK_DELEGATE
+    returning
+      value(RV_OK) type BOOLE_D .
+  class-methods DECIDE_NEW_STATUS
+    importing
+      !IV_ACTION type ZMFP_ACTION
+      !IV_MYFI_DOC_TYPE type ZMFP_CATEGORY
+      !IV_OLD_STATUS type ZMFP_STATUS
+      !IV_MM_STATUS type FRGKE
+      !IV_EBELN type EBELN
+    returning
+      value(RV_NEW_STATUS) type ZMFP_STATUS .
+  methods CONVERT_ALPHA_INPUT
+    importing
+      !PROPNAME type DATAELEM
+    changing
+      !VALUE type ANY .
+  methods CREATE_ITEM_CONDITION
+    importing
+      !IS_BAPI_LINEITEM type ANY
+      !IV_CURRENCY type WAERS .
+  methods CREATE_NEW_DOC_HEADER
+    importing
+      !IV_STATUS type ZMFP_STATUS optional .
+  class-methods EXPORT_HEADER
+    importing
+      !ID type MEMORY_ID
+      !NAME type CHAR255 default 'ZTMFP_DOC_HEADER'
+      !VALUE type ZTMFP_DOC_HEADER .
+  methods CREATE_STRING
+    importing
+      !IV_DATA type ANY
+    returning
+      value(ES_DATA) type ZTMFP_STRINGS .
+  methods DELEGATE_REQUIRED .
+  class-methods GET_DOC_HEADER
+    importing
+      !IV_ZMFP_DOC_ID type EBELN
+    exporting
+      !ES_ZTMFP_DOC_HEADER type ZTMFP_DOC_HEADER .
+  methods GET_EKKN
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(RT_EKKN) type ME_EKKN .
+  methods GET_EKKO
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(RS_EKKO) type EKKO .
+  methods GET_EKPO
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(RT_EKPO) type ME_EKPO .
+  methods GET_FIELD_MAPPINGS
+    importing
+      !IV_DOC_TYPE type ZMFP_CATEGORY
+    returning
+      value(ET_MAPPINGS) type ZMFP_FIELD_MAPPING_TTY .
+  class-methods GET_REF_NUMBER
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(EV_REF_NO) type IHREZ .
+  class-methods IMPORT_HEADER
+    importing
+      !ID type MEMORY_ID optional
+      !NAME type CHAR255 default 'ZTMFP_DOC_HEADER'
+    exporting
+      !VALUE type ZTMFP_DOC_HEADER .
+  methods GET_PGRP_NAME .
+  methods MAP_BAPI_2_ODATA
+    importing
+      !IS_SENDING_STRUCTURE type ANY
+    exporting
+      !ES_DATA type ANY .
+  methods MAP_ODATA_2_BAPI
+    importing
+      !IS_SENDING_STRUCTURE type ANY
+      !IS_SENDING_X_STRUCTURE type BOOLE_D
+    exporting
+      !ES_DATA_X type ANY
+      !ES_DATA type ANY .
+  methods MOVE_ATTACHMENTS
+    importing
+      !IV_SENDING_DOC type EBELN
+      !IV_RECEIVING_DOC type EBELN
+      !IV_RECEIVING_DOC_TYPE type SAEANWDID optional .
+  methods RECALL_APPROVAL .
+  methods TRIGGER_PRF
+    importing
+      !IT_EKKN type ANY TABLE
+      !IS_ADMINDTL type ZSMFP_ADMIN_DETAIL
+      !IV_EBELN type EBELN
+      !IS_EKKO type ANY
+      !IT_EKPO type ANY TABLE
+      !IV_CREATING type BOOLE_D default ABAP_FALSE
+      !IV_CHECK_ONLY type BOOLE_D optional
+    returning
+      value(RT_PRF_URL) type STRING .
+  methods UNASSIGN_DOCUMENT .
+  methods GET_CONSUMPTION .
+  methods GET_ACCOUNT_ASSIGNMENT
+    importing
+      !IV_DOCUMENT type EBELN
+      !IT_LINEITEMS type ZCL_ZEDM_MFP_MPC=>TT_LINEITEM
+    exporting
+      value(ET_CC_ASSIGNMENTS) type ZSFSS_MFP_ASA_CC_TT
+      value(ET_ASSIGNMENTS) type ZCL_ZEDM_MFP_MPC_EXT=>TT_ACCOUNTASSIGNMENT .
+  class-methods GET_PAYMENT_JUSTIFICATION_TEXT
+    importing
+      !IV_PAYMENT_JUST_CODE type ZMFP_PMT_TERM_JUSTIFICATION_DD
+    returning
+      value(EV_TEXT) type ZMFP_PMT_TERMS_JUSTIFICATION .
+  class-methods GET_CHANGELOG
+    importing
+      !IV_OBJECT type EBELN
+    returning
+      value(RT_CHANGELOG) type ZTMFP_CHANGELOG .
+  class-methods GET_APPROVAL_HISTORY
+    importing
+      !IV_OBJECT type EBELN
+    returning
+      value(RT_APPRVAL) type ZTMFP_APPROVALS .
+  class-methods EXCHANGERATE_DEVIATION
+    importing
+      !IV_WKURS type WKURS
+      !IV_BEDAT type BEDAT optional
+      !IV_CURRENCY type WAERS
+      !IV_LINEITEM type EBELP
+    changing
+      !CV_PERCENT type WAABW_001 optional
+    returning
+      value(ES_RETURN) type BAPIRET2 .
+  class-methods CHECK_INVOICE_APPROVER_EMAIL
+    importing
+      !IV_EMAIL type ZCL_ZEDM_MFP_MPC=>TS_CONTACTDETAILS-INVOICECONTACTEMAIL
+    returning
+      value(ES_RETURN) type BAPIRET2 .
+  class-methods CONVERT_CURRENCY_DECIMAL
+    importing
+      !IV_WAERS type WAERS
+      !IV_NETWR type BAPICURR_D
+    returning
+      value(EV_NETWR) type BAPICURR_D .
+  class-methods CONVERT_TEXT_CURRENCY
+    importing
+      !IV_WAERS type WAERS
+      !IV_NETWR type STRING
+    returning
+      value(EV_NETWR) type STRING .
+  class-methods VALIDATE_EINV_PAYMENTTERM
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(RV_VALID) type BOOLE_D .
+  class-methods IS_ASSET_CHANGED
+    importing
+      !IV_DOCUMENT type EBELN
+    exporting
+      !EV_ASSET_CHANGED type BOOLE_D
+      !EV_ASSET_EMAIL type AD_SMTPADR
+      !EV_ASSET_DELETED type BOOLE_D .
+  class-methods GET_CC_ACCOUNTASSIGNMENTS
+    importing
+      value(IT_ACCOUNTASSIGNMENTS) type ZCL_ZEDM_MFP_MPC_EXT=>TT_ACCOUNTASSIGNMENT
+    exporting
+      value(ET_CC_ASSIGNMENTS) type ZSFSS_MFP_ASA_CC_TT
+      value(ET_ASSIGNMENTS) type ZCL_ZEDM_MFP_MPC_EXT=>TT_ACCOUNTASSIGNMENT .
+protected section.
+private section.
+
+  methods LOG_UPDATE_INDISUB
+    importing
+      !IV_CHANGE_INDICATOR type CDCHNGINDH
+      !IT_OLD_DATA type ANY TABLE
+      !IT_NEW_DATA type ANY TABLE
+    exporting
+      !EV_SUCCESS type XFELD
+      !ES_RETURN type BAPIRET2 .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_DOCUMENT IMPLEMENTATION.
+
+
+  METHOD assign_document.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~assign_document
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 06/07/22 210983DY  RD2K922923 DS-11-32-07-01 S6000002777:MyFi Continuous Improvement
+*                                              August Release
+*-----------------------------------------------------------------------
+    DATA: lt_docs       TYPE zif_mfp_constants=>ty_t_objtyp_ebeln,
+          ls_docs       TYPE zif_mfp_constants=>ty_s_objtyp_ebeln,
+          lv_folder     TYPE smyo_node,
+          ls_doc_header TYPE ztmfp_doc_header.
+
+*    CHECK sy-uname NE 'WF-BATCH' OR iv_assignee IS NOT INITIAL.
+    IF iv_assignee IS INITIAL.
+      iv_assignee = sy-uname.
+    ENDIF.
+
+    CHECK iv_assignee NE 'WF-BATCH'.
+
+    ls_docs-ebeln = me->zif_myfi_document~posting_doc_num.
+    IF ls_docs-ebeln IS INITIAL.
+      ls_docs-ebeln = me->zif_myfi_document~source_doc_num.
+    ENDIF.
+    CHECK ls_docs-ebeln IS NOT INITIAL.
+    MOVE-CORRESPONDING me->zif_myfi_document~new_doc_header TO ls_doc_header.
+    IF ls_doc_header-category IS INITIAL.
+      MOVE-CORRESPONDING me->zif_myfi_document~old_doc_header TO ls_doc_header.
+    ENDIF.
+
+    IF ls_doc_header-status EQ zif_mfp_constants=>gc_action-odata-draft.
+      lv_folder = zif_mfp_constants=>gc_object_folder_drafts.
+    ELSE.
+      lv_folder = zif_mfp_constants=>gc_object_folder.
+    ENDIF.
+
+    CASE ls_doc_header-category.
+      WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_oa OR zif_mfp_constants=>gc_myfi_doc_type-myfi_oa OR zif_mfp_constants=>gc_myfi_doc_type-leg_oa.
+        ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2014.
+      WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_po OR zif_mfp_constants=>gc_myfi_doc_type-myfi_po OR zif_mfp_constants=>gc_myfi_doc_type-leg_po.
+        ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2012.
+      WHEN OTHERS.
+    ENDCASE.
+    CHECK ls_docs-objtyp IS NOT INITIAL.
+    APPEND ls_docs TO lt_docs.
+
+    CALL METHOD zcl_mfp_utilities=>add_user_objects
+      EXPORTING
+        iv_user   = iv_assignee
+        iv_folder = lv_folder
+        it_docs   = lt_docs.
+
+  ENDMETHOD.
+
+
+  method CHECK_DELEGATE.
+  endmethod.
+
+
+  METHOD check_invoice_approver_email.
+*----------------------------------------------------------------------*
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents to validate
+*                     Invoice Approver email deom delivery address line 1
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        02.03.2021
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002250 - MyFi Purchasing Release 2.4
+*-----------------------------------------------------------------------
+
+    IF NOT iv_email IS INITIAL.
+* Check if email entered exists in table /ors/usermap or zfvim_poc_mapng
+      SELECT COUNT(*) FROM /ors/usermap
+           WHERE email = iv_email.
+
+      IF NOT sy-subrc IS INITIAL.
+
+        SELECT COUNT(*) FROM zfvim_poc_mapng
+              WHERE poc_email = iv_email.
+        IF NOT sy-subrc IS INITIAL.
+
+          MESSAGE e102(zmfp) WITH iv_email INTO es_return-message.
+          es_return-type = sy-msgty.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+ENDMETHOD.
+
+
+  METHOD convert_alpha_input.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~convert_alpha_input
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lv_data TYPE REF TO data.
+    FIELD-SYMBOLS: <fs_data> TYPE data.
+
+    CREATE DATA lv_data TYPE (propname).
+    ASSIGN lv_data->* TO <fs_data>.
+
+    CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+      EXPORTING
+        input  = value
+      IMPORTING
+        output = <fs_data>.
+
+    value = <fs_data>.
+  ENDMETHOD.
+
+
+  METHOD convert_currency_decimal.
+
+    CALL FUNCTION 'BAPI_CURRENCY_CONV_TO_EXTERNAL'
+      EXPORTING
+        currency        = iv_waers
+        amount_internal = iv_netwr
+      IMPORTING
+        amount_external = ev_netwr.
+
+  ENDMETHOD.
+
+
+  METHOD convert_text_currency.
+
+    CALL FUNCTION 'PSSV_TEXT_INTO_FIELD_CURRENCY'
+      EXPORTING
+        i_amount       = iv_netwr
+        i_currency     = iv_waers
+      IMPORTING
+        e_amount       = ev_netwr
+      EXCEPTIONS
+        wrong_amount   = 1
+        wrong_currency = 2
+        wrong_decimal  = 3
+        OTHERS         = 4.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ENDIF.
+
+
+
+  ENDMETHOD.
+
+
+  method CREATE_ITEM_CONDITION.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~CREATE_ITEM_CONDITION
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2.2).
+*                     This method is required as is blank deliberately
+*
+* AUTHOR:             Stephen Ning (290977SCN)
+* CREATE DATE:        21.09.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002096 - MyFi Purchasing Release 2.2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+*-----------------------------------------------------------------------
+  endmethod.
+
+
+  METHOD create_new_doc_header.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~create_new_doc_header
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    IF zcl_mfp_utilities=>is_myfi( iv_doc_num = me->zif_myfi_document~source_doc_num ) EQ abap_false or me->zif_myfi_document~source_doc_num is initial.
+      me->zif_myfi_document~new_doc_header-create_date = sy-datum.
+      me->zif_myfi_document~new_doc_header-status = iv_status.
+      me->zif_myfi_document~new_doc_header-category = me->gv_doc_type.
+*    ELSE.
+*      me->zif_myfi_document~new_doc_header = me->zif_myfi_document~old_doc_header.
+    ENDIF.
+  ENDMETHOD.
+
+
+  method CREATE_STRING.
+  endmethod.
+
+
+  METHOD decide_new_status.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~decide_new_status
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 22.07.20 290977SCN RD2K919533 DS-11-32-07-01 Included Status Application Logging
+*-----------------------------------------------------------------------
+    DATA: ls_status_decision TYPE zsmfp_status_decision,
+          lr_admin_data      TYPE REF TO if_fdt_admin_data,
+          lr_function        TYPE REF TO  if_fdt_function,
+          lr_context         TYPE REF TO if_fdt_context,
+          lr_fdt_result      TYPE REF TO if_fdt_result,
+          lrx_fdt            TYPE REF TO cx_fdt,
+          lv_id              TYPE if_fdt_types=>id,
+          ls_return          TYPE bapiret2,
+          lv_message         TYPE char50.
+
+    ls_status_decision-action = iv_action.
+    ls_status_decision-mm_status = iv_mm_status.
+    ls_status_decision-myfi_doc_type = iv_myfi_doc_type.
+    ls_status_decision-old_status = iv_old_status.
+
+    TRY .
+        cl_fdt_factory=>get_instance_generic( EXPORTING iv_id = zif_mfp_constants=>gc_brf_guid-status
+                                              IMPORTING eo_instance = lr_admin_data ).
+        lr_function ?= lr_admin_data.
+        lr_context ?= lr_function->get_process_context( ).
+        lr_context->set_value( iv_name = 'ZSMFP_STATUS_DECISION' ia_value =  ls_status_decision ).
+        lr_function->process( EXPORTING io_context = lr_context
+                              IMPORTING eo_result  = lr_fdt_result ).
+        lr_fdt_result->get_value( IMPORTING ea_value = rv_new_status ).
+
+      CATCH cx_fdt INTO lrx_fdt.
+        ls_return-type = zcl_grp_bapi_util=>gc_error_msg.
+        ls_return-id = zcl_grp_bapi_util=>gc_msg_class.
+        ls_return-number = '080'.
+        ls_return-message_v1 = lrx_fdt->get_object_name( lv_id ).
+        ls_return-message_v2 = lrx_fdt->if_message~get_text( ).
+        MESSAGE ID ls_return-id TYPE ls_return-type NUMBER ls_return-number INTO ls_return-message WITH ls_return-message_v1 ls_return-message_v2.
+*        APPEND ls_return TO et_return.
+    ENDTRY.
+
+        lv_message = |A:{ iv_action } OS:{ iv_old_status } MS:{ iv_mm_status } NS:{ rv_new_status }|.
+
+    CALL METHOD zcl_mfp_utilities=>log_myfi_action
+      EXPORTING
+        iv_doc_number = iv_ebeln
+        iv_action     = zif_mfp_constants=>gc_log-sub_obj-action-status
+        iv_user_id    = sy-uname
+        iv_message    = lv_message.
+
+
+  ENDMETHOD.
+
+
+  METHOD delegate_required.
+  ENDMETHOD.
+
+
+  METHOD exchangerate_deviation.
+*----------------------------------------------------------------------*
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents to display message
+*                     for exchange rate deviation
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        02.03.2021
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002250 - MyFi Purchasing Release 2.4
+*-----------------------------------------------------------------------
+
+    DATA : iv_wkurs_int    TYPE ukurs_curr,
+           lv_kurs1        TYPE tcurr-ukurs,
+           lv_kurs2        TYPE tcurr-ukurs,
+           cv_percent1 TYPE p,
+           lv_rate         TYPE char20.
+    IF iv_currency <> 'AUD'.
+      SELECT * FROM tcurr UP TO 1 ROWS INTO @DATA(ls_tcurr)
+                WHERE      kurst     =   'M'
+                AND        fcurr     =   @iv_currency
+                AND        tcurr     =   'AUD'
+                ORDER BY   gdatu     ASCENDING.
+* Refer to CONVERSION_EXIT_INVDT_OUTPUT, why ascending is selected.
+* gdatu dictionary definition is a character not date.
+      ENDSELECT.
+
+      IF sy-subrc = 0.
+        DATA(lv_tableexchangerate)   =   ls_tcurr-ukurs.
+      ENDIF.
+
+    ENDIF.
+    IF NOT lv_tableexchangerate IS INITIAL.
+
+      iv_wkurs_int = iv_wkurs.
+      DATA(lv_percent1) = abs( ( iv_wkurs - lv_tableexchangerate ) * 100 / iv_wkurs ).
+*      cv_percent1 = abs(  ( iv_wkurs - lv_tableexchangerate )  * 100 / iv_wkurs ).
+*      cv_percent = cv_percent1.
+      cv_percent = lv_percent1.
+
+      IF cv_percent GT '05'.
+        MESSAGE w050(zmfp) INTO es_return-message WITH iv_wkurs lv_tableexchangerate iv_lineitem.
+        es_return-type = 'W'.
+      ENDIF.
+    ENDIF.
+
+
+  ENDMETHOD.
+
+
+  METHOD EXPORT_HEADER.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~EXPORT_HEADER
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_ptab TYPE zsmfp_memory_header,
+          lt_ptab TYPE STANDARD TABLE OF zsmfp_memory_header.
+
+    ls_ptab-name = name.
+    ls_ptab-value = value.
+    APPEND ls_ptab TO lt_ptab.
+
+    EXPORT lt_ptab = lt_ptab TO MEMORY ID id.
+  ENDMETHOD.
+
+
+  METHOD get_account_assignment.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT_PO~zif_myfi_document~validate
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Dathri Yellamarthy
+* CREATE DATE:        05.11.2021
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002550: MyFi Applications (December Release)
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 05/11/21 210983DY  RD2K922034 DS-11-32-07-01 S6000002550: MyFi Applications (December Release)
+*                    Additional code to enable Multi Account Assignment
+* 18.08.22 210983DY RD2K923033 DS-11-32-07-01 S 6000002805: MyFi Continuous Improvement September Release
+* 10/01/23  210983DY RD2K923348,
+*                    RD2K923485,
+*                    RD2K923509 S 6000002854: MyFi Continuous Improvement December Rel
+*          Additional logic to handle Account assignment validation for locked objects
+*         Pass lock flag against account assignment object to UI
+* 03072023 210983DY RD2K923919 6000002957 MyFi Continuous Improvement -
+*    Account assignment correction for Cost Centre and Project
+*-----------------------------------------------------------------------
+
+    DATA: ls_odata_assignments TYPE zcl_zedm_mfp_mpc=>ts_accountassignment,
+          lt_gl                TYPE /iwbep/t_cod_select_options,
+          lt_costcenter        TYPE /iwbep/t_cod_select_options,
+          lt_asset             TYPE /iwbep/t_cod_select_options,
+          lt_order             TYPE /iwbep/t_cod_select_options,
+          lt_wbs               TYPE /iwbep/t_cod_select_options,
+          ls_cc_assignments    TYPE zsfss_mfp_asa_cc.
+
+    SELECT *
+          FROM ekkn
+          INTO TABLE @DATA(lt_account_assignments)
+         WHERE ebeln = @iv_document.
+
+* Range for GL's
+    lt_gl = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN lt_account_assignments ( sign = 'I'
+                                                    option = 'EQ'
+                                                    low = ls_accnt-sakto ) ).
+
+    lt_costcenter = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN lt_account_assignments ( sign = 'I'
+                                                     option = 'EQ'
+                                                     low = ls_accnt-kostl ) ).
+
+    lt_wbs = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN lt_account_assignments ( sign = 'I'
+                                                    option = 'EQ'
+                                                    low = ls_accnt-ps_psp_pnr ) ).
+
+    lt_order = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN lt_account_assignments ( sign = 'I'
+                                                        option = 'EQ'
+                                                        low = ls_accnt-aufnr ) ).
+
+    lt_asset = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN lt_account_assignments ( sign = 'I'
+                                                        option = 'EQ'
+                                                        low = ls_accnt-anln1 ) ).
+
+    IF NOT lt_gl IS INITIAL.
+      SELECT saknr, txt50 FROM skat INTO TABLE @DATA(lt_gl_names)
+         WHERE spras = @sy-langu AND
+                  ktopl = 'COA' AND
+                  saknr IN @lt_gl.
+* Get Status of GL's
+      SELECT a~saknr, a~xloev, a~xspeb, b~xloeb, b~xspeb AS deletion INTO TABLE @DATA(lt_gl_status)
+        FROM ska1 AS a INNER JOIN skb1 AS b ON a~saknr = b~saknr
+        WHERE a~ktopl = 'COA'
+          AND a~saknr IN @lt_gl.
+
+    ENDIF.
+
+    IF NOT lt_costcenter IS INITIAL.
+      SELECT kostl, ltext FROM cskt INTO TABLE @DATA(lt_costcenter_names)  WHERE spras = @sy-langu AND
+      kokrs = 'CA01' AND kostl IN @lt_costcenter AND datbi GE @sy-datlo.
+
+      SELECT * FROM csks INTO TABLE @DATA(lt_cc_details)  WHERE kokrs EQ 'CA01'
+                               AND kostl IN @lt_costcenter AND datbi GE @sy-datlo.
+    ENDIF.
+
+    IF NOT lt_wbs IS INITIAL.
+
+      SELECT pspnr, post1, objnr, prctr, fkstl FROM prps INTO TABLE @DATA(lt_wbs_name) WHERE pspnr IN @lt_wbs.
+      IF sy-subrc IS INITIAL.
+*   Get status of WBS
+        SELECT objnr, stat, inact FROM jest INTO TABLE @DATA(lt_wbs_status) FOR ALL ENTRIES IN @lt_wbs_name
+                WHERE objnr = @lt_wbs_name-objnr AND inact NE 'X'.
+      ENDIF.
+    ENDIF.
+
+    IF NOT lt_order IS INITIAL.
+      SELECT aufnr, ktext, objnr, kostl FROM aufk INTO TABLE @DATA(lt_order_name) WHERE aufnr IN @lt_order AND
+      auart = 'A000' AND
+      kokrs = 'CA01'.
+      IF sy-subrc IS INITIAL.
+*   Get status of Internal order
+        SELECT objnr, stat, inact FROM jest INTO TABLE @DATA(lt_order_status) FOR ALL ENTRIES IN @lt_order_name
+                WHERE objnr = @lt_order_name-objnr AND inact NE 'X'.
+      ENDIF.
+    ENDIF.
+
+    IF NOT lt_asset IS INITIAL.
+
+      SELECT a~anln1, a~anln2, a~xloev AS locked, a~xspeb AS locked_postings, a~deakt AS deactivation_date,
+         a~txt50, b~bdatu AS date_valid, b~kostl
+    INTO TABLE @DATA(lt_asset_name)
+    FROM anla AS a
+         INNER JOIN anlz AS b ON b~bukrs = a~bukrs
+                             AND b~anln1 = a~anln1
+                             AND b~anln2 = a~anln2
+   WHERE a~anln1 IN @lt_asset.
+    ENDIF.
+
+    LOOP AT lt_account_assignments INTO DATA(ls_account_assignment).
+      ls_odata_assignments-parentnumber = ls_account_assignment-ebeln.
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_account_assignment-ebelp
+        IMPORTING
+          output = ls_odata_assignments-linenumber.
+
+      CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+        EXPORTING
+          input  = ls_account_assignment-zekkn
+        IMPORTING
+          output = ls_odata_assignments-assignment_item.
+
+
+      IF ls_account_assignment-loekz = 'X'.
+        ls_odata_assignments-isdeleted = abap_true.
+      ELSE.
+        ls_odata_assignments-isdeleted = abap_false.
+      ENDIF.
+
+* ASA Check
+      ls_cc_assignments-ebeln = ls_account_assignment-ebeln.
+      ls_cc_assignments-ebelp = ls_odata_assignments-linenumber.
+
+*        *      Pass percentage only if quantity is initial
+      READ TABLE it_lineitems INTO DATA(ls_lineitems) WITH KEY parentnumber = ls_account_assignment-ebeln
+                                                               linenumber = ls_odata_assignments-linenumber.
+      IF sy-subrc IS INITIAL.
+        IF ls_lineitems-distrib = '1'.
+          ls_odata_assignments-quantity = ls_account_assignment-menge.
+        ELSEIF ls_lineitems-distrib = '2'.
+          ls_odata_assignments-vproz = ls_account_assignment-vproz.
+        ELSEIF ls_lineitems-distrib = '3'.
+          ls_odata_assignments-amount = ls_account_assignment-netwr.
+        ENDIF.
+      ENDIF.
+
+* Clear cost centre value for account assignment Project
+      IF ls_lineitems-acctasscat = 'P'.
+        CLEAR ls_account_assignment-kostl.
+      ENDIF.
+* GL Account
+      ls_odata_assignments-gl_account = ls_account_assignment-sakto.
+      IF NOT ls_account_assignment-sakto IS INITIAL .
+        READ TABLE lt_gl_names INTO DATA(ls_gl) WITH KEY saknr = ls_account_assignment-sakto.
+        IF sy-subrc IS INITIAL.
+          ls_odata_assignments-gl_account_text = ls_gl-txt50.
+
+          READ TABLE lt_gl_status INTO DATA(ls_gl_status) WITH KEY saknr = ls_account_assignment-sakto.
+          IF sy-subrc IS INITIAL AND (
+             NOT ls_gl_status-deletion IS INITIAL OR
+            NOT ls_gl_status-xspeb IS INITIAL OR
+            NOT ls_gl_status-xloev IS INITIAL OR
+            NOT ls_gl_status-xloeb IS INITIAL ).
+            ls_odata_assignments-islocked = abap_true.
+            ls_odata_assignments-isgllocked = abap_true.
+          ENDIF.
+
+        ENDIF.
+      ENDIF.
+
+* Cost Center
+      ls_odata_assignments-costcenter = ls_account_assignment-kostl.
+      IF NOT ls_account_assignment-kostl IS INITIAL.
+        ls_cc_assignments-kostl = ls_account_assignment-kostl.
+        READ TABLE lt_costcenter_names INTO DATA(ls_costcenter) WITH KEY kostl = ls_account_assignment-kostl.
+        IF sy-subrc IS INITIAL.
+          ls_odata_assignments-costcenter_name = ls_costcenter-ltext.
+        ENDIF.
+        READ TABLE lt_cc_details INTO DATA(ls_cc_details) WITH KEY kostl = ls_account_assignment-kostl.
+        IF sy-subrc IS INITIAL.
+          IF ls_cc_details-bkzkp = abap_true OR ls_cc_details-bkzks = abap_true OR ls_cc_details-bkzer = abap_true OR
+                     ls_cc_details-bkzob = abap_true OR ls_cc_details-pkzkp = abap_true OR ls_cc_details-pkzks = abap_true OR
+                     ls_cc_details-pkzer = abap_true.
+            ls_odata_assignments-islocked = abap_true.
+            ls_odata_assignments-iscclocked = abap_true.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+
+* Asset
+      ls_odata_assignments-fund = ls_account_assignment-geber.
+      ls_odata_assignments-asset_no = ls_account_assignment-anln1.
+      ls_odata_assignments-sub_number = ls_account_assignment-anln2.
+      READ TABLE lt_asset_name INTO DATA(ls_asset_name) WITH KEY anln1 = ls_account_assignment-anln1
+                                                                 anln2 = ls_account_assignment-anln2.
+      IF sy-subrc IS INITIAL.
+        ls_odata_assignments-asset_name = ls_asset_name-txt50.
+        ls_cc_assignments-kostl = ls_asset_name-kostl.               " ASA - Cost centre for Asset
+        IF NOT ls_asset_name-locked IS INITIAL OR NOT ls_asset_name-locked_postings IS INITIAL
+          OR NOT ls_asset_name-deactivation_date = '00000000' OR
+          NOT ls_asset_name-date_valid GE sy-datlo.
+          ls_odata_assignments-islocked = abap_true.
+          ls_odata_assignments-isassetlocked = abap_true.
+        ENDIF.
+      ENDIF.
+
+* WBS
+* Clear WBS value for account assignment Cost Centre
+      IF ls_lineitems-acctasscat = 'K'.
+        CLEAR ls_account_assignment-ps_psp_pnr.
+      ENDIF.
+      CALL FUNCTION 'CONVERSION_EXIT_ABPSP_OUTPUT'
+        EXPORTING
+          input  = ls_account_assignment-ps_psp_pnr
+        IMPORTING
+          output = ls_odata_assignments-wbs_element.
+      IF NOT ls_account_assignment-ps_psp_pnr IS INITIAL.
+        READ TABLE lt_wbs_name INTO DATA(ls_wbs) WITH KEY pspnr = ls_account_assignment-ps_psp_pnr.
+        IF sy-subrc IS INITIAL.
+          ls_odata_assignments-wbs_name = ls_wbs-post1.
+          ls_cc_assignments-kostl = ls_wbs-fkstl.  " ASA - Cost centre for WBS
+          ls_cc_assignments-prctr = ls_wbs-prctr.  " ASA - Profit centre for WBS
+
+          LOOP AT lt_wbs_status INTO DATA(ls_wbs_status) WHERE objnr = ls_wbs-objnr.
+            IF ls_wbs_status-stat = 'I0043' "Locked and active status record
+                                 OR   ls_wbs_status-stat = 'I0045'        "Technically completed and active status record
+                                 OR  ls_wbs_status-stat  = 'I0046'        "Closed and active status record
+                                 OR   ls_wbs_status-stat = 'I0076'."Deletion Flag and active status record
+              ls_odata_assignments-islocked = abap_true.
+              ls_odata_assignments-iswbslocked = abap_true.
+              EXIT.
+            ENDIF.
+          ENDLOOP.
+        ENDIF.
+      ENDIF.
+
+* Internal Orders
+      ls_odata_assignments-orderid = ls_account_assignment-aufnr.
+      IF NOT ls_account_assignment-aufnr IS INITIAL.
+        READ TABLE lt_order_name INTO DATA(ls_order) WITH KEY aufnr = ls_account_assignment-aufnr.
+        IF sy-subrc IS INITIAL.
+          ls_odata_assignments-ordername = ls_order-ktext.
+          ls_cc_assignments-kostl = ls_order-kostl.    " ASA - Cost Centre for Order
+          LOOP AT lt_order_status INTO DATA(ls_order_status) WHERE objnr = ls_order-objnr.
+            IF ls_order_status-stat = 'I0043' "Locked and active status record
+                                 OR   ls_order_status-stat = 'I0045'        "Technically completed and active status record
+                                 OR  ls_order_status-stat  = 'I0046'        "Closed and active status record
+                                 OR   ls_order_status-stat = 'I0076'."Deletion Flag and active status record
+              ls_odata_assignments-islocked = abap_true.
+              ls_odata_assignments-isorderlocked = abap_true.
+              EXIT.
+            ENDIF.
+          ENDLOOP.
+
+        ENDIF.
+
+      ENDIF.
+      APPEND ls_odata_assignments TO et_assignments.
+      APPEND ls_cc_assignments TO et_cc_assignments.
+      CLEAR ls_odata_assignments.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+ METHOD get_approval_history.
+*----------------------------------------------------------------------*
+* METHOD ID:          GET_APPROVAL_HISTORY
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method retrieves approvers of purchasing document
+*
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        23/11/2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*----------------------------------------------------------------------- *
+*06/07/22 210983DY  RD2K922923  S6000002777: MyFi Continuous Improvement August Release
+*-------------------------------------------------------------------------
+
+
+   DATA: lt_container TYPE TABLE OF swr_cont.
+   DATA: ls_approvallog TYPE zsmfp_approvals,
+         lt_approvallog TYPE ztmfp_approvals,
+         lt_typeid      TYPE RANGE OF sww_wi2obj-typeid,
+         lt_task        TYPE RANGE OF sww_wi2obj-wi_rh_task,
+         lt_catid       TYPE RANGE OF sww_wi2obj-catid.
+
+   DATA(lt_wf_log) = NEW zcl_mfp_workflow_approval( )->read_data( iv_document = iv_object ).
+
+
+
+   LOOP AT lt_wf_log INTO DATA(ls_wf_log).
+
+     ls_approvallog-parentnumber = ls_wf_log-zmfp_doc_id.
+     ls_approvallog-approverid = ls_wf_log-approver.
+     ls_approvallog-approvaldate = ls_wf_log-action_date.
+     ls_approvallog-approvaltime = ls_wf_log-action_time.
+     ls_approvallog-action = ls_wf_log-action.
+     ls_approvallog-recipient = ls_wf_log-recipient.
+     ls_approvallog-requestor = ls_wf_log-requestor.
+
+     APPEND ls_approvallog TO lt_approvallog.
+     CLEAR : ls_approvallog.
+
+   ENDLOOP.
+
+* Retrieve Title and Name for User ID
+   IF NOT lt_approvallog IS INITIAL.
+     SELECT  a~pernr, a~usrid, b~nachn, b~vorna, b~cname, b~titel FROM pa0105 AS a
+                           INNER JOIN pa0002 AS b ON a~pernr EQ b~pernr
+               INTO TABLE @DATA(lt_pers_data) FOR ALL ENTRIES IN @lt_approvallog
+               WHERE a~usrid = @lt_approvallog-approverid AND
+                     a~begda LE @sy-datum AND
+                     a~endda GE @sy-datum AND
+                     b~begda LE @sy-datum AND
+                     b~endda GE @sy-datum.
+
+     IF sy-subrc IS INITIAL.
+
+       LOOP AT lt_approvallog ASSIGNING FIELD-SYMBOL(<fs_log>).
+
+         READ TABLE lt_pers_data INTO DATA(ls_pers_data) WITH KEY usrid = <fs_log>-approverid.
+         IF sy-subrc IS INITIAL.
+           <fs_log>-approvername = |{ ls_pers_data-titel } { ls_pers_data-vorna } { ls_pers_data-nachn } |..
+           <fs_log>-approverid = ls_pers_data-pernr.
+         ENDIF.
+       ENDLOOP.
+     ENDIF.
+
+   ENDIF.
+   SORT lt_approvallog DESCENDING BY approvaldate approvaltime.
+   rt_apprval = lt_approvallog.
+
+ ENDMETHOD.
+
+
+  METHOD get_cc_accountassignments.
+*----------------------------------------------------------------------*
+* METHOD ID:          GET_CC_ACCOUNTASSIGNMENTS
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2.2).
+*                     This method returns list of Cost centre assignments
+*
+* AUTHOR:             Dathri Yellamarthy(210983DY)
+* CREATE DATE:        10.10.2023
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          S 6000003027: MyFi Continuous Improvement November Rel
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 10/10/23 210983DY RD2K924373,
+*                   RD2K924447  DS-11-32-07-01 6000003027: MyFi Continuous Improvement November Rel
+*-----------------------------------------------------------------------
+
+    DATA: ls_odata_assignments TYPE zcl_zedm_mfp_mpc=>ts_accountassignment,
+          lt_gl                TYPE /iwbep/t_cod_select_options,
+          lt_costcenter        TYPE /iwbep/t_cod_select_options,
+          lt_asset             TYPE /iwbep/t_cod_select_options,
+          lt_order             TYPE /iwbep/t_cod_select_options,
+          lt_wbs               TYPE /iwbep/t_cod_select_options,
+          ls_cc_assignments    TYPE zsfss_mfp_asa_cc.
+
+
+    lt_costcenter = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN it_accountassignments ( sign = 'I'
+                                                     option = 'EQ'
+                                                     low = ls_accnt-costcenter  ) ).
+
+    lt_wbs = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN it_accountassignments ( sign = 'I'
+                                                    option = 'EQ'
+                                                    low = ls_accnt-wbs_element ) ).
+
+    lt_order = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN it_accountassignments ( sign = 'I'
+                                                        option = 'EQ'
+                                                        low = ls_accnt-orderid ) ).
+
+    lt_asset = VALUE /iwbep/t_cod_select_options( FOR ls_accnt IN it_accountassignments ( sign = 'I'
+                                                        option = 'EQ'
+                                                        low = ls_accnt-asset_no ) ).
+
+    DELETE lt_order WHERE low IS INITIAL.
+    DELETE lt_costcenter WHERE low IS INITIAL.
+    DELETE lt_wbs WHERE low IS INITIAL.
+    DELETE lt_asset WHERE low IS INITIAL.
+
+    IF NOT lt_costcenter IS INITIAL.
+      SELECT kostl, ltext FROM cskt INTO TABLE @DATA(lt_costcenter_names)  WHERE spras = @sy-langu AND
+      kokrs = 'CA01' AND kostl IN @lt_costcenter AND datbi GE @sy-datlo.
+    ENDIF.
+
+    IF NOT lt_wbs IS INITIAL.
+      SELECT pspnr, post1, objnr, prctr, fkstl FROM prps INTO TABLE @DATA(lt_wbs_name) WHERE posid IN @lt_wbs.
+    ENDIF.
+
+    IF NOT lt_order IS INITIAL.
+      SELECT aufnr, ktext, objnr, kostv FROM aufk INTO TABLE @DATA(lt_order_name) WHERE aufnr IN @lt_order AND
+      auart = 'A000' AND
+      kokrs = 'CA01'.
+    ENDIF.
+
+    IF NOT lt_asset IS INITIAL.
+
+      SELECT a~anln1, a~anln2, a~xloev AS locked, a~xspeb AS locked_postings, a~deakt AS deactivation_date,
+         a~txt50, b~bdatu AS date_valid, b~kostl
+    INTO TABLE @DATA(lt_asset_name)
+    FROM anla AS a
+         INNER JOIN anlz AS b ON b~bukrs = a~bukrs
+                             AND b~anln1 = a~anln1
+                             AND b~anln2 = a~anln2
+   WHERE a~anln1 IN @lt_asset.
+    ENDIF.
+
+    LOOP AT it_accountassignments INTO DATA(ls_account_assignment).
+
+* ASA Check
+      ls_cc_assignments-ebeln = ls_account_assignment-parentnumber.
+      ls_cc_assignments-ebelp = ls_account_assignment-linenumber.
+
+* Cost Center
+*      ls_odata_assignments-costcenter = ls_account_assignment-costcenter.
+      IF NOT ls_account_assignment-costcenter IS INITIAL.
+        ls_cc_assignments-kostl = ls_account_assignment-costcenter.
+
+      ENDIF.
+
+* Asset
+
+      READ TABLE lt_asset_name INTO DATA(ls_asset_name) WITH KEY anln1 = ls_account_assignment-asset_no
+                                                                 anln2 = ls_account_assignment-sub_number.
+      IF sy-subrc IS INITIAL.
+        ls_cc_assignments-kostl = ls_asset_name-kostl.               " ASA - Cost centre for Asset
+      ENDIF.
+
+* WBS
+      CALL FUNCTION 'CONVERSION_EXIT_ABPSP_INPUT'
+        EXPORTING
+          input  = ls_account_assignment-wbs_element
+        IMPORTING
+          output = ls_account_assignment-wbs_element. "ls_odata_assignments-wbs_element.
+      IF NOT ls_account_assignment-wbs_element IS INITIAL.
+        READ TABLE lt_wbs_name INTO DATA(ls_wbs) WITH KEY pspnr = ls_account_assignment-wbs_element.
+        IF sy-subrc IS INITIAL.
+
+          ls_cc_assignments-kostl = ls_wbs-fkstl.  " ASA - Cost centre for WBS
+          ls_cc_assignments-prctr = ls_wbs-prctr.  " ASA - Profit centre for WBS
+
+        ENDIF.
+      ENDIF.
+* Internal Orders
+      IF NOT ls_account_assignment-orderid IS INITIAL.
+        READ TABLE lt_order_name INTO DATA(ls_order) WITH KEY aufnr = ls_account_assignment-orderid.
+        IF sy-subrc IS INITIAL.
+          ls_cc_assignments-kostl = ls_order-kostv.    " ASA - Cost Centre for Order
+        ENDIF.
+      ENDIF.
+      APPEND ls_cc_assignments TO et_cc_assignments.
+      CLEAR ls_cc_assignments.
+    ENDLOOP.
+
+  ENDMETHOD.
+
+
+  METHOD get_changelog.
+*----------------------------------------------------------------------*
+* METHOD ID:          GET_CHANGELOG
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method retrieves change log for a document
+*
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        23/11/2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*----------------------------------------------------------------------- *
+** 03/03/21 210983DY  RD2K920554 DS-11-32-07-01 S 6000002250: MyFi Purchasing (Release 2.4 )
+*                 Additional logic to display amount values
+* 04.08.21 210983DY RD2K921440  DS-11-32-07-01 S6000002451: MyFi Purchasing (August Release)
+*                                              Display User name for User ID
+* 06/07/22 210983DY  RD2K922923  S6000002777: MyFi Continuous Improvement August Release
+*-------------------------------------------------------------------------
+
+
+    DATA: ls_changelog    TYPE zsmfp_changelog,
+          lv_item         TYPE ebelp,
+          lv_tdobject     TYPE ttxid-tdobject,
+          lt_tabname      TYPE RANGE OF dd02t-tabname,
+          lt_domname      TYPE RANGE OF dd07t-domname,
+          lt_userid       TYPE RANGE OF pa0105-usrid,
+          lt_tdobj        TYPE RANGE OF ttxid-tdobject,
+          lt_objectclas   TYPE RANGE OF cdhdr-objectclas,
+          lt_id           TYPE RANGE OF ttxid-tdid,
+          lt_fname        TYPE RANGE OF cdpos-fname,
+          lt_cdred        TYPE TABLE OF cdred,
+          ls_decimal      TYPE bapi1090_1,
+          ls_bapireturn   TYPE bapireturn,
+          lv_value_old    TYPE string,
+          lv_value_old_c  TYPE char20,
+          lv_value_new    TYPE string,
+          lv_decimals     TYPE currdec,
+          lv_amount       TYPE bapicurr_d,
+          lv_amount_dec3  TYPE p DECIMALS 3,
+          lv_amount_dec2  TYPE p DECIMALS 2,
+          lv_indi_unknown TYPE char1.
+
+* Range for Tables
+    lt_tabname = VALUE #( sign = 'I' option = 'EQ' ( low = 'EKKO' )
+                                                   ( low = 'EKPO' )
+                                                   ( low = 'EKEK' )
+                                                   ( low = 'EKET' )
+                                                   ( low = 'EKES' )
+                                                   ( low = 'EKKN' )
+                                                   ( low = 'EKPA' )
+                                                   ( low = 'ZTMFP_PREPMNT' )
+                                                   ( low = 'ZTMFP_ADMIN_DETL' )
+                                                   ( low = 'ZTMFP_INDIGSUB' )
+                                                   ( low = 'ZTMFP_DOC_HEADER' ) ).
+
+* Range for Domain names
+
+    lt_domname = VALUE #( sign = 'I' option = 'EQ' ( low = 'ZMFP_DOCUMENT_STATUS' )
+    ( low = 'ZMFP_APP_TRI_STATE_FLAG' )
+    ( low = 'ZMFP_CATEGORY' )
+    ( low = 'ZMFP_INDIG_OUTCOME' )
+    ( low = 'ZMFP_INDIG_OUTCOME_TM' )
+     ).
+
+* Range of fieldnames that are excluded
+    lt_fname = VALUE #( sign = 'E' option = 'EQ' ( low = 'FRGZU' )
+                                                 ( low = 'PROCSTAT' ) ( low = 'AEDAT' ) ).
+
+* Range for Object
+    lt_tdobj = VALUE #( sign = 'I' option = 'EQ' ( low = 'EKKO' )
+                                                  ( low = 'EKPO' ) ).
+* Range for ObjectClass
+    lt_objectclas = VALUE #( sign = 'I' option = 'EQ' ( low = 'EINKBELEG' )
+                                                  ( low = 'ZMFP_CHANGELOG' ) ).
+
+
+* Range for TextId
+    lt_id = VALUE #( sign = 'I' option = 'BT' ( low = 'K01'  high = 'K20' ) " Header Text ID's
+                                              ( low = 'F01' high = 'F20' ) ). " Item Text ID's
+
+* Fetch description for TextID's
+    SELECT tdobject, tdid, tdtext FROM ttxit INTO TABLE @DATA(lt_text)
+       WHERE tdspras = @sy-langu AND tdobject IN @lt_tdobj
+                                AND tdid IN @lt_id.
+
+* Fetch Table Name and Description's
+    SELECT tabname, ddtext FROM dd02t INTO TABLE @DATA(lt_tab_desc)
+       WHERE tabname IN @lt_tabname
+         AND ddlanguage = 'E'.
+
+* Fetch Fixed domain values
+    SELECT domname, ddtext, domvalue_l FROM dd07t INTO TABLE @DATA(lt_dom_desc)
+       WHERE domname IN @lt_domname
+         AND ddlanguage = 'E'.
+
+* Fetch Description for Release Indicators
+    SELECT frgke, frget FROM t16fe INTO TABLE @DATA(lt_rel_text) WHERE spras = @sy-langu.
+
+    SELECT * FROM tcurx INTO TABLE @DATA(lt_currency).
+
+    IF NOT sy-subrc IS INITIAL.
+
+    ENDIF.
+
+* Fetch records from Change Header table
+    SELECT  * FROM cdhdr INTO TABLE @DATA(lt_header)
+                    WHERE objectclas IN @lt_objectclas
+                     AND   objectid   =  @iv_object
+                     AND   udate      LE  @sy-datum
+                     ORDER BY utime DESCENDING.
+    IF sy-subrc IS INITIAL.
+
+      IF NOT lt_header IS INITIAL.
+
+        lt_userid = VALUE #( FOR ls_user IN lt_header ( sign = 'I'
+                                                        option = 'EQ'
+                                                        low = ls_user-username ) ).
+        SORT lt_userid BY low.
+        DELETE ADJACENT DUPLICATES FROM lt_userid COMPARING low.
+* * Retrieve Title and Name for User ID
+        SELECT  a~pernr, a~usrid, b~nachn, b~vorna, b~cname, b~titel FROM pa0105 AS a
+                             INNER JOIN pa0002 AS b ON a~pernr EQ b~pernr
+                 INTO TABLE @DATA(lt_pers_data)
+                 WHERE a~subty = '0001' AND
+          a~endda GE @sy-datum AND
+          a~begda LE @sy-datum AND
+          a~usrid IN @lt_userid AND
+          b~begda LE @sy-datum AND
+          b~endda GE @sy-datum.
+
+      ENDIF.
+* Fetch records for Change Item table
+      SELECT *  FROM cdpos INTO TABLE @DATA(lt_cdpos)
+        FOR ALL ENTRIES IN @lt_header
+                  WHERE objectclas IN @lt_objectclas
+                   AND  objectid   = @iv_object
+                   AND  changenr   = @lt_header-changenr
+                   AND tabname     IN @lt_tabname
+                   AND fname       IN @lt_fname.
+
+      IF sy-subrc IS INITIAL.
+
+        SELECT tabname, fieldname, scrtext_l FROM ddftx INTO TABLE @DATA(lt_flabels)
+          FOR ALL ENTRIES IN @lt_cdpos WHERE tabname = @lt_cdpos-tabname AND
+                                            fieldname = @lt_cdpos-fname AND
+                                            ddlanguage = @sy-langu.
+        IF sy-subrc IS INITIAL.
+          SORT lt_flabels BY tabname.
+        ENDIF.
+
+        LOOP AT lt_header INTO DATA(ls_header).
+          CLEAR : ls_changelog.
+
+          MOVE-CORRESPONDING ls_header TO ls_changelog.
+          LOOP AT lt_cdpos INTO DATA(ls_cdpos) WHERE objectid = ls_header-objectid
+                                                 AND changenr = ls_header-changenr.
+            CHECK ls_cdpos-value_old NE space OR ls_cdpos-value_new NE space OR ls_cdpos-chngind = 'I'.
+            lv_item = lv_item + 1.
+            MOVE-CORRESPONDING ls_cdpos TO ls_changelog.
+            IF ls_cdpos-chngind = 'I' OR
+               ls_cdpos-chngind = 'J'.
+              ls_changelog-chngind = abap_true. " Entered, Sent to UI as boolean value
+            ELSE.
+              ls_changelog-chngind = abap_false. "Changed
+            ENDIF.
+            ls_changelog-udate = ls_header-udate.
+            ls_changelog-utime = ls_header-utime.
+            ls_changelog-username = ls_header-username.
+            READ TABLE lt_pers_data INTO DATA(ls_pers_data) WITH KEY usrid = ls_changelog-username.
+            IF sy-subrc IS INITIAL.
+              ls_changelog-fullname = |{ ls_pers_data-titel } { ls_pers_data-vorna } { ls_pers_data-nachn } |.
+*              CONCATENATE ls_pers_data-titel ls_pers_data-cname INTO ls_changelog-fullname SEPARATED BY space.
+            ENDIF.
+            ls_changelog-ebeln = ls_cdpos-objectid.
+            ls_changelog-sequence = lv_item.
+            ls_changelog-ebelp = ls_cdpos-tabkey+13(5).
+
+            IF NOT ls_cdpos-cuky_old IS INITIAL.
+
+              READ TABLE lt_currency INTO DATA(ls_currency) WITH KEY currkey = ls_cdpos-cuky_old.
+              IF NOT sy-subrc IS INITIAL.
+                lv_decimals = '2'.
+              ELSE.
+                lv_decimals = ls_currency-currdec.
+              ENDIF.
+              CASE lv_decimals.
+                WHEN '2'.
+                  CLEAR lv_amount_dec2.
+                  lv_amount_dec2 = ls_cdpos-value_old.
+                  WRITE lv_amount_dec2 TO ls_changelog-f_old CURRENCY ls_cdpos-cuky_old.
+                WHEN '3'.
+                  CLEAR : lv_value_old, lv_amount, lv_amount_dec3.
+                  lv_value_old = ls_cdpos-value_old.
+                  lv_amount = ls_cdpos-value_old.
+                  DATA(lv_value) = zcl_mfp_document=>convert_currency_decimal( iv_waers = ls_cdpos-cuky_old iv_netwr = lv_amount ).
+                  lv_value_old = lv_value.
+                  SHIFT lv_value_old LEFT DELETING LEADING space.
+                  CALL FUNCTION 'Z_CURRENCY_IN_DECIMAL'
+                    EXPORTING
+                      iv_amount   = lv_value_old
+                      iv_currency = ls_cdpos-cuky_old
+                    IMPORTING
+                      ev_amount   = lv_value_old.
+                  lv_amount_dec3 = lv_value_old.
+
+                  WRITE lv_amount_dec3 TO ls_changelog-f_old CURRENCY ls_cdpos-cuky_old.
+
+                WHEN OTHERS.
+                  CLEAR : lv_value_old, lv_amount.
+                  lv_value_old = ls_cdpos-value_old.
+                  lv_amount = ls_cdpos-value_old. "move text value to amount field
+                  lv_value = zcl_mfp_document=>convert_currency_decimal( iv_waers = ls_cdpos-cuky_old iv_netwr = lv_amount ).
+                  lv_value_old = lv_value. " move value into string field
+                  SHIFT lv_value_old LEFT DELETING LEADING space.
+                  CALL FUNCTION 'Z_CURRENCY_IN_DECIMAL'
+                    EXPORTING
+                      iv_amount   = lv_value_old
+                      iv_currency = ls_cdpos-cuky_old
+                    IMPORTING
+                      ev_amount   = lv_value_old.
+                  ls_changelog-f_old = zcl_mfp_document=>convert_text_currency( iv_waers = ls_cdpos-cuky_old iv_netwr = lv_value_old ).
+                  REPLACE '.' WITH ',' INTO ls_changelog-f_old.
+              ENDCASE.
+            ELSE.
+              ls_changelog-f_old = ls_cdpos-value_old.
+            ENDIF.
+            CLEAR :  lv_decimals, ls_currency.
+
+            IF NOT ls_cdpos-cuky_new IS INITIAL.
+
+              READ TABLE lt_currency INTO ls_currency WITH KEY currkey = ls_cdpos-cuky_new.
+              IF NOT sy-subrc IS INITIAL.
+                lv_decimals = '2'.
+              ELSE.
+                lv_decimals = ls_currency-currdec.
+              ENDIF.
+
+              CASE lv_decimals.
+                WHEN '2'.
+                  CLEAR lv_amount_dec2.
+                  lv_amount_dec2 = ls_cdpos-value_new.
+                  WRITE lv_amount_dec2 TO ls_changelog-f_new CURRENCY ls_cdpos-cuky_new.
+
+                WHEN '3'.
+
+                  CLEAR : lv_value_new, lv_amount, lv_amount_dec3.
+*                  lv_value_new = ls_cdpos-value_new.
+                  lv_amount = ls_cdpos-value_new.
+                  lv_value = zcl_mfp_document=>convert_currency_decimal( iv_waers = ls_cdpos-cuky_new iv_netwr = lv_amount ).
+                  lv_value_new = lv_value.
+                  SHIFT lv_value_new LEFT DELETING LEADING space.
+                  CALL FUNCTION 'Z_CURRENCY_IN_DECIMAL'
+                    EXPORTING
+                      iv_amount   = lv_value_new
+                      iv_currency = ls_cdpos-cuky_new
+                    IMPORTING
+                      ev_amount   = lv_value_new.
+
+                  lv_amount_dec3 = lv_value_new.
+                  WRITE lv_amount_dec3 TO ls_changelog-f_new CURRENCY ls_cdpos-cuky_new.
+
+                WHEN OTHERS.
+                  CLEAR : lv_value_new, lv_amount.
+                  lv_value_new = ls_cdpos-value_new.
+                  lv_amount = ls_cdpos-value_new.
+                  lv_value = zcl_mfp_document=>convert_currency_decimal( iv_waers = ls_cdpos-cuky_new iv_netwr = lv_amount ).
+                  lv_value_new = lv_value.
+                  CALL FUNCTION 'Z_CURRENCY_IN_DECIMAL'
+                    EXPORTING
+                      iv_amount   = lv_value_new
+                      iv_currency = ls_cdpos-cuky_new
+                    IMPORTING
+                      ev_amount   = lv_value_new.
+
+                  SHIFT lv_value_new LEFT DELETING LEADING space.
+                  ls_changelog-f_new = zcl_mfp_document=>convert_text_currency( iv_waers = ls_cdpos-cuky_new iv_netwr = lv_value_new ).
+                  REPLACE '.' WITH ',' INTO ls_changelog-f_new.
+
+              ENDCASE.
+
+            ELSE.
+
+              ls_changelog-f_new = ls_cdpos-value_new.
+            ENDIF.
+
+
+            READ TABLE lt_flabels INTO DATA(ls_field_labels) WITH KEY tabname = ls_cdpos-tabname
+                                                                      fieldname = ls_cdpos-fname.
+            IF sy-subrc IS INITIAL.
+*              ls_changelog-ftext = ls_field_labels-scrtext_m.
+              ls_changelog-ftext = ls_field_labels-scrtext_l.
+            ELSE.
+              IF NOT ls_changelog-ebelp IS INITIAL. " to differentiate Header and Item
+                lv_tdobject = 'EKPO'.
+              ELSE.
+                lv_tdobject = 'EKKO'.
+              ENDIF.
+              READ TABLE lt_text INTO DATA(ls_text) WITH KEY tdobject = lv_tdobject
+                                                               tdid   = ls_cdpos-fname+0(4).
+              IF sy-subrc IS INITIAL.
+                ls_changelog-ftext = ls_text-tdtext.
+                ls_cdpos-tabname = lv_tdobject.
+              ELSE.
+                ls_changelog-ftext = ls_cdpos-fname.
+              ENDIF.
+            ENDIF.
+
+            IF ls_changelog-ftext = 'KEY'. CLEAR ls_changelog-ftext. ENDIF.
+            IF ls_changelog-fname = 'FRGKE'.
+              READ TABLE lt_rel_text INTO DATA(ls_rel_text) WITH KEY frgke = ls_changelog-f_old.
+              IF sy-subrc IS INITIAL. ls_changelog-f_old = ls_rel_text-frget. ENDIF.
+              READ TABLE lt_rel_text INTO ls_rel_text WITH KEY frgke = ls_changelog-f_new.
+              IF sy-subrc IS INITIAL. ls_changelog-f_new = ls_rel_text-frget.ENDIF.
+            ENDIF.
+
+            IF ls_cdpos-tabname = 'ZTMFP_DOC_HEADER' AND ls_changelog-fname = 'STATUS'.
+
+              TRY.
+                  ls_changelog-f_old = lt_dom_desc[ domname = 'ZMFP_DOCUMENT_STATUS'
+                                                                domvalue_l = ls_changelog-f_old ]-ddtext.
+                CATCH cx_sy_itab_line_not_found.
+
+              ENDTRY.
+
+              TRY.
+                  ls_changelog-f_new = lt_dom_desc[ domname = 'ZMFP_DOCUMENT_STATUS'
+                                                 domvalue_l = ls_changelog-f_new ]-ddtext.
+                CATCH cx_sy_itab_line_not_found.
+
+              ENDTRY.
+
+            ENDIF.
+
+            IF ls_cdpos-tabname = 'ZTMFP_DOC_HEADER' AND ls_changelog-fname = 'CATEGORY'.
+              TRY.
+                  ls_changelog-f_old = lt_dom_desc[ domname = 'ZMFP_CATEGORY'
+                                             domvalue_l = ls_changelog-f_old ]-ddtext.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+              TRY.
+                  ls_changelog-f_new = lt_dom_desc[ domname = 'ZMFP_CATEGORY'
+                                                  domvalue_l = ls_changelog-f_new ]-ddtext.
+                CATCH cx_sy_itab_line_not_found.
+              ENDTRY.
+            ENDIF.
+
+            IF ls_cdpos-tabname = 'ZTMFP_ADMIN_DETL' AND
+              ( ls_changelog-fname = 'IS_ENDORSED_PROCEED' OR
+               ls_changelog-fname = 'IS_ICT_SW_HW' OR
+               ls_changelog-fname = 'IS_CONSULTANCY' OR
+               ls_changelog-fname = 'IS_RATE_GT_4500' OR
+               ls_changelog-fname = 'IS_SECRETARY_ADVISED' OR
+               ls_changelog-fname = 'IS_INDIG_IDENTIFIED' OR
+               ls_changelog-fname = 'IS_INDIG_QUOTE' OR
+               ls_changelog-fname = 'IS_SP020' OR
+               ls_changelog-fname = 'IS_PREPAYMENT' ) .
+
+              READ TABLE lt_dom_desc INTO DATA(ls_domname) WITH KEY domname = 'ZMFP_APP_TRI_STATE_FLAG'
+                                                     domvalue_l = ls_changelog-f_old.
+              IF sy-subrc IS INITIAL. ls_changelog-f_old = ls_domname-ddtext. ENDIF.
+              READ TABLE lt_dom_desc INTO ls_domname WITH KEY domname = 'ZMFP_APP_TRI_STATE_FLAG'
+                                                     domvalue_l = ls_changelog-f_new.
+              IF sy-subrc IS INITIAL. ls_changelog-f_new = ls_domname-ddtext. ENDIF.
+            ENDIF.
+
+            IF ls_cdpos-tabname = 'ZTMFP_ADMIN_DETL' AND ls_changelog-fname = 'OUTCOMES_OR_TIME'.
+
+              READ TABLE lt_dom_desc INTO ls_domname WITH KEY domname = 'ZMFP_INDIG_OUTCOME_TM'
+                                                     domvalue_l = ls_changelog-f_old.
+              IF sy-subrc IS INITIAL. ls_changelog-f_old = ls_domname-ddtext. ENDIF.
+              READ TABLE lt_dom_desc INTO ls_domname WITH KEY domname = 'ZMFP_INDIG_OUTCOME_TM'
+                                                     domvalue_l = ls_changelog-f_new.
+              IF sy-subrc IS INITIAL. ls_changelog-f_new = ls_domname-ddtext. ENDIF.
+            ENDIF.
+
+            IF ls_cdpos-tabname = 'ZTMFP_ADMIN_DETL' AND ls_changelog-fname = 'IS_INDIG_SUBCONTRACT'.
+
+              ls_changelog-f_old = SWITCH #( ls_changelog-f_old
+              WHEN 'Y' THEN 'Yes'
+              WHEN 'N' THEN 'No'
+              WHEN 'U' THEN 'Unknown'
+              ELSE 0 ).
+
+              ls_changelog-f_new = SWITCH #( ls_changelog-f_new
+              WHEN 'Y' THEN 'Yes'
+              WHEN 'N' THEN 'No'
+              WHEN 'U' THEN 'Unknown'
+              ELSE 0 ).
+
+
+
+            ENDIF.
+
+
+            ls_changelog-tabname = SWITCH #( ls_cdpos-tabname
+                                   WHEN 'EKKO' THEN 'Header'
+                                   WHEN 'EKPO' THEN 'Item'
+                                   WHEN 'EKKN' THEN 'Account Assignment'
+                                   WHEN 'EKEK' THEN 'Scheduling Agreement'
+                                   WHEN 'EKET' THEN 'Schedule Lines'
+                                   WHEN 'EKES' THEN 'Vendor Confirmations'
+                                   WHEN 'EKPA' THEN 'Partner Roles'
+                                   WHEN 'ZTMFP_ADMIN_DETL' THEN 'MyFi Admin Details'
+                                   WHEN 'ZTMFP_INDIGSUB' THEN 'Indigenous Subcontractor Details'
+                                   WHEN 'ZTMFP_DOC_HEADER' THEN 'MyFi Doc Header'
+                                   WHEN 'ZTMFP_PREPMNT' THEN 'PrePayment'
+             ).
+
+
+
+
+            APPEND ls_changelog TO rt_changelog.
+            CLEAR : ls_changelog, ls_cdpos.
+          ENDLOOP.
+
+        ENDLOOP.
+
+      ENDIF.
+    ENDIF.
+
+
+  ENDMETHOD.
+
+
+  method GET_CONSUMPTION.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT->GET_CONSUMPTION
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2.2).
+*                     This method is blank and is required
+*
+* AUTHOR:             Stephen Ning (290977SCN)
+* CREATE DATE:        24.09.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002096 - MyFi Purchasing Release 2.2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+*-----------------------------------------------------------------------
+  endmethod.
+
+
+  method get_doc_header.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~get_doc_header
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    select single *
+      from ztmfp_doc_header
+      into es_ztmfp_doc_header
+      where zmfp_doc_id = iv_zmfp_doc_id.
+
+  endmethod.
+
+
+  METHOD GET_EKKN.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~GET_EKKN
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    SELECT * FROM  ekkn
+             INTO TABLE rt_ekkn
+             WHERE  ebeln  = iv_ebeln.
+  ENDMETHOD.
+
+
+  METHOD get_ekko.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~get_ekko
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    SELECT SINGLE *
+             FROM ekko
+             INTO rs_ekko
+            WHERE ebeln  = iv_ebeln.
+  ENDMETHOD.
+
+
+  METHOD get_ekpo.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~GET_EKPO
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 21.10.20 290977SCN RD2K919656 DS-11-32-07-01 S 6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+    DATA: lv_amount TYPE ktwrt,
+          lt_a016   TYPE STANDARD TABLE OF a016.
+
+    SELECT * FROM  ekpo
+             INTO TABLE rt_ekpo
+             WHERE  ebeln  = iv_ebeln.
+
+* Get currency for each condition record for OA
+    SELECT * FROM a016 AS a
+      INTO TABLE lt_a016 WHERE evrtn = iv_ebeln AND
+                                      datab LE sy-datum AND
+                                      datbi GE sy-datum.
+    IF NOT lt_a016 IS INITIAL.
+      SELECT knumh, kopos, konwa FROM konp INTO TABLE @DATA(lt_konp) FOR ALL ENTRIES IN @lt_a016
+        WHERE knumh = @lt_a016-knumh.
+    ENDIF.
+
+    SELECT SINGLE waers FROM ekko INTO @DATA(lv_waers) WHERE ebeln EQ @iv_ebeln.
+
+
+    LOOP AT rt_ekpo ASSIGNING FIELD-SYMBOL(<ekpo>) .
+      lv_amount = <ekpo>-effwr.
+
+      READ TABLE lt_a016 INTO DATA(ls_a016) WITH KEY evrtn = iv_ebeln
+                                                     evrtp = <ekpo>-ebelp.
+      IF sy-subrc IS INITIAL.
+        READ TABLE lt_konp INTO DATA(ls_konp) WITH KEY knumh = ls_a016-knumh.
+        IF sy-subrc IS INITIAL.
+          lv_waers = ls_konp-konwa.
+        ENDIF.
+      ENDIF.
+
+      zcl_mfp_utilities=>convert_curr_format(
+        EXPORTING
+          iv_amount = lv_amount                 " Target Value for Header Area per Distribution
+          iv_curr   = lv_waers                 " Currency Key
+        RECEIVING
+          rv_amount = lv_amount                 " Target Value for Header Area per Distribution
+      ).
+      <ekpo>-effwr = lv_amount.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  METHOD get_field_mappings.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~get_field_mapping
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lr_admin_data         TYPE REF TO if_fdt_admin_data,
+          lr_function           TYPE REF TO  if_fdt_function,
+          lr_context            TYPE REF TO if_fdt_context,
+          lr_fdt_result         TYPE REF TO if_fdt_result,
+          lrx_fdt               TYPE REF TO cx_fdt,
+          lv_id                 TYPE if_fdt_types=>id,
+          ls_return             TYPE bapiret2.
+
+    TRY .
+        cl_fdt_factory=>get_instance_generic( EXPORTING iv_id = zif_mfp_constants=>gc_brf_guid-mapping
+                                              IMPORTING eo_instance = lr_admin_data ).
+        lr_function ?= lr_admin_data.
+        lr_context ?= lr_function->get_process_context( ).
+        lr_context->set_value( iv_name = 'DOC_TYPE' ia_value =  iv_doc_type ).
+        lr_function->process( EXPORTING io_context = lr_context
+                              IMPORTING eo_result  = lr_fdt_result ).
+        lr_fdt_result->get_value( IMPORTING ea_value = et_mappings ).
+
+      CATCH cx_fdt INTO lrx_fdt.
+        ls_return-type = zcl_grp_bapi_util=>gc_error_msg.
+        ls_return-id = zcl_grp_bapi_util=>gc_msg_class.
+        ls_return-number = '080'.
+        ls_return-message_v1 = lrx_fdt->get_object_name( lv_id ).
+        ls_return-message_v2 = lrx_fdt->if_message~get_text( ).
+        MESSAGE ID ls_return-id TYPE ls_return-type NUMBER ls_return-number INTO ls_return-message WITH ls_return-message_v1 ls_return-message_v2.
+*        APPEND ls_return TO et_return.
+    ENDTRY.
+
+  ENDMETHOD.
+
+
+  METHOD get_payment_justification_text.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT_CONTRACT~in_admin_details
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        20.05.2021
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002393: June DFSS release for MyFi Purchasing
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+* 20/05/21 210983DY  RD2K921041 DS-11-32-07-01 S6000002393: June DFSS release for MyFi Purchasing
+*                               Method to derive drop down values for Payment Justification
+*-----------------------------------------------------------------------
+
+    DATA: lt_values TYPE TABLE OF dd07v.
+
+    CALL FUNCTION 'GET_DOMAIN_VALUES'
+      EXPORTING
+        domname         = 'ZMFP_PMT_TERM_JUSTIFICATION_DD'
+        text            = 'X'
+*       FILL_DD07L_TAB  = ' '
+      TABLES
+        values_tab      = lt_values
+*       VALUES_DD07L    =
+      EXCEPTIONS
+        no_values_found = 1
+        OTHERS          = 2.
+    IF sy-subrc <> 0.
+* Implement suitable error handling here
+    ELSE.
+      READ TABLE lt_values INTO DATA(ls_value) WITH KEY domvalue_l = iv_payment_just_code.
+      IF sy-subrc IS INITIAL.
+        ev_text = ls_value-ddtext.
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD get_pgrp_name.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~get_pgrp_name
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    SELECT SINGLE eknam FROM  t024
+      WHERE  ekgrp  = @me->zif_myfi_document~old_ekko-ekgrp
+      INTO @gv_pur_grp_name.
+
+  ENDMETHOD.
+
+
+  METHOD get_ref_number.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~get_ref_number
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lv_counter TYPE i.
+
+    SELECT SINGLE unsez FROM ekko WHERE ebeln EQ @iv_ebeln INTO @ev_ref_no.
+    IF ev_ref_no CO '0123456789 '.
+      lv_counter = ev_ref_no+10.
+      lv_counter = lv_counter + 1.
+      IF lv_counter = 100. lv_counter = 01. ENDIF.
+      ev_ref_no = |{ iv_ebeln }{ lv_counter }|.
+    ELSE.
+      ev_ref_no = |{ iv_ebeln }01|.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD IMPORT_HEADER.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~IMPORT_HEADER
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_ptab TYPE zsmfp_memory_header,
+          lt_ptab TYPE STANDARD TABLE OF zsmfp_memory_header.
+
+    ls_ptab-name = name.
+    ls_ptab-value = value.
+    APPEND ls_ptab TO lt_ptab.
+    IMPORT lt_ptab = lt_ptab FROM MEMORY ID id.
+
+    READ TABLE lt_ptab INTO ls_ptab INDEX 1.
+    value = ls_ptab-value.
+
+  ENDMETHOD.
+
+
+  METHOD is_asset_changed.
+*----------------------------------------------------------------------*
+* METHOD ID:          IS_ASSET_CHANGED
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method check if Asset is changed
+*
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        18/08/2022
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002805: MyFi Continuous Improvement September Release
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*----------------------------------------------------------------------- *
+* 18.08.22 210983DY RD2K922968 DS-11-32-07-01 S 6000002805: MyFi Continuous Improvement September Release
+*                     Check if PO line with Asset is Changed/Deleted
+*-------------------------------------------------------------------------
+
+
+
+    DATA: lt_lines   TYPE TABLE OF tline,
+          lt_tabname TYPE RANGE OF dd02t-tabname,
+          lt_fname   TYPE RANGE OF cdpos-fname,
+          lv_objname TYPE tdobname.
+    lv_objname = 'ZFSS_MYFI_ASSET_NOTIF_EMAIL'.
+*Check if document has any Asset Account Assignment
+
+    SELECT ebeln, ebelp, knttp FROM ekpo INTO TABLE @DATA(lt_ekpo) WHERE ebeln = @iv_document AND knttp = 'A'.
+    IF sy-subrc IS INITIAL.
+
+      lt_tabname = VALUE #( sign = 'I' option = 'EQ' ( low = 'EKKO' )
+                                                     ( low = 'EKKN' )
+                                                     ( low = 'EKPO' )
+                                                      ).
+
+      lt_fname = VALUE #( sign = 'I' option = 'EQ' ( low = 'KEY' )
+                                                 ( low = 'ANLN1' )
+                                                 ( low = 'LOEKZ' )
+                                                 ).
+* Fetch records from Change Header table
+      SELECT  * FROM cdhdr INTO TABLE @DATA(lt_header)
+                      WHERE objectclas  =  'EINKBELEG'
+                       AND   objectid   =  @iv_document
+                       AND   username     NE 'WF-BATCH'
+                       AND   udate      =  @sy-datum
+                       ORDER BY utime DESCENDING.
+
+      IF sy-subrc IS INITIAL.
+
+        READ TABLE lt_header INTO DATA(ls_header) INDEX 1.
+* Fetch records for Change Item table
+        SELECT *  FROM cdpos INTO TABLE @DATA(lt_cdpos)
+*          FOR ALL ENTRIES IN @lt_header
+                    WHERE objectclas = 'EINKBELEG'
+                     AND  objectid   = @iv_document
+                     AND  changenr   = @ls_header-changenr
+                     AND tabname     IN @lt_tabname "= 'EKKN'
+                     AND fname       IN @lt_fname. "= 'ANLN1'.
+
+        LOOP AT lt_cdpos INTO DATA(ls_cdpos).
+          IF ls_cdpos-fname = 'ANLN1'.
+            IF ls_cdpos-value_new NE ls_cdpos-value_old.
+              ev_asset_changed = abap_true.
+              EXIT.
+            ENDIF.
+          ELSE.
+            IF ls_cdpos-fname = 'KEY' AND ls_cdpos-chngind = 'I'.
+              ev_asset_changed = abap_true.
+              EXIT.
+            ENDIF.
+          ENDIF.
+        ENDLOOP.
+
+        LOOP AT lt_cdpos INTO ls_cdpos WHERE tabname ='EKPO' AND fname = 'LOEKZ'.
+          DATA(lv_item_no) = ls_cdpos-tabkey+13(5).
+          READ TABLE lt_ekpo INTO DATA(ls_ekpo) WITH KEY ebeln = iv_document ebelp = lv_item_no.
+          IF sy-subrc IS INITIAL.
+            ev_asset_deleted = abap_true.
+
+          ENDIF.
+        ENDLOOP.
+
+        IF ev_asset_changed = abap_true OR ev_asset_deleted = abap_true.
+
+          CALL FUNCTION 'READ_TEXT'
+            EXPORTING
+*             CLIENT                  = SY-MANDT
+              id                      = 'ST'
+              language                = sy-langu
+              name                    = lv_objname
+              object                  = 'TEXT'
+            TABLES
+              lines                   = lt_lines
+            EXCEPTIONS
+              id                      = 1
+              language                = 2
+              name                    = 3
+              not_found               = 4
+              object                  = 5
+              reference_check         = 6
+              wrong_access_to_archive = 7
+              OTHERS                  = 8.
+          IF sy-subrc <> 0.
+* Implement suitable error handling here
+          ELSE.
+            ev_asset_email = lt_lines[ 1 ]-tdline.
+          ENDIF.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD log_update_indisub.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~log_update_indisub
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA:lt_indigsub_old TYPE STANDARD TABLE OF yztmfp_indigsub,
+         lt_indigsub_new TYPE STANDARD TABLE OF yztmfp_indigsub,
+         ls_indigsub     TYPE yztmfp_indigsub,
+         lv_objid        TYPE cdhdr-objectid,
+         lv_tcode        TYPE cdhdr-tcode,
+         lv_utime        TYPE cdhdr-utime,
+         lv_udate        TYPE cdhdr-udate,
+         lv_uname        TYPE cdhdr-username,
+         ls_data         TYPE ztmfp_indigsub,
+         lt_data         TYPE TABLE OF ztmfp_indigsub.
+
+
+    lv_objid = me->zif_myfi_document~source_doc_num.
+    ls_data-zmfp_doc_id = me->zif_myfi_document~source_doc_num.
+    lv_tcode = 'MYFI'.
+*    lv_utime = me->zif_myfi_document~gv_save_time.
+*    lv_udate = me->zif_myfi_document~gv_save_date.
+    lv_uname = sy-uname.
+
+    MOVE-CORRESPONDING it_old_data TO lt_indigsub_old.
+    MOVE-CORRESPONDING it_new_data TO lt_indigsub_new.
+
+    CASE iv_change_indicator.
+      WHEN 'I'.
+        CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+          EXPORTING
+            objectid           = lv_objid
+            tcode              = lv_tcode
+            utime              = lv_utime
+            udate              = lv_udate
+            upd_ztmfp_indigsub = iv_change_indicator
+          TABLES
+            xztmfp_indigsub    = lt_indigsub_new.
+
+        INSERT ztmfp_indigsub FROM TABLE it_new_data.
+
+        IF sy-subrc = 0.
+          CLEAR es_return.
+          ev_success = abap_true.
+        ELSE.
+          es_return-id = sy-msgid.
+          es_return-type = sy-msgty.
+          es_return-number = sy-msgno.
+          es_return-message_v1 = sy-msgv1.
+          es_return-message_v2 = sy-msgv2.
+          es_return-message_v3 = sy-msgv3.
+          es_return-message_v4 = sy-msgv4.
+          ev_success = abap_false.
+        ENDIF.
+
+      WHEN 'U'.
+        CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+          EXPORTING
+            objectid           = lv_objid
+            tcode              = lv_tcode
+            utime              = lv_utime
+            udate              = lv_udate
+            upd_ztmfp_indigsub = iv_change_indicator
+          TABLES
+            xztmfp_indigsub    = lt_indigsub_new
+            yztmfp_indigsub    = lt_indigsub_old.
+
+        MODIFY ztmfp_indigsub FROM TABLE it_new_data.
+
+        IF sy-subrc = 0.
+          CLEAR es_return.
+          ev_success = abap_true.
+        ELSE.
+          es_return-id = sy-msgid.
+          es_return-type = sy-msgty.
+          es_return-number = sy-msgno.
+          es_return-message_v1 = sy-msgv1.
+          es_return-message_v2 = sy-msgv2.
+          es_return-message_v3 = sy-msgv3.
+          es_return-message_v4 = sy-msgv4.
+          ev_success = abap_false.
+        ENDIF.
+
+      WHEN 'D'.
+
+        CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+          EXPORTING
+            objectid           = lv_objid
+            tcode              = lv_tcode
+            utime              = lv_utime
+            udate              = lv_udate
+            upd_ztmfp_indigsub = iv_change_indicator
+          TABLES
+            yztmfp_indigsub    = lt_indigsub_old.
+
+        DELETE ztmfp_indigsub FROM TABLE lt_indigsub_old.
+
+        IF sy-subrc = 0.
+          CLEAR es_return.
+          ev_success = abap_true.
+        ELSE.
+          es_return-id = sy-msgid.
+          es_return-type = sy-msgty.
+          es_return-number = sy-msgno.
+          es_return-message_v1 = sy-msgv1.
+          es_return-message_v2 = sy-msgv2.
+          es_return-message_v3 = sy-msgv3.
+          es_return-message_v4 = sy-msgv4.
+          ev_success = abap_false.
+        ENDIF.
+    ENDCASE.
+  ENDMETHOD.
+
+
+  METHOD map_bapi_2_odata.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~map_bapi_2_odata
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 30.08.22 010965MI  RD2K923068 DS-11-32-07-01 	S 6000002812: MyFi Continuous Improvement October - Performance
+*-----------------------------------------------------------------------
+
+    DATA: ls_header_mapping TYPE zsmfp_field_mapping,
+          lv_timestamp      TYPE timestampl,
+          lv_date           TYPE dats.
+
+    FIELD-SYMBOLS: <data>  TYPE any,
+                   <value> TYPE any.
+
+    data(lv_out_structure) = cl_abap_typedescr=>describe_by_data( p_data = es_data )->get_relative_name( ).
+    data(lv_in_structure) = cl_abap_typedescr=>describe_by_data( p_data = is_sending_structure )->get_relative_name( ).
+
+    ASSIGN ls_header_mapping-odata_field TO FIELD-SYMBOL(<odata_fieldname>).
+    ASSIGN ls_header_mapping-abap_field TO FIELD-SYMBOL(<abap_fieldname>).
+
+    LOOP AT gt_doc_mapping INTO ls_header_mapping WHERE odata_entity EQ lv_out_structure AND abap_struc EQ lv_in_structure.
+      ASSIGN COMPONENT <abap_fieldname> OF STRUCTURE is_sending_structure TO <value>.
+      ASSIGN COMPONENT <odata_fieldname> OF STRUCTURE es_data TO <data>.
+      IF <data> IS ASSIGNED AND <value> IS ASSIGNED.
+
+        CASE ls_header_mapping-bend2odata.
+          WHEN 'DIRECT'.
+            <data> = <value>.
+          WHEN 'CONVERT_TO_TIMESTAMP'.
+            CONVERT DATE <value> INTO TIME STAMP lv_timestamp TIME ZONE 'UTC'.
+            <data> = lv_timestamp.
+          WHEN 'CONVERT_TEXT_TO_TIMESTAMP'.
+            lv_date = |{ <value>+6(4) }{ <value>+3(2) }{ <value>(2) }|.
+            CONVERT DATE lv_date INTO TIME STAMP lv_timestamp TIME ZONE 'UTC'.
+            <data> = lv_timestamp.
+          WHEN 'ALPHA_OUTPUT'.
+            CALL FUNCTION 'CONVERSION_EXIT_ALPHA_OUTPUT'
+              EXPORTING
+                input  = <value>
+              IMPORTING
+                output = <data>.
+          WHEN OTHERS.
+        ENDCASE.
+        UNASSIGN: <data>, <value>.
+      ENDIF.
+    ENDLOOP.
+
+
+  ENDMETHOD.
+
+
+  METHOD map_odata_2_bapi.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~map_odata_2_bapi
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 01.12.20 220977FKC RD2K920465 DS-11-32-07-01 6000002172: MyFi Purchasing (Release 2.3)
+*                                              Enable legacy (i.e. non myfi documents)
+* 30.08.22 010965MI  RD2K923068 DS-11-32-07-01 	S 6000002812: MyFi Continuous Improvement October - Performance
+*-----------------------------------------------------------------------
+
+    DATA: ls_header_mapping TYPE zsmfp_field_mapping,
+          lv_date           TYPE dats.
+
+    FIELD-SYMBOLS: <data>        TYPE any,
+                   <value>       TYPE any,
+                   <xvalue>      TYPE any,
+                   <change_flag> TYPE boole_d.
+
+    DATA(lv_out_structure) = cl_abap_typedescr=>describe_by_data( p_data = es_data )->get_relative_name( ).
+    DATA(lv_in_structure) = cl_abap_typedescr=>describe_by_data( p_data = is_sending_structure )->get_relative_name( ).
+
+    ASSIGN ls_header_mapping-odata_field TO FIELD-SYMBOL(<odata_fieldname>).
+    ASSIGN ls_header_mapping-abap_field TO FIELD-SYMBOL(<abap_fieldname>).
+
+    LOOP AT gt_doc_mapping INTO ls_header_mapping WHERE abap_struc EQ lv_out_structure AND odata_entity EQ lv_in_structure.
+      ASSIGN COMPONENT <odata_fieldname> OF STRUCTURE is_sending_structure TO <value>.
+      IF <value> IS ASSIGNED.
+        IF <value> IS INITIAL AND me->gv_draft_indicator EQ abap_true.
+          CONTINUE.
+        ENDIF.
+      ENDIF.
+      ASSIGN COMPONENT <abap_fieldname> OF STRUCTURE es_data TO <data>.
+      IF <data> IS ASSIGNED AND <value> IS ASSIGNED.
+        CASE ls_header_mapping-odata2bend.
+          WHEN 'DIRECT'.
+            <data> = <value>.
+          WHEN 'CONVERT_FROM_TIMESTAMP'.
+            lv_date = zcl_mfp_utilities=>get_date_from_ts( EXPORTING iv_timestamp = <value> ).
+            <data> = lv_date.
+          WHEN 'ALPHA_INPUT'.
+            CALL FUNCTION 'CONVERSION_EXIT_ALPHA_INPUT'
+              EXPORTING
+                input  = <value>
+              IMPORTING
+                output = <data>.
+          WHEN OTHERS.
+        ENDCASE.
+
+        IF is_sending_x_structure EQ abap_true.
+          CASE <abap_fieldname>.
+            WHEN 'PO_ITEM' OR 'ITEM_NO' OR 'SCHED_LINE'.
+              ASSIGN COMPONENT |{ <abap_fieldname> }X| OF STRUCTURE es_data_x TO <change_flag>.
+              ASSIGN COMPONENT <abap_fieldname> OF STRUCTURE es_data_x TO <xvalue>.
+              <xvalue> = <data>.
+            WHEN 'DIFF_INV'.
+              IF <data> NE me->zif_myfi_document~old_ekko-lifre.
+                ASSIGN COMPONENT <abap_fieldname> OF STRUCTURE es_data_x TO <change_flag>.
+              ENDIF.
+            WHEN OTHERS.
+              ASSIGN COMPONENT <abap_fieldname> OF STRUCTURE es_data_x TO <change_flag>.
+          ENDCASE.
+          <change_flag> = abap_true.
+        ENDIF.
+
+        UNASSIGN: <data>, <value>.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  METHOD message_handler.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~message_handler
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+* 21.10.20 290977SCN RD2K919656 DS-11-32-07-01 S 6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+    DATA: ls_return     TYPE bapiret2,
+          lt_return     TYPE bapiret2_t,
+          lr_context    TYPE REF TO if_fdt_context,
+          lr_admin_data TYPE REF TO if_fdt_admin_data,
+          lr_function   TYPE REF TO  if_fdt_function,
+          lr_fdt_result TYPE REF TO if_fdt_result,
+          lrx_fdt       TYPE REF TO cx_root.
+
+    APPEND LINES OF it_return TO lt_return.
+    SORT lt_return ASCENDING BY number message_v1 message_v2 message_v3 message_v4.
+    DELETE ADJACENT DUPLICATES FROM lt_return.
+
+    TRY .
+        cl_fdt_factory=>get_instance_generic( EXPORTING iv_id = zif_mfp_constants=>gc_brf_guid-messages
+                                              IMPORTING eo_instance = lr_admin_data ).
+        lr_function ?= lr_admin_data.
+        lr_context ?= lr_function->get_process_context( ).
+        lr_context->set_value( iv_name = 'IT_RETURN' ia_value = it_return ).
+        lr_function->process( EXPORTING io_context = lr_context
+                              IMPORTING eo_result  = lr_fdt_result ).
+        lr_fdt_result->get_value( IMPORTING ea_value = lt_return ).
+      CATCH cx_fdt cx_sy_move_cast_error cx_sy_ref_is_initial INTO lrx_fdt.
+    ENDTRY.
+
+    LOOP AT lt_return ASSIGNING FIELD-SYMBOL(<fs_message>).
+*      IF <fs_message>-type EQ 'S' OR <fs_message>-type EQ 'E' OR <fs_message>-type EQ 'W'.
+*        ls_return-type = <fs_message>-type.
+*        ls_return-message = <fs_message>-message.
+*        APPEND ls_return TO rt_return.
+*      ENDIF.
+      CLEAR <fs_message>-id.
+    ENDLOOP.
+
+
+    rt_return = lt_return.
+  ENDMETHOD.
+
+
+  METHOD move_attachments.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~move_attachments
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lt_attachments TYPE zmfp_attachment_tt,
+          ls_attach      TYPE zsmfp_arch_connect.
+
+    CALL METHOD zcl_mfp_utilities=>get_mime_connect_for_doc
+      EXPORTING
+        iv_doc_id      = iv_sending_doc
+      IMPORTING
+        et_attachments = lt_attachments.
+
+    LOOP AT lt_attachments INTO DATA(ls_attachment).
+      MOVE-CORRESPONDING ls_attachment TO ls_attach.
+      ls_attach-object_id  = iv_receiving_doc.
+      ls_attach-filename   = ls_attachment-file_name.
+      ls_attach-descr      = ls_attachment-file_name.
+      ls_attach-creator    = sy-uname.
+      IF iv_receiving_doc_type IS NOT INITIAL. ls_attach-sap_object = iv_receiving_doc_type. ENDIF.
+      CALL METHOD zcl_mfp_utilities=>connect_mime_to_doc
+        EXPORTING
+          is_attachment = ls_attach.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  METHOD recall_approval.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~recall_approval
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    zcl_mfp_oa=>update_myfi_status(
+      EXPORTING
+        iv_ebeln         = me->zif_myfi_document~source_doc_num                 " Purchasing Document Number
+        iv_action        = zif_mfp_constants=>gc_action-odata-change                 " MyFi Purchasing App Action ID
+      IMPORTING
+        ev_new_status    =  DATA(lv_new_status)                " MyFi Purchasing UI5 Application Document Status
+    ).
+
+    me->zif_myfi_document~old_doc_header-status = lv_new_status.
+
+  ENDMETHOD.
+
+
+  method TRIGGER_PRF.
+  endmethod.
+
+
+  METHOD unassign_document.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~unassign_document
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 16.04.21 210983DY RD2K920923 6000002348: MyFi Purchasing (May Defects)
+*                  Additional logic to handle Un-assignment of a Document
+* 20/05/21 210983DY  RD2K921041 DS-11-32-07-01 S6000002393: June DFSS release for MyFi Purchasing
+*                               Additional code to unassign PO and OA for L4L scenario
+*-----------------------------------------------------------------------
+    DATA: lt_docs	      TYPE zif_mfp_constants=>ty_t_objtyp_ebeln,
+          ls_docs       TYPE zif_mfp_constants=>ty_s_objtyp_ebeln,
+          ls_doc_header TYPE ztmfp_doc_header,
+          ls_return     TYPE bapiret2.
+
+    ls_docs-ebeln = me->zif_myfi_document~source_doc_num.
+    CHECK ls_docs-ebeln IS NOT INITIAL.
+    MOVE-CORRESPONDING me->zif_myfi_document~new_doc_header TO ls_doc_header.
+    IF ls_doc_header-category IS INITIAL.
+      MOVE-CORRESPONDING me->zif_myfi_document~old_doc_header TO ls_doc_header.
+    ENDIF.
+
+    CASE ls_doc_header-category.
+      WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_oa OR zif_mfp_constants=>gc_myfi_doc_type-myfi_oa OR zif_mfp_constants=>gc_myfi_doc_type-leg_oa.
+        ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2014.
+      WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_po OR zif_mfp_constants=>gc_myfi_doc_type-myfi_po OR zif_mfp_constants=>gc_myfi_doc_type-leg_po.
+        ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2012.
+      WHEN OTHERS.
+    ENDCASE.
+
+    APPEND ls_docs TO lt_docs.
+
+    CLEAR ls_docs.
+
+* For L4L Scenario get associated PO and unassign it from user's list
+    IF ls_doc_header-category = zif_mfp_constants=>gc_myfi_doc_type-l4l_oa.
+      ls_docs-ebeln = ls_doc_header-ref_id.
+      IF NOT ls_docs-ebeln IS INITIAL.
+        SELECT SINGLE category INTO @DATA(lv_category) FROM ztmfp_doc_header WHERE zmfp_doc_id = @ls_docs-ebeln.
+        IF sy-subrc IS INITIAL.
+          CASE lv_category.
+            WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_oa OR zif_mfp_constants=>gc_myfi_doc_type-myfi_oa OR zif_mfp_constants=>gc_myfi_doc_type-leg_oa.
+              ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2014.
+            WHEN zif_mfp_constants=>gc_myfi_doc_type-l4l_po OR zif_mfp_constants=>gc_myfi_doc_type-myfi_po OR zif_mfp_constants=>gc_myfi_doc_type-leg_po.
+              ls_docs-objtyp = zif_mfp_constants=>gc_bor-bus2012.
+            WHEN OTHERS.
+          ENDCASE.
+          APPEND ls_docs TO lt_docs.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+
+    CALL METHOD zcl_mfp_utilities=>delete_user_object
+      EXPORTING
+        it_docs = lt_docs
+        iv_user = sy-uname.
+    IF sy-subrc IS INITIAL.
+
+      MESSAGE s047(zmfp) WITH ls_docs-ebeln INTO ls_return-message.
+      ls_return-type = sy-msgty.
+      APPEND ls_return TO gt_return.
+      CLEAR ls_return.
+
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD validate_einv_paymentterm.
+
+    DATA: ls_changelog TYPE cdred,
+          lt_changelog TYPE TABLE OF cdred,
+          lv_rel_val   TYPE ekko-rlwrt,
+          lv_einv_val  TYPE ekko-rlwrt.
+
+    lv_einv_val = '1000000.00'.
+
+    SELECT  * FROM cdhdr INTO TABLE @DATA(lt_header)
+                    WHERE objectclas = 'EINKBELEG'
+                     AND   objectid   =  @iv_ebeln
+                     AND   udate      LE  @sy-datum
+                     ORDER BY utime DESCENDING.
+
+    IF sy-subrc IS INITIAL.
+* Fetch records for Change Item table
+      SELECT *  FROM cdpos INTO TABLE @DATA(lt_cdpos)
+        FOR ALL ENTRIES IN @lt_header
+                  WHERE objectclas = 'EINKBELEG'
+                   AND  objectid   = @iv_ebeln
+                   AND  changenr   = @lt_header-changenr
+                   AND tabname     = 'EKKO'
+                   AND fname       = 'RLWRT'.
+
+      IF sy-subrc IS INITIAL.
+
+        LOOP AT lt_header INTO DATA(ls_header).
+
+          MOVE-CORRESPONDING ls_header TO ls_changelog.
+
+          LOOP AT lt_cdpos INTO DATA(ls_cdpos) WHERE objectid = ls_header-objectid
+                                                 AND changenr = ls_header-changenr.
+
+            MOVE-CORRESPONDING ls_cdpos TO ls_changelog.
+            MOVE ls_cdpos-value_old TO ls_changelog-f_old.
+            MOVE ls_cdpos-value_new TO ls_changelog-f_new.
+            APPEND ls_changelog TO lt_changelog.
+            CLEAR : ls_changelog.
+          ENDLOOP.
+
+*ls_changelog-
+
+
+        ENDLOOP.
+
+        SORT lt_changelog BY udate utime.
+
+        READ TABLE lt_changelog INTO ls_changelog INDEX 1.
+        IF sy-subrc IS INITIAL.
+
+          lv_rel_val = ls_changelog-f_new.
+        ENDIF.
+      ENDIF.
+
+    ENDIF.
+
+    IF lv_rel_val LT lv_einv_val.
+      rv_valid = abap_true.
+    ELSE.
+      rv_valid = abap_false.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~BAPI_CREATE.
+  endmethod.
+
+
+  method ZIF_MYFI_DOCUMENT~BAPI_READ.
+  endmethod.
+
+
+  METHOD zif_myfi_document~change.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~change
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 30.05.20 290977SCN RD2K919533 DS-11-32-07-01 Updated importing parameters for 'decide_new_status'.
+* 21.10.20 290977SCN RD2K919656 DS-11-32-07-01 S 6000002172: MyFi Purchasing (Release 2.3)
+* 20.10.2022 210983DY RD2K923161  6000002831: MyFi Continuous Improvement November Release
+*              Amended logic to to stop triggering workflow for action 'CLOSE' by
+*              clearing Delegate name from Memory ID for export
+*-----------------------------------------------------------------------
+    DATA: lv_success    TYPE boole_d,
+          ls_doc_header TYPE ztmfp_doc_header.
+
+    MOVE-CORRESPONDING me->zif_myfi_document~new_doc_header TO ls_doc_header.
+    ls_doc_header-zmfp_doc_id = me->zif_myfi_document~source_doc_num.
+    me->zif_myfi_document~posting_doc_num = me->zif_myfi_document~source_doc_num.
+
+    IF check_delegate( ) = abap_true.
+
+      CALL METHOD zcl_mfp_utilities=>log_myfi_action
+        EXPORTING
+          iv_doc_number = me->zif_myfi_document~posting_doc_num
+          iv_action     = zif_mfp_constants=>gc_log-sub_obj-action-change
+          iv_user_id    = sy-uname.
+* For Close action, clear Delegate name from Memory
+      IF me->zif_myfi_document~gv_useraction = zif_mfp_constants=>gc_action-odata-po_close.
+        CLEAR: ls_doc_header-selected_delegate.
+      ENDIF.
+      zcl_mfp_document=>export_header(
+        EXPORTING
+          id    =  zcl_mfp_utilities=>gc_memory_id_header                  " Memory ID for EXPORT/IMPORT memory ID
+          value =  ls_doc_header                  " Self Service Purchasing UI5 Application Document Header
+      ).
+      me->zif_myfi_document~bapi_change( IMPORTING ev_success = lv_success ).
+      IF lv_success EQ abap_true.
+        IF me->gv_is_legacy = abap_true.
+          me->zif_myfi_document~new_doc_header-is_legacy = abap_true.
+          me->zif_myfi_document~new_doc_header-status = zcl_mfp_utilities=>translate_mm_status_to_mfp( gv_mm_status ).
+        ELSE.
+          decide_new_status(
+            EXPORTING
+              iv_action        = zif_mfp_constants=>gc_action-odata-change              " MyFi Purchasing App Action ID
+              iv_myfi_doc_type = me->zif_myfi_document~new_doc_header-category          " MyFi Purchasing UI5 Application Document Category
+              iv_old_status    = me->zif_myfi_document~old_doc_header-status            " MyFi Purchasing UI5 Application Document Status
+              iv_mm_status     = gv_mm_status                                           " Release Indicator: Purchasing Document
+              iv_ebeln         = me->zif_myfi_document~posting_doc_num
+            RECEIVING
+              rv_new_status    = me->zif_myfi_document~new_doc_header-status ).         " MyFi Purchasing UI5 Application Document Status
+        ENDIF.
+        CLEAR me->zif_myfi_document~new_doc_header-changed_in_gui.
+        me->zif_myfi_document~update_myfi_tables( ).
+        IF sy-uname NE 'WF-BATCH'.
+          CALL METHOD me->assign_document
+            EXPORTING
+              iv_assignee = sy-uname.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~create.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~create
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 19.06.20 290977SCN RD2K919517 DS-11-32-07-01 S 6000001863: MyFi
+*          070667JPS                           Purchasing Release 2_ECC
+*                                              DEFECTS II.  Moved the
+*                                              submit action to further
+*                                              down in the code.  Updated importing parameters for 'decide_new_status'.
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+*-----------------------------------------------------------------------
+    DATA: lv_success    TYPE boole_d,
+          ls_doc_header TYPE ztmfp_doc_header.
+
+    IF check_delegate( ) EQ abap_true.
+
+*      IF me->zif_myfi_document~new_doc_header-category = zif_mfp_constants=>gc_myfi_doc_type-l4l_po.
+        MOVE-CORRESPONDING me->zif_myfi_document~new_doc_header TO ls_doc_header.
+*        ls_doc_header-zmfp_doc_id = me->zif_myfi_document~source_doc_num.
+*        CLEAR ls_doc_header-selected_delegate.
+        zcl_mfp_document=>export_header(
+            EXPORTING
+              id    =  zcl_mfp_utilities=>gc_memory_id_header                  " Memory ID for EXPORT/IMPORT memory ID
+              value =  ls_doc_header  ).                " Self Service Purchasing UI5 Application Document Header
+*      ENDIF.
+      me->zif_myfi_document~bapi_create( IMPORTING ev_success = lv_success ).
+
+      CALL METHOD zcl_mfp_utilities=>log_myfi_action
+        EXPORTING
+          iv_doc_number = me->zif_myfi_document~posting_doc_num
+          iv_action     = zif_mfp_constants=>gc_log-sub_obj-action-submit
+          iv_user_id    = sy-uname.
+
+      IF lv_success EQ abap_true.
+        decide_new_status(
+             EXPORTING
+               iv_action        = zif_mfp_constants=>gc_action-odata-create
+               iv_myfi_doc_type = me->zif_myfi_document~new_doc_header-category
+               iv_old_status    = me->zif_myfi_document~old_doc_header-status
+               iv_mm_status     = gv_mm_status
+               iv_ebeln         = me->zif_myfi_document~posting_doc_num
+             RECEIVING
+               rv_new_status    = me->zif_myfi_document~new_doc_header-status
+           ).
+        clear me->zif_myfi_document~new_doc_header-changed_in_gui.
+        me->zif_myfi_document~update_myfi_tables( ).
+        IF me->zif_myfi_document~source_doc_num IS NOT INITIAL.
+          me->zif_myfi_document~update_old_doc_header(
+            EXPORTING
+              iv_source_doc_num  = me->zif_myfi_document~source_doc_num
+              iv_posting_doc_num = me->zif_myfi_document~posting_doc_num
+          ).
+          me->unassign_document( ).
+        ENDIF.
+        me->assign_document( ).
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~fill_attachment_entityset.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~fill_attachment_entityset
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA:
+      ls_attachment_data     TYPE zsmfp_doc_att,
+      lt_attachment_data     TYPE TABLE OF zsmfp_doc_att,
+      ls_attachments_ent_set TYPE zcl_zedm_mfp_mpc=>ts_attachment,
+      ls_url                 TYPE saeuri,
+      lv_doc_num             TYPE ebeln.
+
+    IF me->zif_myfi_document~posting_doc_num IS NOT INITIAL.
+      lv_doc_num = me->zif_myfi_document~posting_doc_num.
+    ELSE.
+      lv_doc_num = me->zif_myfi_document~source_doc_num.
+    ENDIF.
+
+    CALL METHOD zcl_mfp_utilities=>get_mime_connect_for_doc
+      EXPORTING
+        iv_doc_id      = lv_doc_num
+      IMPORTING
+        et_attachments = lt_attachment_data.
+
+    LOOP AT lt_attachment_data INTO ls_attachment_data.
+      CLEAR ls_attachments_ent_set.
+      MOVE-CORRESPONDING ls_attachment_data TO ls_attachments_ent_set.
+
+      CALL FUNCTION 'SCMS_AO_URL_READ'
+        EXPORTING
+          arc_id        = ls_attachment_data-archiv_id
+          doc_id        = ls_attachment_data-arc_doc_id
+          document_type = ls_attachment_data-mime_type
+          pdf_mode      = space
+        IMPORTING
+          url           = ls_url
+        EXCEPTIONS
+          error         = 1
+          OTHERS        = 2.
+
+      IF sy-subrc NE 0.
+        CONTINUE.
+*      CLEAR entity.
+*      ls_textid-msgid = sy-msgid.
+*      ls_textid-msgno = sy-msgno.
+*      ls_textid-attr1 = sy-msgv1.
+*      ls_textid-attr2 = sy-msgv2.
+*      ls_textid-attr3 = sy-msgv3.
+*      ls_textid-attr4 = sy-msgv4.
+*      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+*        EXPORTING
+*          textid = ls_textid.
+      ELSE.
+        ls_attachments_ent_set-sourceuri = ls_url.
+        APPEND ls_attachments_ent_set TO et_attachments_ent_set.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~FILL_DEEP_ENTITY.
+  endmethod.
+
+
+  method ZIF_MYFI_DOCUMENT~GET_MM_DETAILS.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~ZIF_MYFI_DOCUMENT~GET_MM_DETAILS
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    me->zif_myfi_document~bapi_read( ).
+    me->zif_myfi_document~out_header( ).
+    me->zif_myfi_document~out_line_items( ).
+    me->zif_myfi_document~out_account_assignment( ).
+    me->zif_myfi_document~out_strings( ).
+
+
+
+  endmethod.
+
+
+  method zif_myfi_document~get_myfi_details.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~get_myfi_details
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 04.12.20 220977FKC RD2K920504 DS-11-32-07-01 6000002172: MyFi Purchasing (Release 2.3)
+*                                              Incorporate legacy (non-MyFi docs)
+*-----------------------------------------------------------------------
+
+    if me->gv_is_legacy ne abap_true.
+
+      select single * from ztmfp_admin_detl
+                      into corresponding fields of me->zif_myfi_document~old_adm_dtl
+                      where  zmfp_doc_id  = me->zif_myfi_document~source_doc_num.
+      select        * from  ztmfp_strings
+                      into table me->zif_myfi_document~old_strings
+                      where  zmfp_doc_id  = me->zif_myfi_document~source_doc_num.
+      select        * from ztmfp_indigsub
+                      into table me->zif_myfi_document~old_inidigsub
+                      where  zmfp_doc_id  = me->zif_myfi_document~source_doc_num.
+      select *        from ztmfp_prepmnt
+                      into table me->zif_myfi_document~old_prepmnts
+                      where  zmfp_doc_id  = me->zif_myfi_document~source_doc_num.
+
+      if me->gv_draft_indicator eq abap_true.
+
+        select single string_data from ztmfp_strings
+        where zmfp_doc_id eq @me->zif_myfi_document~source_doc_num and
+              string_type eq @zif_mfp_constants=>gc_string_type-json into
+              @me->gs_deep_entity.
+
+      else.
+
+        select        * from  ztmfp_appstrings as a
+                        into table me->zif_myfi_document~approval_strings
+                        where  a~zmfp_doc_id  = me->zif_myfi_document~source_doc_num
+                        and    timestamp    = ( select max( timestamp ) from ztmfp_appstrings as b
+                                                                        where  a~zmfp_doc_id  = me->zif_myfi_document~source_doc_num  ).
+      endif.
+
+    endif.
+
+  endmethod.
+
+
+  METHOD zif_myfi_document~get_new_status.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~get_new_status
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 22.07.20 290977SCN RD2K919533 DS-11-32-07-01 Updated importing parameters for decide_new_status
+*-----------------------------------------------------------------------
+    decide_new_status(
+      EXPORTING
+        iv_action        = me->zif_myfi_document~gv_useraction                 " MyFi Purchasing App Action ID
+        iv_myfi_doc_type = me->zif_myfi_document~new_doc_header-category       " MyFi Purchasing UI5 Application Document Category
+        iv_old_status    = me->zif_myfi_document~old_doc_header-status         " MyFi Purchasing UI5 Application Document Status
+        iv_mm_status     = me->gv_mm_status                                    " Release Indicator: Purchasing Document
+        iv_ebeln         = me->zif_myfi_document~posting_doc_num
+      RECEIVING
+        rv_new_status    = rv_status
+    ).
+
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~handle_action.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~handle_action
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+* 03/03/21 210983DY  RD2K920554 DS-11-32-07-01 S 6000002250: MyFi Purchasing (Release 2.4 )
+*                               Additional logic to handle PO Close
+* 16.04.21 210983DY RD2K920923  DS-11-32-07-01 S 6000002348: MyFi Purchasing (May Release)
+*                               Additional logic to handle
+*                              Un-assignment of a Document - MyFi(May Release)
+*-----------------------------------------------------------------------
+    CASE me->zif_myfi_document~gv_useraction.
+      WHEN zif_mfp_constants=>gc_action-odata-draft.        "10  Save Draft
+        me->zif_myfi_document~save_draft( ).
+      WHEN zif_mfp_constants=>gc_action-odata-validate.     "30	Validate
+        me->zif_myfi_document~validate( ).
+      WHEN zif_mfp_constants=>gc_action-odata-create.       "40	Submit
+        me->zif_myfi_document~create( ).
+      WHEN zif_mfp_constants=>gc_action-odata-change.
+        me->zif_myfi_document~change( ).                    "50	Change
+        me->assign_document( iv_assignee = sy-uname ).
+      WHEN zif_mfp_constants=>gc_action-odata-read.
+        me->zif_myfi_document~read_data( ).
+*  Assign document to User's object
+        me->assign_document( iv_assignee = sy-uname ).
+      WHEN zif_mfp_constants=>gc_action-odata-edit.         "80	Edit
+        me->recall_approval( ).
+        me->zif_myfi_document~read_data( ).                 "99	Read
+        me->assign_document( iv_assignee = sy-uname ).
+      WHEN zif_mfp_constants=>gc_action-odata-reassign.
+        me->zif_myfi_document~save_draft( ).
+        unassign_document( ).
+      WHEN zif_mfp_constants=>gc_action-odata-duplicate_chk. "25 Duplicate Check
+        me->zif_myfi_document~duplicate_chk( ).
+      WHEN zif_mfp_constants=>gc_action-odata-po_close.     "60 PO Close
+        me->zif_myfi_document~change( ).
+      WHEN zif_mfp_constants=>gc_action-odata-unassign.     "22 Un assign
+        me->zif_myfi_document~read_data( ).
+        unassign_document( ).
+      WHEN OTHERS.
+    ENDCASE.
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~handle_odata.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~handle_odata
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    me->zif_myfi_document~in_header( ).
+    me->zif_myfi_document~in_line_items( ).
+    me->zif_myfi_document~in_account_assignment( ).
+    me->zif_myfi_document~in_strings( ).
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~IN_ACCOUNT_ASSIGNMENT.
+  endmethod.
+
+
+  method ZIF_MYFI_DOCUMENT~IN_HEADER.
+  endmethod.
+
+
+  method ZIF_MYFI_DOCUMENT~IN_PHASINGS.
+  endmethod.
+
+
+  METHOD zif_myfi_document~in_strings.
+
+
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~OUT_HEADER.
+  endmethod.
+
+
+  method zif_myfi_document~read_data.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~read_data
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 30.11.20 220977FKC RD2K920449 DS-11-32-07-01 6000002172: MyFi Purchasing (Release 2.3)
+*                                              Enable legacy i.e. non-myfi created docs
+*-----------------------------------------------------------------------
+    if me->zif_myfi_document~old_doc_header-status eq zif_mfp_constants=>gc_doc_status-draft
+    and me->gv_is_legacy ne abap_true.
+      me->gv_draft_indicator = abap_true.
+    endif.
+
+    me->zif_myfi_document~get_myfi_details( ).
+    if me->gv_draft_indicator eq abap_false.
+      me->zif_myfi_document~get_mm_details( ).
+    endif.
+    me->get_consumption( ).
+    me->zif_myfi_document~fill_deep_entity( ).
+    zif_myfi_document~fill_attachment_entityset( ).
+  endmethod.
+
+
+  METHOD zif_myfi_document~reassign_doc.
+ ENDMETHOD.
+
+
+  METHOD zif_myfi_document~save_draft.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~save_draft
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    me->zif_myfi_document~update_myfi_tables( ).
+    me->assign_document( ).
+    me->zif_myfi_document~fill_attachment_entityset( ).
+
+    CALL METHOD zcl_mfp_utilities=>log_myfi_action
+      EXPORTING
+        iv_doc_number = me->zif_myfi_document~posting_doc_num
+        iv_action     = zif_mfp_constants=>gc_log-sub_obj-action-draft
+        iv_user_id    = sy-uname .
+
+
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~update_admin_table.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_admin_table
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 20/05/21 210983DY  RD2K921041 DS-11-32-07-01 S6000002393: June DFSS release for MyFi Purchasing
+*                               Additional code to restrict user to chose payment justification text from dropdown
+*-----------------------------------------------------------------------
+    SELECT SINGLE * FROM ztmfp_admin_detl INTO @DATA(ls_old_admin) WHERE zmfp_doc_id EQ @me->zif_myfi_document~posting_doc_num.
+    CLEAR: ls_old_admin-zmfp_doc_id, ls_old_admin-mandt.
+    IF ls_old_admin-pay_term_just_dd IS INITIAL.
+      CLEAR ls_old_admin-pay_term_just.
+    ELSE.
+      ls_old_admin-pay_term_just = zcl_mfp_document=>get_payment_justification_text( iv_payment_just_code = ls_old_admin-pay_term_just_dd ).
+    ENDIF.
+    MOVE-CORRESPONDING ls_old_admin TO me->zif_myfi_document~old_adm_dtl.
+
+    IF me->zif_myfi_document~new_adm_dtl = me->zif_myfi_document~old_adm_dtl OR me->zif_myfi_document~gv_useraction EQ zif_mfp_constants=>gc_action-odata-create_l4l_po.
+      RETURN.
+    ENDIF.
+
+    MOVE-CORRESPONDING me->zif_myfi_document~new_adm_dtl TO es_new_data ##ENH_OK.
+    MOVE-CORRESPONDING me->zif_myfi_document~old_adm_dtl TO es_old_data ##ENH_OK.
+
+    MOVE-CORRESPONDING es_new_data TO es_new_data_update.
+    es_new_data_update-zmfp_doc_id = me->zif_myfi_document~posting_doc_num ##ENH_OK.
+
+
+    CASE iv_change_indicator.
+      WHEN 'I'.
+        INSERT ztmfp_admin_detl FROM es_new_data_update.
+      WHEN 'U'.
+        MODIFY ztmfp_admin_detl FROM es_new_data_update.
+      WHEN 'D'.
+        DELETE FROM ztmfp_admin_detl WHERE zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      WHEN OTHERS.
+    ENDCASE.
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~UPDATE_APPROVAL_STRINGS.
+  endmethod.
+
+
+  method ZIF_MYFI_DOCUMENT~UPDATE_ATTACHMENTS_TABLE.
+  endmethod.
+
+
+  method zif_myfi_document~update_doc_header.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_doc_header
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 01.12.20 220977FKC RD2K920465 DS-11-32-07-01 6000002172: MyFi Purchasing (Release 2.3)
+*                                              Enable legacy (i.e. non myfi documents)
+*-----------------------------------------------------------------------
+    data:
+      ls_header_new type yztmfp_doc_header,
+      ls_header_old type yztmfp_doc_header.
+
+    if me->zif_myfi_document~source_doc_num ne me->zif_myfi_document~posting_doc_num and me->zif_myfi_document~source_doc_num is not initial.
+      me->zif_myfi_document~new_doc_header-ref_id = me->zif_myfi_document~source_doc_num.
+    endif.
+
+    if me->zif_myfi_document~new_doc_header = me->zif_myfi_document~old_doc_header.
+      return.
+    endif.
+
+    move-corresponding me->zif_myfi_document~new_doc_header to ls_header_new.
+    ls_header_new-changed_on = sy-datum.
+    ls_header_new-changed_at = sy-uzeit.
+    append ls_header_new to et_new_data.
+
+    move-corresponding me->zif_myfi_document~old_doc_header to ls_header_old.
+    append ls_header_old to et_old_data.
+
+    move-corresponding ls_header_new to es_new_data_update.
+    es_new_data_update-zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+
+    case iv_change_indicator.
+      when 'I'.
+        insert ztmfp_doc_header from es_new_data_update.
+      when 'U'.
+        modify ztmfp_doc_header from es_new_data_update.
+      when 'D'.
+        delete from ztmfp_doc_header where zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      when others.
+    endcase.
+
+  endmethod.
+
+
+  METHOD zif_myfi_document~update_indisub.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_indisub
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lt_update_new TYPE zmfp_indigsub_tty,
+          ls_record     TYPE ztmfp_indigsub,
+          lv_success    TYPE xfeld,
+          lt_temp_new   TYPE zmfp_indigsub_tty,
+          lt_temp_old   TYPE zmfp_indigsub_tty,
+          ls_old_data   TYPE yztmfp_indigsub,
+          ls_new_data   TYPE yztmfp_indigsub.
+
+    FIELD-SYMBOLS: <record> TYPE ztmfp_indigsub.
+
+    SELECT * FROM ztmfp_indigsub INTO @DATA(ls_indigsub) WHERE zmfp_doc_id EQ @me->zif_myfi_document~posting_doc_num.
+      CLEAR: ls_indigsub-zmfp_doc_id, ls_indigsub-mandt.
+      APPEND ls_indigsub TO me->zif_myfi_document~old_inidigsub.
+    ENDSELECT.
+
+    IF me->zif_myfi_document~new_inidigsub = me->zif_myfi_document~old_inidigsub OR me->zif_myfi_document~gv_useraction EQ zif_mfp_constants=>gc_action-odata-create_l4l_po.
+      RETURN.
+    ENDIF.
+
+    lt_temp_old = me->zif_myfi_document~old_inidigsub.
+    lt_temp_new = me->zif_myfi_document~new_inidigsub.
+
+    LOOP AT lt_temp_old ASSIGNING FIELD-SYMBOL(<fs_old>).
+      <fs_old>-zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      MOVE-CORRESPONDING <fs_old> TO ls_old_data.
+      APPEND ls_old_data TO et_old_data.
+      <fs_old>-deletion_flag = abap_true.
+    ENDLOOP.
+    LOOP AT lt_temp_new ASSIGNING FIELD-SYMBOL(<fs_new>).
+      <fs_new>-zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      MODIFY lt_temp_old FROM <fs_new> TRANSPORTING contractorabn contractorname sequence deletion_flag zmfp_doc_id WHERE sequence = <fs_new>-sequence .
+      IF sy-subrc <> 0.
+        APPEND <fs_new> TO lt_temp_old.
+      ENDIF.
+    ENDLOOP.
+
+    MOVE-CORRESPONDING lt_temp_old TO et_new_data.
+    et_new_data_update = lt_temp_old.
+
+    CASE iv_change_indicator.
+      WHEN 'I'.
+        INSERT ztmfp_indigsub   FROM TABLE et_new_data_update.
+      WHEN 'U'.
+        MODIFY ztmfp_indigsub   FROM TABLE et_new_data_update.
+      WHEN 'D'.
+        DELETE FROM  ztmfp_indigsub  WHERE zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      WHEN OTHERS.
+    ENDCASE.
+
+
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~update_myfi_tables.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_myfi_tables
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 03/03/21 210983DY  RD2K920554 DS-11-32-07-01 S 6000002250: MyFi Purchasing (Release 2.4 )
+*                               Additional logic to handle changelog updates
+*-----------------------------------------------------------------------
+    DATA:
+      ls_admin_new        TYPE yztmfp_admin_detl,
+      ls_admin_old        TYPE yztmfp_admin_detl,
+      lt_admin_new        TYPE TABLE OF yztmfp_admin_detl,
+      lt_admin_old        TYPE TABLE OF yztmfp_admin_detl,
+      lv_objid            TYPE cdhdr-objectid,
+      ls_admin_update     TYPE ztmfp_admin_detl,
+      lt_header_old       TYPE yztmfp_doc_headers,
+      lt_header_new       TYPE yztmfp_doc_headers,
+      ls_header_update    TYPE ztmfp_doc_header,
+      ls_prepmnts_new     TYPE yztmfp_prepmnt,
+      ls_prepmnts_old     TYPE yztmfp_prepmnt,
+      lt_prepmnts_new     TYPE TABLE OF yztmfp_prepmnt,
+      lt_prepmnts_old     TYPE TABLE OF yztmfp_prepmnt,
+      lt_prepmnt_update   TYPE TABLE OF ztmfp_prepmnt,
+      lt_indigsub_old	    TYPE yztmfp_indigsub_tty,
+      lt_indigsub_new	    TYPE yztmfp_indigsub_tty,
+      lt_indigsub_update  TYPE zmfp_indigsub_tty,
+      lv_change_indicator TYPE cdchngindh,
+      lv_doc_num          TYPE ebeln,
+      lv_log_subobj       TYPE balsubobj,
+      lv_log_type         TYPE bapi_mtype.
+
+    lv_objid =  me->zif_myfi_document~posting_doc_num.
+
+    IF me->zif_myfi_document~source_doc_num IS INITIAL AND me->zif_myfi_document~posting_doc_num IS NOT INITIAL.
+      lv_change_indicator = 'I'.
+    ELSEIF me->zif_myfi_document~source_doc_num IS NOT INITIAL AND me->zif_myfi_document~posting_doc_num IS NOT INITIAL.
+      lv_change_indicator = 'U'.
+    ELSE.
+      lv_change_indicator = 'D'.
+    ENDIF.
+
+    zif_myfi_document~update_doc_header(
+      EXPORTING
+        iv_change_indicator = lv_change_indicator
+      IMPORTING
+        et_old_data        = lt_header_old                 " Change Document Table Type; Generated by RSSCD000
+        et_new_data        = lt_header_new                 " Change Document Table Type; Generated by RSSCD000
+        es_new_data_update = ls_header_update                 " MyFi Purchasing UI5 Application Document Header Tabl
+    ).
+
+    zif_myfi_document~update_admin_table(
+      EXPORTING
+        iv_change_indicator = lv_change_indicator
+      IMPORTING
+        es_old_data        =  ls_admin_old                " Change Document Structure; Generated by RSSCD000
+        es_new_data        =  ls_admin_new                " Change Document Table Type; Generated by RSSCD000
+        es_new_data_update =  ls_admin_update               " MyFi Purchasing UI5 App - Purch Doc Admin Details
+    ).
+    APPEND ls_admin_old TO lt_admin_old.
+    APPEND ls_admin_new TO lt_admin_new.
+
+    zif_myfi_document~update_prepmnt_table(
+      EXPORTING
+        iv_change_indicator = lv_change_indicator
+      IMPORTING
+        et_old_data        =  lt_prepmnts_old                " Change Document Structure; Generated by RSSCD000
+        et_new_data        =  lt_prepmnts_new                " Change Document Table Type; Generated by RSSCD000
+        et_new_data_update =  lt_prepmnt_update              " MyFi Purchasing UI5 App - Purch Doc Admin Details
+        ).
+
+    zif_myfi_document~update_indisub(
+      EXPORTING
+        iv_change_indicator = lv_change_indicator
+      IMPORTING
+         et_old_data        = lt_indigsub_old                 " Change Document Structure; Generated by RSSCD000
+         et_new_data        = lt_indigsub_new                 " Change Document Table Type; Generated by RSSCD000
+         et_new_data_update = lt_indigsub_update                 " MyFi Purchasing UI5 App - Purch Doc Admin Details
+        ).
+
+    me->zif_myfi_document~in_strings( ).
+
+    CASE lv_change_indicator.
+      WHEN 'I'.
+        INSERT ztmfp_strings    FROM TABLE me->zif_myfi_document~new_strings.
+        lv_log_subobj = zif_mfp_constants=>gc_log-sub_obj-data-insert.
+      WHEN 'U'.
+        DELETE FROM ztmfp_strings    WHERE zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+        MODIFY ztmfp_strings    FROM TABLE me->zif_myfi_document~new_strings.
+        lv_log_subobj = zif_mfp_constants=>gc_log-sub_obj-data-update.
+      WHEN 'D'.
+        DELETE FROM ztmfp_strings    WHERE zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+        lv_log_subobj = zif_mfp_constants=>gc_log-sub_obj-data-delete.
+      WHEN OTHERS.
+    ENDCASE.
+
+    IF sy-subrc <> 0.
+      lv_log_type = zif_mfp_constants=>gc_log-type-error.
+    ELSE.
+      lv_log_type = zif_mfp_constants=>gc_log-type-success.
+    ENDIF.
+
+    CALL METHOD zcl_mfp_utilities=>log_myfi_data
+      EXPORTING
+        iv_doc_number = me->zif_myfi_document~posting_doc_num
+        iv_user_id    = sy-uname
+        iv_log_type   = lv_log_type
+        iv_sub_obj    = lv_log_subobj.
+
+    CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+      EXPORTING
+        objectid                = lv_objid
+        tcode                   = zif_mfp_constants=>gc_tcode
+        utime                   = sy-uzeit
+        udate                   = sy-datum
+        username                = sy-uname
+*       planned_change_number   = space
+        object_change_indicator = lv_change_indicator
+*       planned_or_real_changes = space
+*       no_change_pointers      = space
+        upd_ztmfp_admin_detl    = lv_change_indicator
+        upd_ztmfp_doc_header    = lv_change_indicator
+        upd_ztmfp_indigsub      = lv_change_indicator
+        upd_ztmfp_prepmnt       = lv_change_indicator
+      TABLES
+        xztmfp_doc_header       = lt_header_new
+        yztmfp_doc_header       = lt_header_old
+        xztmfp_admin_detl       = lt_admin_new
+        yztmfp_admin_detl       = lt_admin_old
+        xztmfp_indigsub         = lt_indigsub_new
+        yztmfp_indigsub         = lt_indigsub_old
+        xztmfp_prepmnt          = lt_prepmnts_new
+        yztmfp_prepmnt          = lt_prepmnts_old.
+
+    COMMIT WORK AND WAIT.
+
+
+    .
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~update_old_doc_header.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_old_doc_header
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 changed
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA:
+      lv_objid            TYPE cdhdr-objectid,
+      lt_header_old       TYPE yztmfp_doc_headers,
+      lt_header_new       TYPE yztmfp_doc_headers,
+      ls_header_update    TYPE ztmfp_doc_header,
+      lv_change_indicator TYPE cdchngindh VALUE 'U',
+      lv_doc_num          TYPE ebeln.
+
+    SELECT SINGLE * FROM ztmfp_doc_header WHERE zmfp_doc_id EQ @iv_source_doc_num INTO @ls_header_update.
+    APPEND ls_header_update TO lt_header_old.
+    ls_header_update-ref_id = iv_posting_doc_num.
+    IF ls_header_update-status EQ zif_mfp_constants=>gc_doc_status-draft.
+      ls_header_update-status = zif_mfp_constants=>gc_doc_status-posted_draft.
+    ENDIF.
+    APPEND ls_header_update TO lt_header_new.
+
+    MODIFY ztmfp_doc_header FROM ls_header_update.
+    lv_objid = ls_header_update-zmfp_doc_id.
+    CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+      EXPORTING
+        objectid                = lv_objid
+        tcode                   = zif_mfp_constants=>gc_tcode
+        utime                   = sy-uzeit
+        udate                   = sy-datum
+        username                = sy-uname
+        object_change_indicator = lv_change_indicator
+        upd_ztmfp_doc_header    = lv_change_indicator
+      TABLES
+        xztmfp_doc_header       = lt_header_new
+        yztmfp_doc_header       = lt_header_old.
+
+    COMMIT WORK AND WAIT.
+
+  ENDMETHOD.
+
+
+  METHOD zif_myfi_document~update_prepmnt_table.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~update_prepmnt_table
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 03/03/21 210983DY  RD2K920554 DS-11-32-07-01 S 6000002250: MyFi Purchasing (Release 2.4 )
+*                     Additional logic for update of prepayment table
+*-----------------------------------------------------------------------
+    SELECT * FROM ztmfp_prepmnt INTO @DATA(ls_prepay) WHERE zmfp_doc_id EQ @me->zif_myfi_document~posting_doc_num.
+
+      CLEAR: ls_prepay-mandt.
+* Clear zmfp_doc_id only if it is not same as posting doc num
+      IF ls_prepay-zmfp_doc_id NE me->zif_myfi_document~posting_doc_num. CLEAR ls_prepay-zmfp_doc_id. ENDIF.
+      APPEND ls_prepay TO me->zif_myfi_document~old_prepmnts.
+    ENDSELECT.
+    IF me->zif_myfi_document~new_prepmnts = me->zif_myfi_document~old_prepmnts OR me->zif_myfi_document~gv_useraction EQ zif_mfp_constants=>gc_action-odata-create_l4l_po.
+      RETURN.
+    ENDIF.
+
+    MOVE-CORRESPONDING me->zif_myfi_document~old_prepmnts TO et_old_data.
+
+    LOOP AT me->zif_myfi_document~new_prepmnts ASSIGNING FIELD-SYMBOL(<fs_new>).
+      <fs_new>-zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+    ENDLOOP.
+
+    MOVE-CORRESPONDING me->zif_myfi_document~new_prepmnts TO et_new_data.
+    et_new_data_update = me->zif_myfi_document~new_prepmnts.
+
+    CASE iv_change_indicator.
+      WHEN 'I'.
+        INSERT ztmfp_prepmnt    FROM TABLE et_new_data_update.
+      WHEN 'U'.
+        MODIFY ztmfp_prepmnt    FROM TABLE et_new_data_update.
+      WHEN 'D'.
+        DELETE FROM ztmfp_prepmnt    WHERE zmfp_doc_id = me->zif_myfi_document~posting_doc_num.
+      WHEN OTHERS.
+    ENDCASE.
+
+
+  ENDMETHOD.
+
+
+  method ZIF_MYFI_DOCUMENT~UPDATE_STRINGS.
+
+
+
+  endmethod.
+
+
+  METHOD zif_myfi_document~validate.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_DOCUMENT~zif_myfi_document~validate
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Documents
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 19.06.20 290977SCN RD2K919517 DS-11-32-07-01 S 6000001863: MyFi
+*          070667JPS                           Purchasing Release 2_ECC
+*                                              DEFECTS II.  Passed the
+*                                              correct document number
+*                                              to the utilities method.
+* 21.10.20 290977SCN RD2K919656 DS-11-32-07-01 S 6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+
+    DATA: ls_doc_header TYPE ztmfp_doc_header.
+
+    CALL METHOD zcl_mfp_utilities=>log_myfi_action
+      EXPORTING
+        iv_doc_number = me->zif_myfi_document~source_doc_num
+        iv_action     = zif_mfp_constants=>gc_log-sub_obj-action-valid
+        iv_user_id    = sy-uname.
+
+    MOVE-CORRESPONDING me->zif_myfi_document~old_doc_header TO ls_doc_header.
+    ls_doc_header-zmfp_doc_id = me->zif_myfi_document~source_doc_num.
+    IF ls_doc_header-status EQ zif_mfp_constants=>gc_doc_status-approved.
+      CLEAR ls_doc_header-selected_delegate.
+    ENDIF.
+    zcl_mfp_document=>export_header(
+            EXPORTING
+              id    =  zcl_mfp_utilities=>gc_memory_id_header                  " Memory ID for EXPORT/IMPORT memory ID
+              value =  ls_doc_header                  " Self Service Purchasing UI5 Application Document Header
+          ).
+
+    delegate_required( ).
+
+  ENDMETHOD.
+ENDCLASS.

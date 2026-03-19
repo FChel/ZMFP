@@ -1,0 +1,68 @@
+class ZCL_MFP_BRF_ASSIST definition
+  public
+  final
+  create public .
+
+public section.
+
+  interfaces IF_FDT_APPLICATION_SETTINGS .
+
+  class-methods CLASS_CONSTRUCTOR .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_BRF_ASSIST IMPLEMENTATION.
+
+
+  METHOD class_constructor.
+    if_fdt_application_settings~gv_authority_check = abap_true.
+    if_fdt_application_settings~gv_get_changeability = abap_true.
+  ENDMETHOD.
+
+
+  method IF_FDT_APPLICATION_SETTINGS~ACTIVATION_VETO.
+  endmethod.
+
+
+  METHOD if_fdt_application_settings~authority_check.
+    DATA: lt_roles  TYPE rssbr_t_badi_bapiagr,
+          lt_return TYPE bapiret2_t.
+
+    SELECT SINGLE cccategory FROM t000 INTO @DATA(lv_sys_cat) WHERE mandt EQ @sy-mandt.
+
+    IF lv_sys_cat NE 'C'.
+      IF iv_activity EQ '2'.
+        CALL FUNCTION 'BAPI_USER_GET_DETAIL'
+          EXPORTING
+            username       = sy-uname
+          TABLES
+            activitygroups = lt_roles
+            return         = lt_return.
+
+        READ TABLE lt_roles WITH KEY agr_name = 'ZXS_SSP_PRODUCTION_SUPPORT' TRANSPORTING NO FIELDS.
+        IF sy-subrc EQ 0.
+          ev_passed = abap_true.
+        ENDIF.
+      ELSE.
+        ev_passed = abap_true.
+      ENDIF.
+    ELSE.
+      ev_passed = abap_true.
+    ENDIF.
+  ENDMETHOD.
+
+
+  method IF_FDT_APPLICATION_SETTINGS~CHECK.
+  endmethod.
+
+
+  method IF_FDT_APPLICATION_SETTINGS~GET_CHANGEABILITY.
+    if IV_ID = '0AA7FB2BB5031EEABA85C953A7668192'.  "ZMFP_HELPER -> MESSAGES_DT
+      cv_changeable = abap_true.
+    endif.
+
+  endmethod.
+ENDCLASS.

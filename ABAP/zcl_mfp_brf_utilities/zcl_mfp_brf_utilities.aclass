@@ -1,0 +1,111 @@
+class ZCL_MFP_BRF_UTILITIES definition
+  public
+  final
+  create public .
+
+public section.
+
+  class-methods GET_STR_ELEMENT
+    importing
+      !IV_ELEMENT_NAME type CHAR30
+      !IS_STRUCTURE_DATA type ANY
+    returning
+      value(RV_DATA) type CHAR255 .
+  PROTECTED SECTION.
+private section.
+
+  class-methods GET_DATA_DESCRIPTION
+    importing
+      !IV_DATA type ANY
+    returning
+      value(RO_TYPE_DESC) type ref to CL_FDT_TYPEDESCR .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_BRF_UTILITIES IMPLEMENTATION.
+
+
+  METHOD GET_DATA_DESCRIPTION.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BRF_UTILITIES~GET_DATA_DESCRIPTION
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi BRF+ Application
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lo_type_descr TYPE REF TO cl_fdt_typedescr.
+    cl_fdt_typedescr=>describe_by_data(
+      EXPORTING
+        ia_data       = iv_data
+*        iv_id         =                  " Universal Unique Identifier
+      RECEIVING
+        ro_type_descr = ro_type_desc                 " FDT: Data object descriptor service
+    ).
+  ENDMETHOD.
+
+
+  METHOD get_str_element.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BRF_UTILITIES~get_str_element
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi BRF+ Application
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lo_datatype TYPE REF TO cl_fdt_typedescr.
+
+    FIELD-SYMBOLS: <lv_field> TYPE any,
+                   <rv_data>  TYPE any.
+
+    ASSIGN iv_element_name TO <lv_field>.
+    IF <lv_field> IS NOT ASSIGNED.
+      RETURN.
+    ENDIF.
+    ASSIGN COMPONENT <lv_field> OF STRUCTURE  is_structure_data TO <rv_data>." CASTING LIKE <lv_field>.
+    IF <rv_data> IS NOT INITIAL.
+      lo_datatype = get_data_description( iv_data = <rv_data> ).
+      CASE lo_datatype->mv_kind.
+        WHEN zif_mfp_constants=>gc_element_category-element.
+          rv_data = <rv_data>.
+        WHEN zif_mfp_constants=>gc_element_category-struct.
+          CASE lo_datatype->mv_relative_name.
+            WHEN zif_mfp_constants=>gc_structure_type-timepoint.
+              rv_data = cl_fdt_date_time=>convert_timepoint_to_text( is_timepoint = <rv_data> ).
+            WHEN zif_mfp_constants=>gc_structure_type-amount.
+              rv_data = cl_fdt_amount_conv=>to_string( is_amount = <rv_data> ).
+            WHEN zif_mfp_constants=>gc_structure_type-quantity.
+              rv_data = cl_fdt_quantity_conv=>to_string( is_quantity =  <rv_data> ).
+            WHEN OTHERS.
+          ENDCASE.
+        WHEN OTHERS.
+      ENDCASE.
+    ENDIF.
+  ENDMETHOD.
+ENDCLASS.

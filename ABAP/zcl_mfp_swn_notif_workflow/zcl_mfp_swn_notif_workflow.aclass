@@ -1,0 +1,83 @@
+class ZCL_MFP_SWN_NOTIF_WORKFLOW definition
+  public
+  inheriting from CL_SWN_NOTIF_WORKFLOW
+  create public .
+
+public section.
+
+*"* public components of class ZCL_MFP_SWN_NOTIF_WORKFLOW
+*"* do not include other source files here!!!
+  methods IF_SWN_NOTIF~GET_BODY
+    redefinition .
+protected section.
+*"* protected components of class ZCL_MFP_SWN_NOTIF_WORKFLOW
+*"* do not include other source files here!!!
+private section.
+*"* private components of class ZCL_MFP_SWN_NOTIF_WORKFLOW
+*"* do not include other source files here!!!
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_SWN_NOTIF_WORKFLOW IMPLEMENTATION.
+
+
+METHOD if_swn_notif~get_body.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_SWN_NOTIF_WORKFLOW~if_swn_notif~get_body
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Extended Notifications
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  super->if_swn_notif~get_body(
+    EXPORTING
+      i_delivery_type  = i_delivery_type
+    IMPORTING
+      e_text_string    = e_text_string
+      e_text_table     = e_text_table
+    CHANGING
+      c_line_width     = c_line_width
+    EXCEPTIONS
+      no_subscription  = 1
+      object_not_found = 2
+         ).
+*  IF sy-subrc <> 0.
+*    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+*               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+*  ENDIF.
+*
+*  DATA: lv_text_name TYPE tdobname.
+*  DATA: lv_url     TYPE so_text255,
+*        lv_ssp_url TYPE so_text255.
+*
+*  SELECT SINGLE tag_url FROM ztssp_url INTO lv_ssp_url WHERE tag EQ 'SSP_URL'.
+*
+*  DO 5 TIMES.
+*    CLEAR: lv_url, lv_text_name.
+*    IF  e_text_string CS 'SSP_URL'.
+*      lv_text_name  = e_text_string+sy-fdpos(10).
+**      lv_url = zcl_grp_defence=>generate_user_powl_url( iv_text_name = lv_text_name ).
+*      REPLACE lv_text_name IN e_text_string WITH lv_ssp_url .
+*    ENDIF.
+*    CHECK sy-subrc EQ 0.
+*  ENDDO.
+
+
+
+
+ENDMETHOD.
+ENDCLASS.

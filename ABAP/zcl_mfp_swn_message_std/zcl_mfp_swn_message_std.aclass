@@ -1,0 +1,78 @@
+class ZCL_MFP_SWN_MESSAGE_STD definition
+  public
+  inheriting from CL_SWN_MESSAGE_STD
+  final
+  create public .
+
+public section.
+
+  methods IF_SWN_MESSAGE~SET_SUBJECT
+    redefinition .
+  methods IF_SWN_MESSAGE~GET_SUBJECT
+    redefinition .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_SWN_MESSAGE_STD IMPLEMENTATION.
+
+
+  method IF_SWN_MESSAGE~GET_SUBJECT.
+*CALL METHOD SUPER->IF_SWN_MESSAGE~GET_SUBJECT
+*  RECEIVING
+*    R_SUBJECT =
+*    .
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_SWN_MESSAGE_STD~IF_SWN_MESSAGE~GET_SUBJECT
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Extended Notifications
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+      R_SUBJECT = |MyFi Purchasing Tasks|.
+  endmethod.
+
+
+  method IF_SWN_MESSAGE~SET_SUBJECT.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_SWN_MESSAGE_STD~IF_SWN_MESSAGE~SET_SUBJECT
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for MyFi Extended Notifications
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+*CALL METHOD SUPER->IF_SWN_MESSAGE~SET_SUBJECT
+*  EXPORTING
+*    I_SUBJECT =
+*    .
+    I_SUBJECT = |MyFi Purchasing Tasks|.
+  endmethod.
+ENDCLASS.

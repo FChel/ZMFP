@@ -1,0 +1,223 @@
+class ZCL_MFP_LOCK_UTILITIES definition
+  public
+  final
+  create private .
+
+public section.
+
+*"* public components of class ZCL_MFP_LOCK_UTILITIES
+*"* do not include other source files here!!!
+  class-methods LOCK_OBJECTS
+    importing
+      !IV_EBELN type EBELN
+    exporting
+      !SUBRC type SY-SUBRC
+    changing
+      !MESSAGES type BAPIRET2_T .
+  class-methods UNLOCK_OBJECT
+    importing
+      !IV_EBELN type EBELN .
+  PROTECTED SECTION.
+*"* protected components of class ZCL_MFP_LOCK_UTILITIES
+*"* do not include other source files here!!!
+private section.
+
+*"* private components of class ZCL_MFP_LOCK_UTILITIES
+*"* do not include other source files here!!!
+  class-methods ADD_SY_MESSAGE
+    changing
+      !MESSAGES type BAPIRET2_T .
+  class-methods LOCK_EMEKKOE
+    importing
+      !IV_EBELN type EBELN
+    exporting
+      !SUBRC type SY-SUBRC
+    changing
+      !MESSAGES type BAPIRET2_T .
+  class-methods SLEEP .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_LOCK_UTILITIES IMPLEMENTATION.
+
+
+  METHOD ADD_SY_MESSAGE.
+* METHOD ID:          ZCL_MFP_LOCK_UTILITIES->ADD_SY_MESSAGE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used to manage locks on MM records
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        09.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_message TYPE bapiret2.
+
+    IF sy-msgty IS INITIAL.
+      RETURN.
+    ENDIF.
+    CLEAR ls_message.
+    ls_message-type = sy-msgty.
+    ls_message-id = sy-msgid.
+    ls_message-number = sy-msgno.
+    ls_message-message_v1 = sy-msgv1.
+    ls_message-message_v2 = sy-msgv2.
+    ls_message-message_v3 = sy-msgv3.
+    ls_message-message_v4 = sy-msgv4.
+    APPEND ls_message TO messages.
+  ENDMETHOD.
+
+
+  METHOD lock_emekkoe.
+* METHOD ID:          ZCL_MFP_LOCK_UTILITIES->LOCK_EMEKKOE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used to manage locks on MM records
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        09.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: l_ebeln TYPE ekko-ebeln.
+    DATA: l_dummy TYPE string ##needed.
+
+    l_ebeln = iv_ebeln.
+    CALL FUNCTION 'ENQUEUE_EMEKKOE'
+      EXPORTING
+        ebeln          = l_ebeln
+      EXCEPTIONS
+        foreign_lock   = 1
+        system_failure = 2
+        OTHERS         = 3.
+    subrc = sy-subrc.
+    IF subrc <> 0.
+      MESSAGE e163(zmfp) WITH l_ebeln INTO l_dummy. "Source Doc number &1 could not be locked
+      add_sy_message( CHANGING messages = messages ).
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD lock_objects.
+* METHOD ID:          ZCL_MFP_LOCK_UTILITIES->lock_objects
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method Locks MM records
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        09.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+
+    CONSTANTS: c_max_attempts TYPE i VALUE 10.
+    DATA: l_attempts TYPE i.
+    DATA: lt_messages TYPE bapiret2_t.
+    DATA: l_document_locked TYPE abap_bool.
+
+    subrc = 1.
+    l_document_locked = abap_false.
+    WHILE l_attempts <= c_max_attempts.
+      CLEAR lt_messages. "we don't want multiple error-messages for the same lock fail!
+      IF l_document_locked = abap_false.
+        lock_emekkoe( EXPORTING iv_ebeln = iv_ebeln IMPORTING subrc = subrc CHANGING messages = lt_messages ).
+
+        IF subrc = 0.
+          l_document_locked = abap_true.
+          RETURN.
+        ENDIF.
+      ENDIF.
+
+      l_attempts = l_attempts + 1.
+      sleep( ).
+    ENDWHILE.
+    APPEND LINES OF lt_messages TO messages.
+  ENDMETHOD.
+
+
+  METHOD SLEEP.
+* METHOD ID:          ZCL_MFP_LOCK_UTILITIES->SLEEP
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used to manage locks on MM records
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        09.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CONSTANTS: c_wait_in_seconds TYPE i VALUE 1.
+    CALL FUNCTION 'RSSM_SLEEP_DEBUG'
+      EXPORTING
+        i_seconds = c_wait_in_seconds.
+  ENDMETHOD.
+
+
+  METHOD unlock_object.
+* METHOD ID:          ZCL_MFP_LOCK_UTILITIES->UNLOCK_OBJECT
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method unlocks MM records
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        09.06.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lv_ebeln TYPE ebeln.
+    lv_ebeln = iv_ebeln.
+    CALL FUNCTION 'DEQUEUE_EMEKKOE'
+      EXPORTING
+        mode_ekko = 'E'
+        mode_ekpo = 'E'
+        mandt     = sy-mandt
+        ebeln     = lv_ebeln.
+  ENDMETHOD.
+ENDCLASS.

@@ -1,0 +1,162 @@
+class ZCL_MFP_WORKFLOW_APPROVAL definition
+  public
+  final
+  create public .
+
+public section.
+
+  methods CONSTRUCTOR .
+  methods LOAD_TABLE .
+  class-methods UPDATE_TABLE
+    importing
+      !IMP_APPROVAL_LOG type ZSMFP_WF_ACTIONS .
+  methods READ_DATA
+    importing
+      !IV_DOCUMENT type EBELN
+    returning
+      value(ET_APPROVAL_LOG) type ZT_WF_ACTIONS .
+protected section.
+private section.
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_WORKFLOW_APPROVAL IMPLEMENTATION.
+
+
+  METHOD constructor.
+
+    SELECT COUNT( * ) FROM ztmfp_wf_actions CLIENT SPECIFIED WHERE migrated = abap_true.
+
+    DATA(lv_count) = sy-dbcnt.
+
+    IF lv_count IS INITIAL.
+
+      me->load_table( ).
+* called for the first time migrate data from BALHDR table
+
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD load_table.
+
+    DATA: ls_wf_action TYPE ztmfp_wf_actions,
+          lt_subobject TYPE RANGE OF balhdr-subobject,
+          lt_wf_action TYPE TABLE OF ztmfp_wf_actions.
+
+    lt_subobject = VALUE #( sign = 'I' option = 'EQ' ( low = zif_mfp_constants=>gc_log-sub_obj-wf-approve )
+    ( low =  zif_mfp_constants=>gc_log-sub_obj-wf-forward )
+    ( low = zif_mfp_constants=>gc_log-sub_obj-wf-reject )
+     ).
+
+
+    SELECT object, subobject, extnumber, aldate, altime, aluser FROM balhdr INTO TABLE @DATA(lt_workflow_log)
+      WHERE object = 'ZMFP_WORKFLOW'
+        AND subobject IN @lt_subobject.
+
+    LOOP AT lt_workflow_log INTO DATA(ls_workflow_log).
+
+      ls_wf_action-mandt = sy-mandt.
+      ls_wf_action-zmfp_doc_id = ls_workflow_log-extnumber.
+
+      CASE ls_workflow_log-subobject.
+        WHEN zif_mfp_constants=>gc_log-sub_obj-wf-approve.
+          ls_wf_action-approver = ls_workflow_log-aluser.
+          ls_wf_action-action = ls_workflow_log-subobject.
+        WHEN zif_mfp_constants=>gc_log-sub_obj-wf-forward.
+          ls_wf_action-recipient = ls_workflow_log-aluser.
+          ls_wf_action-action = ls_workflow_log-subobject.
+        WHEN zif_mfp_constants=>gc_log-sub_obj-wf-reject.
+          ls_wf_action-approver = ls_workflow_log-aluser.
+          ls_wf_action-action = ls_workflow_log-subobject.
+        WHEN OTHERS.
+      ENDCASE.
+      ls_wf_action-action_date = ls_workflow_log-aldate.
+      ls_wf_action-action_time = ls_workflow_log-altime.
+      ls_wf_action-migrated = abap_true.
+
+      APPEND ls_wf_action TO lt_wf_action.
+      clear ls_wf_action.
+
+    ENDLOOP.
+
+    IF NOT lt_wf_action IS INITIAL.
+
+      MODIFY ztmfp_wf_actions FROM TABLE lt_wf_action.
+      IF sy-subrc IS INITIAL.
+        COMMIT WORK AND WAIT.
+      ENDIF.
+
+    ENDIF.
+
+
+  ENDMETHOD.
+
+
+  METHOD read_data.
+
+    DATA: ls_approval_log TYPE zsmfp_wf_actions.
+    SELECT * FROM ztmfp_wf_actions INTO TABLE @DATA(lt_approval) WHERE zmfp_doc_id = @iv_document.
+
+    IF sy-subrc IS INITIAL.
+      SORT lt_approval BY zmfp_doc_id action action_date action_time.
+
+
+      LOOP AT lt_approval INTO DATA(ls_approval).
+        MOVE-CORRESPONDING ls_approval TO ls_approval_log.
+        APPEND ls_approval_log TO et_approval_log.
+
+      ENDLOOP.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD update_table.
+*----------------------------------------------------------------------*
+* METHOD ID:          UPDATE_TABLE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method updates Approval log to table ZTMFP_WF_ACTIONS
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        23/11/2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002172: MyFi Purchasing (Release 2.3)
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*----------------------------------------------------------------------- *
+*
+*-------------------------------------------------------------------------
+
+
+    DATA: ls_wf_action TYPE ztmfp_wf_actions.
+    DATA: lt_wf_action TYPE TABLE OF ztmfp_wf_actions.
+
+    IF NOT imp_approval_log IS INITIAL.
+
+      ls_wf_action-mandt = sy-mandt.
+      MOVE-CORRESPONDING imp_approval_log TO ls_wf_action.
+      ls_wf_action-migrated = abap_false.
+      APPEND ls_wf_action TO lt_wf_action.
+      CLEAR ls_wf_action.
+
+
+      IF NOT lt_wf_action IS INITIAL.
+
+        MODIFY ztmfp_wf_actions FROM TABLE lt_wf_action.
+        IF sy-subrc IS INITIAL.
+          COMMIT WORK AND WAIT.
+        ENDIF.
+      ENDIF.
+    ENDIF.
+
+
+  ENDMETHOD.
+ENDCLASS.

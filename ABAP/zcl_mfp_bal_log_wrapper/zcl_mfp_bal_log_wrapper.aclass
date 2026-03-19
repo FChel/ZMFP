@@ -1,0 +1,666 @@
+class ZCL_MFP_BAL_LOG_WRAPPER definition
+  public
+  final
+  create private .
+
+public section.
+
+  constants:
+    BEGIN OF gc_message_types,
+        abort   TYPE symsgty VALUE 'X',
+        abend   TYPE symsgty VALUE 'A',
+        error   TYPE symsgty VALUE 'E',
+        warning TYPE symsgty VALUE 'W',
+        info    TYPE symsgty VALUE 'I',
+        success TYPE symsgty VALUE 'S',
+      END OF gc_message_types .
+
+  methods ADD_TEXT
+    importing
+      !MESSAGE_TYPE type SY-MSGTY default 'I'
+      !MESSAGE_TEXT type STRING
+      !PROBLEM_CLASS type BAL_S_MSG-PROBCLASS optional .
+  methods DISPLAY .
+  class-methods CREATE
+    returning
+      value(INSTANCE) type ref to ZCL_MFP_BAL_LOG_WRAPPER .
+  methods ADD_BAPI_MESSAGE
+    importing
+      !PROBLEM_CLASS type BAL_S_MSG-PROBCLASS optional
+      !RETURN type BAPIRET2
+      !CONTEXT type BAL_S_CONT optional
+      !PARAMS type BAL_S_PARM optional .
+  methods ADD_BAPI_MESSAGES
+    importing
+      !PROBLEM_CLASS type BAL_S_MSG-PROBCLASS optional
+      !RETURN type BAPIRET2_T
+      !CONTEXT type BAL_S_CONT optional
+      !PARAMS type BAL_S_PARM optional .
+  methods ADD_SYSTEM_MESSAGE
+    importing
+      !PROBLEM_CLASS type BAL_S_MSG-PROBCLASS optional
+      !CONTEXT type BAL_S_CONT optional
+      !PARAMS type BAL_S_PARM optional
+    exporting
+      !IS_RETURN type BAPIRET2 .
+  class-methods GET_INSTANCE
+    importing
+      !IV_OBJECT type BALOBJ_D optional
+      !IV_SUBOBJECT type BALSUBOBJ optional
+      !IV_DESCRIPTION type BALNREXT optional
+      !IV_DAYS_TO_KEEP type INT4 optional
+    returning
+      value(RO_APPLICATION_LOG) type ref to ZCL_MFP_BAL_LOG_WRAPPER .
+  methods PERSIST_LOG .
+  methods HAS_ERROR_MESSAGES
+    returning
+      value(RV_HAS_ERROR) type ABAP_BOOL .
+  methods HAS_MESSAGES
+    returning
+      value(RV_HAS_MESSAGES) type ABAP_BOOL .
+  methods GET_MESSAGES
+    exporting
+      !ET_BAL_MESSAGES type BAL_T_MSGR
+      !ET_BAPIRET2 type BAPIRET2_T .
+  PROTECTED SECTION.
+private section.
+
+  data LOG_HANDLE type BALLOGHNDL .
+  data AV_MESSAGE_COUNTER type I .
+  data AV_ERROR_COUNTER type I .
+  constants LC_PROGRAM_PARANAME type BALPAR value 'PROGRAM' ##NO_TEXT.
+
+  methods CONSTRUCTOR
+    importing
+      !I_OBJ type BALOBJ_D optional
+      !I_SUBOBJ type BALSUBOBJ optional
+      !I_DESC type BALNREXT optional
+      !I_DAYS_TO_KEEP type INT4 optional .
+  methods GET_PROBLEM_CLASS
+    importing
+      !I_MSGTY type SYMSGTY
+    returning
+      value(RESULT) type BAL_S_MSG-PROBCLASS .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_BAL_LOG_WRAPPER IMPLEMENTATION.
+
+
+  METHOD ADD_BAPI_MESSAGE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~ADD_BAPI_MESSAGE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_s_msg TYPE bal_s_msg.
+
+    CHECK return IS NOT INITIAL.
+
+    ls_s_msg-msgty = return-type.
+    ls_s_msg-msgid = return-id.
+    ls_s_msg-msgno = return-number.
+    ls_s_msg-msgv1 = return-message_v1.
+    ls_s_msg-msgv2 = return-message_v2.
+    ls_s_msg-msgv3 = return-message_v3.
+    ls_s_msg-msgv4 = return-message_v4.
+    ls_s_msg-context = context.
+    ls_s_msg-params  = params.
+    IF problem_class IS SUPPLIED.
+      ls_s_msg-probclass = problem_class.
+    ELSE.
+      ls_s_msg-probclass = me->get_problem_class( ls_s_msg-msgty ).
+    ENDIF.
+
+    CALL FUNCTION 'BAL_LOG_MSG_ADD'
+      EXPORTING
+        i_s_msg       = ls_s_msg
+        i_log_handle  = me->log_handle
+      EXCEPTIONS
+        log_not_found = 0
+        OTHERS        = 1.
+    IF sy-subrc = 0.
+      ADD 1 TO av_message_counter.
+      IF ls_s_msg-msgty EQ gc_message_types-abend
+      OR ls_s_msg-msgty EQ gc_message_types-abort
+      OR ls_s_msg-msgty EQ gc_message_types-error.
+        ADD 1 TO av_error_counter.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD add_bapi_messages.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~ADD_BAPI_MESSAGES
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 16.06.20 290977SCN RD2K919514 DS-11-32-07-01 changed
+*          070667JPS
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+*-----------------------------------------------------------------------
+    DATA: ls_s_msg TYPE bal_s_msg.
+
+    CHECK return IS NOT INITIAL.
+    LOOP AT return INTO DATA(ls_return).
+      ls_s_msg-msgty = ls_return-type.
+      ls_s_msg-msgid = ls_return-id.
+      ls_s_msg-msgno = ls_return-number.
+      ls_s_msg-msgv1 = ls_return-message_v1.
+      ls_s_msg-msgv2 = ls_return-message_v2.
+      ls_s_msg-msgv3 = ls_return-message_v3.
+      ls_s_msg-msgv4 = ls_return-message_v4.
+      ls_s_msg-context = context.
+      ls_s_msg-params  = params.
+      IF problem_class IS SUPPLIED.
+        ls_s_msg-probclass = problem_class.
+      ELSE.
+        ls_s_msg-probclass = me->get_problem_class( ls_s_msg-msgty ).
+      ENDIF.
+
+      CALL FUNCTION 'BAL_LOG_MSG_ADD'
+        EXPORTING
+          i_s_msg       = ls_s_msg
+          i_log_handle  = me->log_handle
+        EXCEPTIONS
+          log_not_found = 0
+          OTHERS        = 1.
+      IF sy-subrc = 0.
+        ADD 1 TO av_message_counter.
+        IF ls_s_msg-msgty EQ gc_message_types-abend
+        OR ls_s_msg-msgty EQ gc_message_types-abort
+        OR ls_s_msg-msgty EQ gc_message_types-error.
+          ADD 1 TO av_error_counter.
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  METHOD ADD_SYSTEM_MESSAGE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~ADD_SYSTEM_MESSAGE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_s_msg TYPE bal_s_msg.
+
+    ls_s_msg-msgty = sy-msgty.
+    ls_s_msg-msgid = sy-msgid.
+    ls_s_msg-msgno = sy-msgno.
+    ls_s_msg-msgv1 = sy-msgv1.
+    ls_s_msg-msgv2 = sy-msgv2.
+    ls_s_msg-msgv3 = sy-msgv3.
+    ls_s_msg-msgv4 = sy-msgv4.
+    ls_s_msg-context = context.
+    ls_s_msg-params  = params.
+    IF problem_class IS SUPPLIED.
+      ls_s_msg-probclass = problem_class.
+    ELSE.
+      ls_s_msg-probclass = me->get_problem_class( ls_s_msg-msgty ).
+    ENDIF.
+    CALL FUNCTION 'BAL_LOG_MSG_ADD'
+      EXPORTING
+        i_s_msg       = ls_s_msg
+        i_log_handle  = me->log_handle
+      EXCEPTIONS
+        log_not_found = 0
+        OTHERS        = 1.
+    IF sy-subrc = 0.
+      ADD 1 TO av_message_counter.
+      IF ls_s_msg-msgty EQ gc_message_types-abend
+      OR ls_s_msg-msgty EQ gc_message_types-abort
+      OR ls_s_msg-msgty EQ gc_message_types-error.
+        ADD 1 TO av_error_counter.
+      ENDIF.
+    ENDIF.
+
+    is_return-type       = sy-msgty.
+    is_return-id         = sy-msgid.
+    is_return-number     = sy-msgno.
+    is_return-message_v1 = sy-msgv1.
+    is_return-message_v2 = sy-msgv2.
+    is_return-message_v3 = sy-msgv3.
+    is_return-message_v4 = sy-msgv4.
+  ENDMETHOD.
+
+
+  METHOD ADD_TEXT.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~ADD_TEXT
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: l_text(200) TYPE c.
+
+    l_text = message_text.
+    CALL FUNCTION 'BAL_LOG_MSG_ADD_FREE_TEXT'
+      EXPORTING
+        i_log_handle     = me->log_handle
+        i_msgty          = message_type
+        i_probclass      = problem_class
+        i_text           = l_text
+      EXCEPTIONS
+        log_not_found    = 1
+        msg_inconsistent = 2
+        log_is_full      = 3
+        OTHERS           = 4.
+    IF sy-subrc = 0.
+      ADD 1 TO av_message_counter.
+      IF message_type EQ gc_message_types-abend
+      OR message_type EQ gc_message_types-abort
+      OR message_type EQ gc_message_types-error.
+        ADD 1 TO av_error_counter.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD CONSTRUCTOR.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~CONSTRUCTOR
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: ls_s_log TYPE bal_s_log.
+
+    ls_s_log-extnumber = i_desc.
+    ls_s_log-object    = i_obj.
+    ls_s_log-subobject = i_subobj.
+
+    IF i_days_to_keep IS NOT INITIAL.
+      ls_s_log-aldate_del   = sy-datum + i_days_to_keep.
+      ls_s_log-del_before   = 'X'.
+    ENDIF.
+
+    CALL FUNCTION 'BAL_LOG_CREATE'
+      EXPORTING
+        i_s_log                 = ls_s_log
+      IMPORTING
+        e_log_handle            = log_handle
+      EXCEPTIONS
+        log_header_inconsistent = 1
+        OTHERS                  = 2.
+    IF sy-subrc <> 0.
+      CLEAR log_handle.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD CREATE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~CREATE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CREATE OBJECT instance.
+  ENDMETHOD.
+
+
+  METHOD DISPLAY.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~DISPLAY
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA ls_display_profile TYPE bal_s_prof.
+    DATA: lt_log_handle TYPE bal_t_logh.
+
+    CALL FUNCTION 'BAL_DSP_PROFILE_SINGLE_LOG_GET'
+      IMPORTING
+        e_s_display_profile = ls_display_profile
+      EXCEPTIONS
+        OTHERS              = 1.
+
+    IF sy-subrc = 0.
+      APPEND me->log_handle TO lt_log_handle.
+      CALL FUNCTION 'BAL_DSP_LOG_DISPLAY'
+        EXPORTING
+          i_s_display_profile  = ls_display_profile
+          i_t_log_handle       = lt_log_handle
+        EXCEPTIONS
+          profile_inconsistent = 0
+          internal_error       = 0
+          no_data_available    = 0
+          no_authority         = 0
+          OTHERS               = 0.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD GET_INSTANCE.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~GET_INSTANCE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CREATE OBJECT ro_application_log
+      EXPORTING
+        i_desc         = iv_description
+        i_obj          = iv_object
+        i_subobj       = iv_subobject
+        i_days_to_keep = iv_days_to_keep.
+
+  ENDMETHOD.
+
+
+  METHOD GET_MESSAGES.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~GET_MESSAGES
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA lt_bal_messages TYPE bal_t_msgr.
+    DATA ls_bal_message  TYPE bal_s_msgr.
+    DATA ls_bapiret2     TYPE bapiret2.
+
+    CLEAR et_bal_messages.
+    CLEAR et_bapiret2.
+
+    CALL FUNCTION 'BAL_LOG_READ'
+      EXPORTING
+        i_log_handle  = log_handle
+      IMPORTING
+        et_msg        = lt_bal_messages
+*       ET_EXC        =
+      EXCEPTIONS
+        log_not_found = 1
+        OTHERS        = 2.
+    IF sy-subrc <> 0.
+*   Implement suitable error handling here
+    ELSE.
+      IF et_bal_messages IS SUPPLIED.
+        et_bal_messages = lt_bal_messages.
+      ENDIF.
+      IF et_bapiret2 IS SUPPLIED.
+        LOOP AT lt_bal_messages INTO ls_bal_message.
+          ls_bapiret2-type       = ls_bal_message-msgty.
+          ls_bapiret2-id         = ls_bal_message-msgid.
+          ls_bapiret2-number     = ls_bal_message-msgno.
+          ls_bapiret2-message    = ls_bal_message-msg_txt.
+          ls_bapiret2-log_msg_no = ls_bal_message-msgnumber.
+          ls_bapiret2-message_v1 = ls_bal_message-msgv1.
+          ls_bapiret2-message_v2 = ls_bal_message-msgv2.
+          ls_bapiret2-message_v3 = ls_bal_message-msgv3.
+          ls_bapiret2-message_v4 = ls_bal_message-msgv4.
+          APPEND ls_bapiret2 TO et_bapiret2.
+        ENDLOOP.
+      ENDIF.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD GET_PROBLEM_CLASS.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~GET_PROBLEM_CLASS
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CASE i_msgty.
+      WHEN gc_message_types-abort
+        OR gc_message_types-error
+        OR gc_message_types-abend.
+        result = '1'.
+      WHEN gc_message_types-warning.
+        result = '2'.
+      WHEN gc_message_types-info
+        OR gc_message_types-success.
+        result = '4'.
+    ENDCASE.
+  ENDMETHOD.
+
+
+  METHOD HAS_ERROR_MESSAGES.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~HAS_ERROR_MESSAGES
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CLEAR: rv_has_error.
+
+    IF av_error_counter = 0.
+      rv_has_error = abap_false.
+    ELSE.
+      rv_has_error = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD HAS_MESSAGES.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~HAS_MESSAGES
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    IF av_message_counter = 0.
+      rv_has_messages = abap_false.
+    ELSE.
+      rv_has_messages = abap_true.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD PERSIST_LOG .
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_BAL_LOG_WRAPPER~PERSIST_LOG
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for Application Logging for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA:
+      lt_log_handles TYPE bal_t_logh.
+
+    APPEND log_handle TO lt_log_handles.
+
+    CALL FUNCTION 'BAL_DB_SAVE'
+      EXPORTING
+        i_t_log_handle   = lt_log_handles
+      EXCEPTIONS
+        log_not_found    = 1
+        save_not_allowed = 2
+        numbering_error  = 3
+        OTHERS           = 4.
+
+    ASSERT sy-subrc EQ 0.
+
+  ENDMETHOD.
+ENDCLASS.

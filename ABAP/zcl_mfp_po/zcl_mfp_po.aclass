@@ -1,0 +1,932 @@
+class ZCL_MFP_PO definition
+  public
+  create public .
+
+public section.
+
+  interfaces BI_OBJECT .
+  interfaces BI_PERSISTENT .
+  interfaces IF_WORKFLOW .
+
+  constants C_CLASSNAME type SEOCLSNAME value 'ZCL_MFP_PO' ##NO_TEXT.
+  data APPROVER_COMMENTS type CHAR80_T .
+  data BUS2012 type SIBFLPORB value ZCL_WF_BOR_TYPES=>BUS2012 ##NO_TEXT.
+  data GS_ZTMFP_DOC_HEADER type ZTMFP_DOC_HEADER .
+  data GV_AMT type DEC_16_02_S .
+  data GV_DEADLINE type DATUM .
+  data GV_EBELN type EBELN read-only .
+  data GV_OA_EBELN type EBELN .
+  data GV_SUBMISSION_DATE type DATUM .
+  data HEADER_COMMENTS type CHAR80_T .
+  data LPOR type SIBFLPOR .
+  data VENDOR_NAME type NAME1 .
+  data VENDOR_NUM type LIFNR .
+
+  events DRAFT .
+  events REJECT
+    exporting
+      value(REASON) type STRING .
+  events FORWARD
+    exporting
+      value(RECIPIENT) type SWHACTOR
+      value(REASON) type STRING optional .
+  events SUBMIT
+    exporting
+      value(RECIPIENT) type SWHACTOR
+      value(REASON) type STRING optional .
+  events CHANGE
+    exporting
+      value(RECIPIENT) type SWHACTOR
+      value(REASON) type STRING optional .
+  events RECALL .
+  events SEND_PO
+    exporting
+      value(PO_NUMBER) type EBELN
+      value(RECIPIENT) type SWHACTOR
+      value(SUBMISSION_DATE) type DATUM optional .
+  events DRAFT_SUBMITTED .
+  events L4L_PO_POSTED .
+  events DRAFT_DELETED .
+  events ASSET_UNKNOWN .
+
+  methods CONSTRUCTOR
+    importing
+      value(IV_EBELN) type EBELN
+    raising
+      CX_BO_FIND_ERROR .
+  class-methods CREATE_EVENT
+    importing
+      !IV_REASON type STRING optional
+      !IV_RECIPIENT type SWHACTOR optional
+      !IV_EBELN type EBELN
+      !IV_EVENT type SWO_EVENT
+      !IV_SUBMISSION_DATE type DATUM optional
+    exporting
+      !EV_EVENT_RAISED type BOOLE_D .
+  class-methods CREATE_INSTANCE
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(EO_MFP_DOC) type ref to ZCL_MFP_PO .
+  class-methods UPDATE_MYFI_STATUS
+    importing
+      !IV_EBELN type EBELN
+      !IV_ACTION type ZMFP_ACTION
+    exporting
+      !EV_NEW_STATUS type ZMFP_STATUS
+    raising
+      CX_BO_TEMPORARY .
+  methods CALCULATE_DEADLINE_DATE .
+  methods DUMMY .
+  class-methods DELETE_DRAFT
+    importing
+      !IV_EBELN type EBELN
+    exporting
+      !EV_SUCCESS_FLAG type BOOLE_D .
+  methods CHECK_APPR_AUTH
+    importing
+      !IV_USERID type UNAME
+    exporting
+      !EV_AUTHORISED type BOOLE_D .
+  class-methods GET_PO_PDF
+    importing
+      !IV_EBELN type EBELN
+      !IV_WORKITEMID type SWW_WIID optional
+    exporting
+      !EV_PO_PDF type SOFM
+    raising
+      resumable(CX_BO_TEMPORARY) .
+  class-methods GET_RELEASE_STATUS
+    importing
+      !IV_EBELN type EBELN
+    exporting
+      !EV_REL_INDICATOR type FRGKE
+      !EV_SUB_TO_RELEASE type FRGRL .
+  class-methods COMPLETE_RECALL_WORKITEM
+    importing
+      !IV_EBELN type EBELN
+    returning
+      value(EV_SUCCESS) type BOOLE_D .
+  class-methods RELEASE_PO
+    importing
+      !IV_EBELN type EBELN .
+  methods CHECK_ASSET_CHANGED
+    importing
+      !IV_DOCUMENT type EBELN
+    exporting
+      !EV_ASSET_CHANGED type BOOLE_D
+      !EV_ASSET_EMAIL type AD_SMTPADR
+      !EV_ASSET_DELETED type BOOLE_D .
+  PROTECTED SECTION.
+private section.
+
+  constants:
+    BEGIN OF e_lpor,
+        catid  TYPE sibflpor-catid VALUE 'CL',
+        typeid TYPE sibflpor-typeid VALUE c_classname,
+      END OF e_lpor .
+ENDCLASS.
+
+
+
+CLASS ZCL_MFP_PO IMPLEMENTATION.
+
+
+  METHOD bi_object~default_attribute_value ##needed.
+  ENDMETHOD.
+
+
+  METHOD bi_object~execute_default_method ##needed.
+  ENDMETHOD.
+
+
+  METHOD bi_object~release ##needed.
+  ENDMETHOD.
+
+
+  METHOD bi_persistent~find_by_lpor.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~bi_persistent~find_by_lpor
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lv_ebeln  TYPE ebeln.
+
+    lv_ebeln = lpor-instid.
+    IF lpor-catid = e_lpor-catid AND lpor-typeid = e_lpor-typeid.
+      TRY.
+          CREATE OBJECT result TYPE zcl_mfp_po
+            EXPORTING
+              iv_ebeln = lv_ebeln.
+        CATCH cx_bo_find_error.
+      ENDTRY.
+    ELSE.
+      CLEAR result.
+    ENDIF.
+
+
+  ENDMETHOD.
+
+
+  METHOD bi_persistent~lpor.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~BI_PERSISTENT~LPOR
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    result = me->lpor.
+  ENDMETHOD.
+
+
+  METHOD bi_persistent~refresh ##needed.
+  ENDMETHOD.
+
+
+  METHOD calculate_deadline_date.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~CALCULATE_DEADLINE_DATE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    CASE gs_ztmfp_doc_header-status.
+      WHEN zif_mfp_constants=>gc_doc_status-draft.
+        gv_deadline = sy-datum + 30.
+      WHEN OTHERS.
+    ENDCASE.
+
+  ENDMETHOD.
+
+
+  METHOD check_appr_auth.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~check_appr_auth
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    zcl_mfp_utilities=>auth_check(
+      EXPORTING
+        iv_application = zif_mfp_constants=>gc_service_guid-approver_app                 " Program, transaction or function module name
+        iv_userid      = iv_userid                 " User Name
+      RECEIVING
+        rv_authorised  = ev_authorised                 " Data element for domain BOOLE: TRUE (='X') and FALSE (=' ')
+    ).
+
+  ENDMETHOD.
+
+
+  METHOD CHECK_ASSET_CHANGED.
+*----------------------------------------------------------------------*
+* METHOD ID:          CHECK_ASSET_CHANGED
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method check if Asset is changed
+*
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        18/08/2022
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000002805: MyFi Continuous Improvement September Release
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*----------------------------------------------------------------------- *
+* 18.08.22 210983DY RD2K922968 DS-11-32-07-01 S 6000002805: MyFi Continuous Improvement September Release
+*                     Check if PO line with Asset is Changed/Deleted
+*-------------------------------------------------------------------------
+
+    CALL METHOD zcl_mfp_document=>is_asset_changed
+      EXPORTING
+        iv_document      = iv_document
+      IMPORTING
+        ev_asset_changed = ev_asset_changed
+        ev_asset_deleted = ev_asset_deleted
+        ev_asset_email   = ev_asset_email.
+
+  ENDMETHOD.
+
+
+  METHOD complete_recall_workitem.
+*----------------------------------------------------------------------*
+* METHOD ID:          COMPLETE_RECALL_WORKITEM
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2.2).
+*                     This method is used to get a users details.
+*
+* AUTHOR:             Dathri Yellamarthy (210983DY)
+* CREATE DATE:        05.07.2021
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          S6000002419: MyFi Purchasing (July Release)
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 05.07.2021 210983DY RD2K921312 DS-11-32-07-01 S6000002419: MyFi Purchasing (July Release)
+*-----------------------------------------------------------------------
+
+    DATA: lt_worklist TYPE TABLE OF swr_wihdr,
+          ls_object   TYPE sibflporb,
+          lv_return   TYPE sysubrc..
+    ls_object-catid = 'CL'.
+    ls_object-typeid = c_classname.
+    ls_object-instid = iv_ebeln.
+
+    CALL FUNCTION 'SAP_WAPI_WORKITEMS_TO_OBJECT'
+      EXPORTING
+        object_por      = ls_object
+        top_level_items = ' '
+      TABLES
+        worklist        = lt_worklist.
+
+    READ TABLE lt_worklist INTO DATA(ls_worklist) WITH KEY wi_rh_task = 'TS90600430'.
+    IF sy-subrc IS INITIAL.
+
+      CALL FUNCTION 'SAP_WAPI_WORKITEM_COMPLETE'
+        EXPORTING
+          workitem_id = ls_worklist-wi_id
+        IMPORTING
+          return_code = lv_return.
+
+    ENDIF.
+
+
+  ENDMETHOD.
+
+
+  METHOD constructor.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~constructor
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 03/03/21 210983DY  RD2K920554 DS-11-32-07-01 S 6000002250: MyFi Purchasing (Release 2.4 )
+*                               Additional logic to handle header commnets and approval comments
+*-----------------------------------------------------------------------
+    DATA: lo_mfp_po TYPE REF TO zcl_mfp_document_po.
+    DATA: lt_split_lines TYPE STANDARD TABLE OF string.
+    DATA: l_frgke TYPE frgke.
+    TRY.
+        lpor-catid = 'CL'.
+        lpor-typeid = c_classname.
+        lpor-instid = iv_ebeln.
+
+        SELECT SINGLE * FROM ztmfp_doc_header
+                       WHERE zmfp_doc_id  = @iv_ebeln
+                        INTO @me->gs_ztmfp_doc_header.
+        IF sy-subrc = 0.
+          gv_ebeln = gs_ztmfp_doc_header-zmfp_doc_id.
+        ELSE.
+          SELECT SINGLE ebeln frgke
+            FROM ekko
+            INTO (gs_ztmfp_doc_header-zmfp_doc_id, l_frgke)
+            where ebeln = iv_ebeln
+              and bsart = zif_mfp_constants=>gc_mm_doc_type-po.
+          IF sy-subrc = 0.
+            gs_ztmfp_doc_header-status = zcl_mfp_utilities=>translate_mm_status_to_mfp(
+              l_frgke ).
+            gv_ebeln = gs_ztmfp_doc_header-zmfp_doc_id.
+          ELSE.
+            RAISE EXCEPTION TYPE cx_bo_find_error.
+          ENDIF.
+        ENDIF.
+        CREATE OBJECT lo_mfp_po TYPE zcl_mfp_document_po
+          EXPORTING
+            iv_ebeln         = gv_ebeln
+            iv_action        = '99'
+            iv_myfi_doc_type = me->gs_ztmfp_doc_header-category.
+
+        IF lo_mfp_po->gv_draft_indicator EQ abap_false.
+          bus2012-instid = gv_ebeln.
+          IF sy-subrc <> 0.
+            RAISE EXCEPTION TYPE cx_bo_find_error.
+          ENDIF.
+        ENDIF.
+
+
+        calculate_deadline_date( ).
+        gv_amt = lo_mfp_po->gs_po_deep-totalvalue.
+*        header_comments = lo_mfp_po->gs_po_deep-romancomment.
+*        header_comments = lo_mfp_po->gs_po_deep-approvaldetails-valueformoney.
+        CLEAR lt_split_lines.
+        SPLIT lo_mfp_po->gs_po_deep-approvaldetails-valueformoney AT cl_abap_char_utilities=>newline INTO TABLE lt_split_lines.
+        LOOP AT lt_split_lines INTO DATA(lv_string).
+          CALL FUNCTION 'CONVERT_STRING_TO_TABLE'
+            EXPORTING
+              i_string         = lv_string
+              i_tabline_length = 80
+            TABLES
+              et_table         = header_comments.
+        ENDLOOP.
+        CLEAR lt_split_lines.
+        SPLIT lo_mfp_po->gs_po_deep-approvaldetails-commentforapprover AT cl_abap_char_utilities=>newline INTO TABLE lt_split_lines.
+        LOOP AT lt_split_lines INTO lv_string.
+
+          CALL FUNCTION 'CONVERT_STRING_TO_TABLE'
+            EXPORTING
+              i_string         = lv_string
+              i_tabline_length = 80
+            TABLES
+              et_table         = approver_comments.
+
+        ENDLOOP.
+*        approver_comments = lo_mfp_po->gs_po_deep-approvaldetails-commentforapprover.
+        vendor_name = lo_mfp_po->gs_po_deep-vendorname.
+        vendor_num = lo_mfp_po->gs_po_deep-vendor.
+        gv_oa_ebeln = lo_mfp_po->gs_po_deep-agreement.
+
+        IF lo_mfp_po->gv_draft_indicator EQ abap_false.
+          bus2012-instid = lpor-instid.
+        ENDIF.
+
+      CATCH cx_bo_find_error.
+    ENDTRY.
+
+  ENDMETHOD.
+
+
+  METHOD create_event.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~create_event
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: l_event_container TYPE REF TO if_swf_ifs_parameter_container.
+    DATA: l_event           TYPE REF TO if_swf_evt_event.
+
+    CHECK iv_event IS NOT INITIAL.
+
+    CALL METHOD cl_swf_evt_event=>get_instance
+      EXPORTING
+        im_objcateg = e_lpor-catid
+        im_objtype  = e_lpor-typeid
+        im_event    = iv_event
+        im_objkey   = iv_ebeln
+      RECEIVING
+        re_event    = l_event.
+
+    l_event_container = l_event->get_event_container( ).
+
+    TRY.
+        IF iv_reason IS NOT INITIAL.
+          CALL METHOD l_event_container->set
+            EXPORTING
+              name  = 'REASON'
+              value = iv_reason.
+        ENDIF.
+      CATCH cx_swf_cnt_container ##no_handler.
+    ENDTRY.
+
+    TRY.
+        IF iv_ebeln IS NOT INITIAL.
+          CALL METHOD l_event_container->set
+            EXPORTING
+              name  = 'PO_NUMBER'
+              value = iv_ebeln.
+        ENDIF.
+      CATCH cx_swf_cnt_container ##no_handler.
+    ENDTRY.
+
+    TRY.
+        IF iv_recipient IS NOT INITIAL.
+          CALL METHOD l_event_container->set
+            EXPORTING
+              name  = 'RECIPIENT'
+              value = iv_recipient.
+        ENDIF.
+      CATCH cx_swf_cnt_container ##no_handler.
+    ENDTRY.
+
+    TRY.
+        IF iv_submission_date IS NOT INITIAL.
+          CALL METHOD l_event_container->set
+            EXPORTING
+              name  = 'SUBMISSION_DATE'
+              value = iv_submission_date.
+        ENDIF.
+      CATCH cx_swf_cnt_container ##no_handler.
+    ENDTRY.
+
+    TRY.
+        l_event->raise( ).
+*        is_commit_required = abap_true.
+      CATCH cx_swf_evt_invalid_objtype ##no_handler.
+      CATCH cx_swf_evt_invalid_event.
+*      ROLLBACK WORK.
+        RETURN.
+    ENDTRY.
+*
+*    IF iv_commit = abap_true.
+*      is_commit_required = abap_false.
+    COMMIT WORK. "event recievers triggers via tRFC
+*    ENDIF.
+
+    ev_event_raised = abap_true.
+
+  ENDMETHOD.
+
+
+  METHOD create_instance.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~CREATE_INSTANCE
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    TRY.
+        CREATE OBJECT eo_mfp_doc
+          EXPORTING
+            iv_ebeln = iv_ebeln.
+      CATCH cx_bo_find_error.
+    ENDTRY.
+  ENDMETHOD.
+
+
+  METHOD delete_draft.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~DELETE_DRAFT
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    ev_success_flag = zcl_mfp_utilities=>delete_draft( iv_ebeln = iv_ebeln ).
+  ENDMETHOD.
+
+
+  METHOD dummy ##NEEDED.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~DUMMY
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+  ENDMETHOD.
+
+
+  METHOD get_po_pdf.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~get_po_pdf
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+*-----------------------------------------------------------------------
+    DATA: lv_ebeln      TYPE ebeln,
+          lt_soli_tab   TYPE soli_tab,
+          lt_solix_tab  TYPE solix_tab,
+          lv_xstring    TYPE xstring,
+          lt_otf        TYPE otf_t_itcoo,
+          lt_lines      TYPE tlinet,
+          ls_lines      TYPE tline,
+          lv_buffer     TYPE string,
+          ls_attachment TYPE swr_att_header.
+
+*    TRY.
+    lt_soli_tab = zcl_mfp_utilities=>get_po_pdf( i_ebeln =  iv_ebeln ).
+
+    TRY.
+        lt_solix_tab = cl_bcs_convert=>soli_to_solix( it_soli = lt_soli_tab ).
+      CATCH cx_bcs. " BCS: General Exceptions
+    ENDTRY.
+    ls_attachment-file_type = 'B'.
+    ls_attachment-file_name = |Purchase Order { lv_ebeln }|.
+    ls_attachment-file_extension = 'PDF'.
+    ls_attachment-language = 'EN'.
+    TRY.
+        cl_bcs_convert=>solix_to_xstring(
+          EXPORTING
+            it_solix   = lt_solix_tab                 " Input data
+*            iv_size    =                  " Document size
+          RECEIVING
+            ev_xstring = lv_xstring                 " Output data
+        ).
+
+      CATCH cx_bcs. " BCS: General Exceptions
+    ENDTRY.
+
+    CALL FUNCTION 'SAP_WAPI_ATTACHMENT_ADD'
+      EXPORTING
+        workitem_id = iv_workitemid
+        att_header  = ls_attachment
+*       ATT_TXT     =
+        att_bin     = lv_xstring
+*       DOCUMENT_OWNER                = SY-UNAME
+*       language    = 'EN'
+*       DO_COMMIT   = 'X'
+*       COMMENT_SEMANTIC              = ' '
+*       CHECK_INBOX_RESTRICTION       = ' '
+* IMPORTING
+*       RETURN_CODE =
+*       ATT_ID      =
+*       DOC_SIZE    =
+* TABLES
+*       MESSAGE_LINES                 =
+*       MESSAGE_STRUCT                =
+      .
+    IF sy-subrc <> 0.
+      RAISE EXCEPTION TYPE cx_bo_temporary.
+    ENDIF.
+*      CATCH cx_bo_temporary.
+*
+*    ENDTRY.
+  ENDMETHOD.
+
+
+  METHOD get_release_status.
+*-----------------------------------------------------------------------------------------
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:       Dathri Yellamarthy
+* CREATE DATE:  16.04.2021
+*
+* ACTIVITY:     AD-11-32-07 - Self Service Purchasing App
+* DEV SCRIPT:   DS-11-32-17-01 - Self Service Purchasing App
+*-----------------------------------------------------------------------------------------
+* VERSION CONTROL:
+*
+* Date       Author    CTS Req    SCR        Description
+* ---------- --------- ---------- ---------- ---------------------------------------------
+* 16.04.21 210983DY RD2K920923  DS-11-32-07-01 S 6000002348: MyFi Purchasing (May Release)
+
+*-----------------------------------------------------------------------------------------
+
+    DATA: lv_ebeln          TYPE ebeln,
+          lv_rel_indicator  TYPE ekko-frgke,
+          lv_sub_to_release TYPE ekko-frgrl.
+    CLEAR : lv_rel_indicator, lv_sub_to_release.
+
+    SELECT SINGLE frgke frgrl INTO (lv_rel_indicator , lv_sub_to_release) FROM ekko WHERE ebeln = iv_ebeln.
+    IF sy-subrc IS INITIAL.
+      ev_rel_indicator = lv_rel_indicator.
+      ev_sub_to_release = lv_sub_to_release.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD release_po.
+    DATA: l_ret_code TYPE sy-subrc,
+          lt_return  TYPE TABLE OF bapiret2,
+          ls_return  LIKE LINE OF lt_return.
+
+    CALL FUNCTION 'BAPI_PO_RELEASE'
+      EXPORTING
+        purchaseorder          = iv_ebeln
+        po_rel_code            = 'R1'
+        use_exceptions         = ' '
+        no_commit              = ' '
+      IMPORTING
+        ret_code               = l_ret_code
+      TABLES
+        return                 = lt_return
+      EXCEPTIONS
+        authority_check_fail   = 1
+        document_not_found     = 2
+        enqueue_fail           = 3
+        prerequisite_fail      = 4
+        release_already_posted = 5
+        responsibility_fail    = 6
+        OTHERS                 = 7.
+    IF sy-subrc IS INITIAL.
+      CALL FUNCTION 'BAPI_TRANSACTION_COMMIT'
+        EXPORTING
+          wait   = 'X'
+        IMPORTING
+          return = ls_return.
+      IF sy-subrc = 0.
+*        cs_entity-is_approved = abap_true.
+*        cs_entity-ready_for_approval = abap_false.
+*        zcl_mfp_utilities=>log_myfi_event(
+*          EXPORTING
+*            iv_doc_number = l_ebeln
+*            iv_user_id    = sy-uname
+*            iv_sub_obj    = zif_mfp_constants=>gc_log-sub_obj-wf-approve ).
+*
+*        zcl_mfp_workflow_approval=>update_table( imp_approval_log = ls_wf_action ).
+
+      ELSE.
+        RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+          EXPORTING
+            message = ls_return-message.
+      ENDIF.
+    ELSE.
+      READ TABLE lt_return INTO ls_return INDEX 1.
+      RAISE EXCEPTION TYPE /iwbep/cx_mgw_busi_exception
+        EXPORTING
+          message = ls_return-message.
+    ENDIF.
+
+  ENDMETHOD.
+
+
+  METHOD update_myfi_status.
+*----------------------------------------------------------------------*
+* METHOD ID:          ZCL_MFP_PO~UPDATE_MYFI_STATUS
+* DESCRIPTION:        This method is used by the MyFi Purchasing (MFP) UI5
+*                     application (Self Service Purchasing (SSP) Release 2).
+*                     This method is used for PO Workflows for MyFi
+*
+* AUTHOR:             Stephen Ning (290977SCN), James Southwell (070667JPS)
+* CREATE DATE:        30.05.2020
+* R/3 RELEASE VERSION: ECC6
+*
+* ACTIVITY:           AD-11-32-07 - Self Service Purchasing App
+* CR Number:          6000001863 - MyFi Purchasing Release 2
+*-----------------------------------------------------------------------
+* VERSION CONTROL
+*
+* Date     Author    CTS Req    Dev Script     Description
+*-----------------------------------------------------------------------
+* 30.05.20 290977SCN RD2K919078 DS-11-32-07-01 Created
+*          070667JPS
+* 19.06.20 290977SCN RD2K919517 DS-11-32-07-01 S 6000001863: MyFi
+*          070667JPS                           Purchasing Release 2_ECC
+*                                              DEFECTS II.  Corrected
+*                                              logging of status message.
+* 22.07.20 290977SCN RD2K919533 DS-11-32-07-01 Updated importing parameters for decide_new_status
+* 21/09/20 290977SCN RD2K919977 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+* 13/10/20 290977SCN RD2K920238 DS-11-32-07-01 S 6000002096: MyFi Purchasing (Release 2.2)
+* 30.11.20 220977FKC RD2K920449 DS-11-32-07-01 6000002172: MyFi Purchasing (Release 2.3)
+*                                              Enable legacy i.e. non-myfi created docs
+*-----------------------------------------------------------------------
+    DATA: lv_old_status       TYPE zmfp_status,
+          lv_mm_status        TYPE frgke,
+          lv_doc_type         TYPE zmfp_category,
+          ls_new_doc_header   TYPE ztmfp_doc_header,
+          lv_change_indicator TYPE cdchngindh VALUE 'U',
+          lt_header_old       TYPE yztmfp_doc_headers,
+          lt_header_new       TYPE yztmfp_doc_headers,
+          ls_header_old       TYPE yztmfp_doc_header,
+          ls_header_new       TYPE yztmfp_doc_header,
+          lv_user             TYPE uname,
+          objectid            TYPE cdhdr-objectid,
+          lv_message          TYPE char50.
+
+    lv_user = sy-uname.
+
+    SELECT SINGLE frgke FROM ekko
+                       WHERE ebeln = @iv_ebeln
+                        INTO @lv_mm_status.
+
+    SELECT SINGLE * FROM ztmfp_doc_header
+                        WHERE zmfp_doc_id = @iv_ebeln
+                         INTO @DATA(ls_old_doc_header).
+    CHECK sy-subrc = 0.
+
+    lv_old_status     = ls_old_doc_header-status.
+    ls_new_doc_header = ls_old_doc_header.
+
+    zcl_mfp_document=>decide_new_status(
+      EXPORTING
+        iv_action        = iv_action
+        iv_myfi_doc_type = lv_doc_type
+        iv_old_status    = lv_old_status
+        iv_mm_status     = lv_mm_status
+        iv_ebeln         = iv_ebeln
+      RECEIVING
+        rv_new_status    =  ev_new_status
+    ).
+    CHECK ev_new_status IS NOT INITIAL.
+    ls_new_doc_header-status = ev_new_status.
+
+* Update User with selected delegate from table ztmfp_doc_header
+    IF ev_new_status EQ zif_mfp_constants=>gc_doc_status-approved AND
+      NOT ls_old_doc_header-status = zif_mfp_constants=>gc_doc_status-approved.
+      IF lv_user = 'WF-BATCH'.
+        lv_user = ls_old_doc_header-selected_delegate.
+      ELSE.
+        lv_user = sy-uname.
+      ENDIF.
+      ls_new_doc_header-released_on = sy-datum.
+      ls_new_doc_header-released_at = sy-uzeit.
+    ENDIF.
+
+    IF ls_new_doc_header NE ls_old_doc_header.
+      ls_new_doc_header-changed_on = sy-datum.
+      ls_new_doc_header-changed_at = sy-uzeit.
+      UPDATE ztmfp_doc_header FROM ls_new_doc_header.
+      COMMIT WORK AND WAIT.
+      SELECT SINGLE * FROM ztmfp_doc_header
+                      INTO @DATA(ls_updated_header)
+                     WHERE zmfp_doc_id EQ @ls_new_doc_header-zmfp_doc_id.
+
+      MOVE-CORRESPONDING ls_old_doc_header TO ls_header_old.
+      MOVE-CORRESPONDING ls_updated_header TO ls_header_new.
+
+      APPEND ls_header_old TO lt_header_old.
+      APPEND ls_header_new TO lt_header_new.
+      objectid = iv_ebeln.
+      CALL FUNCTION 'ZMFP_CHANGELOG_WRITE_DOCUMENT'
+        EXPORTING
+          objectid                = objectid
+          tcode                   = zif_mfp_constants=>gc_tcode
+          utime                   = sy-uzeit
+          udate                   = sy-datum
+          username                = lv_user
+          object_change_indicator = lv_change_indicator
+          upd_ztmfp_doc_header    = lv_change_indicator
+        TABLES
+          xztmfp_doc_header       = lt_header_new
+          yztmfp_doc_header       = lt_header_old.
+    ENDIF.
+
+    IF ev_new_status EQ zif_mfp_constants=>gc_doc_status-approved.
+      SELECT SINGLE status FROM ztmfp_doc_header
+                           INTO @DATA(lv_status)
+                          WHERE zmfp_doc_id EQ @iv_ebeln AND
+                                     status EQ @zif_mfp_constants=>gc_doc_status-approved.
+      IF sy-subrc NE 0.
+        RAISE EXCEPTION TYPE cx_bo_temporary.
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+ENDCLASS.
