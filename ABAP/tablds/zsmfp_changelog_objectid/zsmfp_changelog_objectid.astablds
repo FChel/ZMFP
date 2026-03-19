@@ -1,0 +1,8 @@
+@EndUserText.label : 'MFP - Changelog - Object ID'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_changelog_objectid {
+  client : mandt;
+  ebeln  : ebeln;
+  ebelp  : ebelp;
+
+}

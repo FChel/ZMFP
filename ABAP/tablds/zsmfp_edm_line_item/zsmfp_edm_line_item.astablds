@@ -1,0 +1,37 @@
+@EndUserText.label : 'MyFi Purchasing Line Item Structure - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_line_item {
+  linenumber              : ebelp;
+  agmt_item               : ktpnr;
+  acctasscat              : knttp;
+  gl_account              : saknr;
+  short_text              : txz01;
+  costcenter              : kostl;
+  fund                    : bp_geber;
+  asset_no                : anln1;
+  sub_number              : anln2;
+  wbs_element             : ps_posid;
+  orderid                 : aufnr;
+  matl_group              : matkl;
+  po_unit                 : bstme;
+  @Semantics.quantity.unitOfMeasure : 'bapimepoitem.po_unit'
+  target_qty              : ktmng;
+  @Semantics.quantity.unitOfMeasure : 'bapimepoitem.po_unit'
+  qtyleft                 : ktmng;
+  @Semantics.amount.currencyCode : 'mepo1211.waers'
+  price_unit              : bprei;
+  @Semantics.amount.currencyCode : 'mepo1211.waers'
+  net_price               : bprei;
+  tax_code                : mwskz;
+  esp                     : zzesp;
+  currency                : waers;
+  deliverydate            : etbdt;
+  status                  : char1;
+  statusdesc              : zmfp_status_desc;
+  isprepayment            : zmfp_is_prepayment;
+  prepaymentcompleteddate : zmfp_prepayment_comp_date;
+  isstraightline          : zmfp_is_straight_line;
+  final_inv               : erekz;
+  deliv_compl             : eglkz;
+
+}

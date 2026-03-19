@@ -1,0 +1,8 @@
+@EndUserText.label : 'MFP - Changelog - Data'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_CHARACTER
+define type zsmfp_changelog_data {
+  key        : include zsmfp_changelog_key;
+  data       : include cdred;
+  mm_version : revno;
+
+}

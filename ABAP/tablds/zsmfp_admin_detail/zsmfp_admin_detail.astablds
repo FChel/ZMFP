@@ -1,0 +1,30 @@
+@EndUserText.label : 'MyFi Purchasing UI5 App - Purch Doc Admin Details'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_admin_detail {
+  sonid                    : zgrp_snid;
+  is_goods                 : zmfp_is_goods;
+  is_services              : zmfp_is_services;
+  is_prepayment            : zmfp_is_prepayment;
+  is_consultancy           : zmfp_is_contr_consult;
+  ses_approver_id          : zmfp_ses_approver_id;
+  ses_approver_name        : zmfp_ses_approver_name;
+  is_rate_gt_4500          : zmfp_is_rate_above_4500;
+  is_secretary_advised     : zmfp_is_secretary_advised;
+  outcomes_or_time         : zmfp_indig_outcome_tm;
+  is_ict_sw_hw             : zmfp_is_ict_sware_hware;
+  is_software              : zmfp_is_software;
+  is_hardware              : zmfp_is_hardware;
+  is_indig_identified      : zmfp_is_indig_ident;
+  is_indig_quote           : zmfp_is_indig_quote;
+  indigenous_outcome       : zmfp_indig_outcome;
+  is_indig_subcontract     : zmfp_is_indig_subcont;
+  is_endorsed_proceed      : zmfp_is_endorsed_to_proc;
+  quote_invitation_count   : zmfp_quote_invit_count;
+  quote_received_count     : zmfp_quote_recvd_count;
+  is_sp020                 : zmfp_is_sp020;
+  s23_exists               : zmfp_is_section23;
+  pay_term_just            : zmfp_pmt_terms_justification;
+  pay_term_just_dd         : zmfp_pmt_term_justification_dd;
+  justificationdescription : zmfp_pmt_terms_justification;
+
+}

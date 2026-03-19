@@ -1,0 +1,12 @@
+@EndUserText.label : 'Archivelink transfer structure'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_arch_connect {
+  arc_doc_id : saeardoid;
+  ar_object  : saeobjart;
+  object_id  : saeobjid;
+  sap_object : saeanwdid;
+  filename   : char255;
+  descr      : char255;
+  creator    : uname;
+
+}

@@ -1,0 +1,10 @@
+@EndUserText.label : 'Changelog Structure for Gateway Service ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsmfp_changelog {
+  ebeln    : ebeln;
+  ebelp    : ebelp;
+  sequence : zmfp_log_seq;
+  data     : include cdred;
+  fullname : name_text;
+
+}

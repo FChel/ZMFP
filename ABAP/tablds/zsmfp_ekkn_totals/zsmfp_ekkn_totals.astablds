@@ -1,0 +1,11 @@
+@EndUserText.label : 'EKKN Totals'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_ekkn_totals {
+  acc_assign : char255;
+  @Semantics.amount.currencyCode : 'ekko.waers'
+  effwr_old  : effwr;
+  @Semantics.amount.currencyCode : 'ekko.waers'
+  effwr_new  : effwr;
+  app_req    : boole_d;
+
+}

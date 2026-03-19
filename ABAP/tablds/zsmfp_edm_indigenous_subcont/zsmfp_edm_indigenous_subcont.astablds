@@ -1,0 +1,8 @@
+@EndUserText.label : 'MyFi Purchasing Indigenous Subcon Struct -oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_indigenous_subcont {
+  contractorabn  : stceg;
+  contractorname : zmfp_contr_name;
+  deletion_flag  : zmfp_bool;
+
+}

@@ -1,0 +1,13 @@
+@EndUserText.label : 'Approval'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define type zsmfp_approvals {
+  parentnumber : ebeln;
+  approverid   : sysid;
+  approvername : name_text;
+  approvaldate : datum;
+  approvaltime : cduzeit;
+  action       : zwf_action;
+  requestor    : name_text;
+  recipient    : name_text;
+
+}

@@ -1,0 +1,14 @@
+@EndUserText.label : 'MyFi Purchasing Header Texts Structure - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_header_texts {
+  headertext        : zmfp_header_text;
+  headernote        : zmfp_header_note;
+  contractriders    : zmfp_contract_riders;
+  delivery          : zmfp_delivery;
+  vendormemogeneral : zmfp_vendor_memo_general;
+  vendormemospecial : zmfp_vendor_memo_special;
+  alternatetc       : zmfp_alternate_tc;
+  alternatetcno     : zmfp_alternate_tc_no;
+  inspectionquality : zmfp_inspection_quality;
+
+}

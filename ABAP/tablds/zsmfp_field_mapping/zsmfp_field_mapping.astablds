@@ -1,0 +1,11 @@
+@EndUserText.label : 'Field Mappings for Odata to ABAP'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_field_mapping {
+  odata_entity : zmfp_odata_struc;
+  odata_field  : zmfp_odata_fieldname;
+  abap_struc   : zmfp_abap_struc;
+  abap_field   : zmfp_abap_fieldname;
+  odata2bend   : char30;
+  bend2odata   : char30;
+
+}

@@ -1,0 +1,33 @@
+@EndUserText.label : 'MyFi Purchasing Contract Worklist Struct -oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_worklist_po {
+  ponumber            : ebeln;
+  agreement           : konnr;
+  vendorname          : name1_gp;
+  invoicingpartyname  : name1_gp;
+  purchasinggroup     : ekgrp;
+  purchasinggroupname : eknam;
+  createddate         : timestampl;
+  currency            : waers;
+  status              : zmfp_status;
+  statusdesc          : zmfp_status_desc;
+  issinglepo          : boole_d;
+  isdraft             : boole_d;
+  po_number           : ebeln;
+  creat_date          : timestampl;
+  pur_group           : ekgrp;
+  contractnumber      : ebeln;
+  diff_inv            : lifre;
+  comp_code           : bukrs;
+  created_by          : ernam;
+  createdbyname       : char80;
+  iscopyable          : boole_d;
+  islegacy            : boole_d;
+  @Semantics.amount.currencyCode : 'zsmfp_edm_worklist_po.currency'
+  totalvalue          : rlwrt;
+  approverid          : ernam;
+  approvername        : char80;
+  iseditdisabled      : boole_d;
+  ismigrated          : boole_d;
+
+}

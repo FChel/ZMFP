@@ -1,0 +1,9 @@
+@EndUserText.label : 'Self Service Purchasing Indigenous Subcontractor Details'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_changelog_indisub {
+  mandt          : mandt;
+  contractnumber : ebeln;
+  contractorname : char100;
+  contractorabn  : stceg;
+
+}

@@ -1,0 +1,12 @@
+@EndUserText.label : 'MyFi Purchasing Phasing Structure - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_phasing {
+  sched_line    : etenr;
+  po_item       : ebelp;
+  delete_ind    : zmfp_is_deleted;
+  short_text    : txz01;
+  delivery_date : eeind;
+  @Semantics.quantity.unitOfMeasure : 'mepo1210.meins'
+  quantity      : etmen;
+
+}

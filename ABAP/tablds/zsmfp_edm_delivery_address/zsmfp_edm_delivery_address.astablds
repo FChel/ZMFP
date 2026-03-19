@@ -1,0 +1,18 @@
+@EndUserText.label : 'MyFi Purchasing Delivery Addr Structure - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_delivery_address {
+  linenumber          : ebelp;
+  invoicecontactemail : zmfp_invoice_contact_email;
+  grcontactemail      : zmfp_gr_contact_email;
+  deliverytype        : zmfp_delivery_type;
+  newaddressname      : ad_name1;
+  newaddressstreet    : ad_street;
+  newaddresscity      : city;
+  newaddresspostcode  : ad_pstcd1;
+  newaddresscountry   : land1;
+  newaddressregion    : regio;
+  pickuplocation      : zmfp_pickup_location;
+  romanaddresscode    : ad_addrnum;
+  specialinstructions : zmfp_special_instructions;
+
+}

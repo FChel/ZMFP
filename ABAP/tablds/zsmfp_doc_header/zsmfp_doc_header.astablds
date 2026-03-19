@@ -1,0 +1,23 @@
+@EndUserText.label : 'MyFi Purchasing UI5 Application Document Header'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_doc_header {
+  ref_id              : ebeln;
+  status              : zmfp_status;
+  category            : zmfp_category;
+  create_date         : erdat;
+  changed_in_gui      : zmfp_bool;
+  selected_delegate   : zmfp_delegateid;
+  section23           : zmfp_bool;
+  changed_on          : chdate;
+  changed_at          : crtime;
+  released_on         : reldt;
+  released_at         : zmfp_reltm;
+  was_l4l             : zmfp_bool;
+  is_legacy           : zmfp_bool;
+  issameaddressforall : zmfp_bool;
+  isaaicompliance     : zmfp_bool;
+  isfpmapproved       : zmfp_bool;
+  isasfinapproved     : zmfp_bool;
+  include zsmfp_edm_contact_details;
+
+}

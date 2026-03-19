@@ -1,0 +1,19 @@
+@EndUserText.label : 'Attachment Structure'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_doc_att {
+  zmfp_doc_id    : ebeln;
+  attachmentguid : sysuuid_x;
+  mime_type      : w3conttype;
+  sap_object     : saeanwdid;
+  ar_object      : saeobjart;
+  doc_type       : saedoktyp;
+  archiv_id      : saearchivi;
+  arc_doc_id     : saeardoid;
+  file_name      : file;
+  att_cruser     : cruser;
+  att_crdate     : crdate;
+  att_crtime     : crtime;
+  attachmentid   : sibftypeid;
+  attachmentcat  : sibfcatid;
+
+}

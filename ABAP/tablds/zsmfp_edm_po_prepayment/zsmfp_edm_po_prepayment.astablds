@@ -1,0 +1,9 @@
+@EndUserText.label : 'MyFi Purchasing PO Prepayment Struct - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_po_prepayment {
+  isprepayment            : zmfp_is_prepayment;
+  prepaymentcompleteddate : zmfp_prepayment_comp_date;
+  isstraightline          : zmfp_is_straight_line;
+  purchasetype            : zmfp_prepayment_purchasetype;
+
+}

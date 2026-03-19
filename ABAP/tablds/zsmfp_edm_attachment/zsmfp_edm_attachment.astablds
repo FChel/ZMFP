@@ -1,0 +1,12 @@
+@EndUserText.label : 'MyFi Purchasing Attachment Struct - oData Service ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_attachment {
+  attachmentguid : sysuuid_x;
+  file_name      : file;
+  sourceuri      : zmfp_source_uri;
+  mime_type      : w3conttype;
+  filesize       : filelen;
+  doc_type       : saedoktyp;
+  contentx       : zmfp_attachment_content;
+
+}

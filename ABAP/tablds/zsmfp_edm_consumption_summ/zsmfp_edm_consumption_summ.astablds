@@ -1,0 +1,10 @@
+@EndUserText.label : 'MyFi Purchasing Consumption Summ Struct -oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_consumption_summ {
+  totalordered   : zmfp_total_ordered;
+  totaldelivered : val_gr_for;
+  totalinvoiced  : val_iv_for;
+  tobedelivered  : zmfp_to_be_delivered;
+  tobeinvoiced   : zmfp_to_be_invoiced;
+
+}

@@ -1,0 +1,17 @@
+@EndUserText.label : 'MyFi Purchasing Consumption IR Structure -oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_consumption_ir {
+  polinenumber    : ebelp;
+  linenumber      : ebelp;
+  mat_doc         : mblnr;
+  pstng_date      : budat;
+  @Semantics.quantity.unitOfMeasure : 'bapiekpo.unit'
+  quantity        : menge_d;
+  deliv_unit      : lsmeh;
+  val_forcur      : val_forcurr;
+  currency        : waers;
+  val_loccur      : val_loccurr;
+  loc_curr        : hswae;
+  ref_doc_no_long : xblnr_long;
+
+}

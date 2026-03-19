@@ -1,0 +1,10 @@
+@EndUserText.label : 'MyFi Purchasing Contact Details Struct - oData Svc ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_edm_contact_details {
+  pocontactid         : zmfp_contact_id;
+  pocontactname       : zmfp_contact_name;
+  pocontactphone      : ad_tlnmbr1;
+  pocontactemail      : ad_smtpadr;
+  invoicecontactemail : ad_smtpadr;
+
+}

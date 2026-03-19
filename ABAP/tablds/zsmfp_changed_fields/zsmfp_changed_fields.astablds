@@ -1,0 +1,10 @@
+@EndUserText.label : 'Sensitive Fields'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_changed_fields {
+  field_name   : char30;
+  item         : ebelp;
+  old_value    : char255;
+  new_value    : char255;
+  approval_req : boole_d;
+
+}

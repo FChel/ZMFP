@@ -1,0 +1,8 @@
+@EndUserText.label : 'MFP - Changelog - Key'
+@AbapCatalog.enhancementCategory : #NOT_EXTENSIBLE
+define type zsmfp_changelog_key {
+  client : mandt;
+  ebeln  : ebeln;
+  ebelp  : ebelp;
+
+}

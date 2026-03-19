@@ -1,0 +1,11 @@
+@EndUserText.label : 'MyFi Purchasing Appr Dtls Structure - oData Service ZEDM_MFP'
+@AbapCatalog.enhancementCategory : #EXTENSIBLE_ANY
+define type zsmfp_edm_approval_details {
+  issection23        : zmfp_is_section23;
+  delegateid         : zmfp_delegateid;
+  approverid         : zmfp_delegateid;
+  commentforapprover : zmfp_comment_for_approver;
+  rejectcomments     : zmfp_reject_comments;
+  valueformoney      : zmfp_value_for_money;
+
+}
